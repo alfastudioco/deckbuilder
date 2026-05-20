@@ -1384,18 +1384,21 @@ function getProposalData() {
 function fmtD(n) { return n==null||isNaN(n) ? '—' : '$'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}); }
 
 function renderProposal() {
-  const r = getProposalData();
-  const L = r.L;
-  const client  = $('p-client-name').value    || 'Client Name';
-  const addr    = $('p-client-address').value || '';
-  const projAddr= $('p-project-address').value|| addr;
-  const desc    = $('p-description').value    || (L.name+' Deck — '+(mode==='build'?'Full Build':'Board Replacement'));
-  const dateVal = $('p-date').value;
-  const validVal= $('p-valid-until').value;
-  const dateStr = dateVal ? new Date(dateVal+'T00:00:00').toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}) : new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
-  const validStr= validVal ? new Date(validVal+'T00:00:00').toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}) : '';
-  const notes   = $('p-notes').value;
-  const terms   = $('p-terms-text').value;
+  try {
+    const r = calcCosts(selA);
+    const L = r.L;
+    const client  = ($('p-client-name') && $('p-client-name').value)    || 'Client Name';
+    const addr    = ($('p-client-address') && $('p-client-address').value) || '';
+    const projAddr= ($('p-project-address') && $('p-project-address').value) || addr;
+    const desc    = ($('p-description') && $('p-description').value)    || (L.name+' Deck — '+(mode==='build'?'Full Build':'Board Replacement'));
+    const dateVal = $('p-date') && $('p-date').value;
+    const validVal= $('p-valid-until') && $('p-valid-until').value;
+    const dateStr = dateVal ? new Date(dateVal+'T00:00:00').toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}) : new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+    const validStr= validVal ? new Date(validVal+'T00:00:00').toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}) : '';
+    const notes   = ($('p-notes') && $('p-notes').value) || '';
+    const terms   = ($('p-terms-text') && $('p-terms-text').value) || '';
+    const railLabor = r.railingLabor || 0;
+    const railLaborRate = r.railingLaborRatePerLF || 0;
 
   // Build logo base64 src from existing img tag
   const logoSrc = document.querySelector('.logo-area img')?.src || '';
@@ -1476,7 +1479,7 @@ function renderProposal() {
   if (pOpts.labor) {
     const labRows = [
       ['Deck installation', `${Math.round(r.area).toLocaleString()} sqft × $${r.installRateSqft.toFixed(2)}/sqft`, fmtD(r.instL)],
-      ...(opts.railing && r.railingLabor > 0 ? [['Railing installation', `${r.rlf} LF × $${r.railingLaborRatePerLF.toFixed(2)}/LF`, fmtD(r.railingLabor)]] : []),
+      ...(opts.railing && railLabor > 0 ? [['Railing installation', `${r.rlf} LF × $${railLaborRate.toFixed(2)}/LF`, fmtD(railLabor)]] : []),
       ...(r.isBuild ? [['Framing labor', `${Math.round(r.area).toLocaleString()} sqft × $${r.framingRateSqft.toFixed(2)}/sqft`, fmtD(r.frameL)]] : []),
       ...(opts.stairs && r.stairLabor > 0 ? [['Stair construction', '', fmtD(r.stairLabor)]] : []),
     ];
@@ -1546,6 +1549,10 @@ function renderProposal() {
   }
 
   $('proposal-content').innerHTML = html;
+  } catch(e) {
+    console.error('Proposal render error:', e);
+    if ($('proposal-content')) $('proposal-content').innerHTML = '<div style="padding:20px;color:#C0392B;">Error rendering proposal: '+e.message+'</div>';
+  }
 }
 
 function printProposal() {
