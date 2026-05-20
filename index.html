@@ -370,7 +370,36 @@ label.form-label { font-size: 12px; color: var(--text-secondary); display: block
 @keyframes fadeUp { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
 .card, .metric, .compare-col { animation: fadeUp 0.4s ease both; }
 
-.bl-option {
+.board-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 8px;
+  align-items: center;
+  padding: 8px 10px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+.board-row-lf {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-align: right;
+  margin-top: 2px;
+}
+.remove-row-btn {
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
+.remove-row-btn:hover { background: #FEE; border-color: #C0392B; color: #C0392B; }
   display: flex; align-items: center; justify-content: space-between;
   padding: 8px 12px; border-radius: 6px;
   border: 1px solid var(--border); cursor: pointer;
@@ -386,7 +415,36 @@ label.form-label { font-size: 12px; color: var(--text-secondary); display: block
 .bl-stats { font-size: 11px; color: var(--text-muted); text-align: right; line-height: 1.5; }
 .bl-badge { font-size: 10px; font-weight: 600; padding: 1px 7px; border-radius: 10px; background: var(--orange); color: #fff; margin-left: 6px; vertical-align: middle; }
 
-/* RESPONSIVE */
+/* PROPOSAL STYLES */
+input[type=text], input[type=date], textarea {
+  width: 100%;
+  padding: 8px 12px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text-primary);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+input[type=text]:focus, input[type=date]:focus, textarea:focus { border-color: var(--orange); }
+.p-section { margin-bottom: 28px; }
+.p-section-title { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--navy,#2D3F52); border-bottom: 2px solid #E8751A; padding-bottom: 6px; margin-bottom: 14px; }
+.p-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.p-table th { text-align: left; padding: 8px 12px; background: #F2F4F7; color: #445A6F; font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; }
+.p-table td { padding: 8px 12px; border-bottom: 1px solid #E8EDF2; color: #1C2B3A; }
+.p-table tr:last-child td { border-bottom: none; }
+.p-table .td-right { text-align: right; font-family: 'DM Mono', monospace; }
+.p-total-row td { font-weight: 600; background: #FEF3EA; }
+.p-grand-row td { font-size: 15px; font-weight: 700; color: #E8751A; background: #FEF3EA; }
+@media print {
+  .app > *:not(#tab-proposal) { display: none !important; }
+  #tab-proposal > *:not(#proposal-preview) { display: none !important; }
+  #proposal-preview { border: none !important; box-shadow: none !important; }
+  body { background: white !important; }
+  body::before { display: none !important; }
+}
 @media (max-width: 800px) {
   .metrics-row { grid-template-columns: repeat(4, 1fr); }
   .grid-2, .grid-3 { grid-template-columns: 1fr; }
@@ -474,31 +532,23 @@ label.form-label { font-size: 12px; color: var(--text-secondary); display: block
 
       <!-- Board count mode -->
       <div id="boards-mode" style="display:none;">
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
-          <div>
-            <label class="form-label">Board count</label>
-            <input type="number" id="manual-boards" value="30" min="1" max="2000" oninput="calc()">
+        <div id="board-rows" style="display:flex;flex-direction:column;gap:6px;margin-bottom:8px;"></div>
+        <button onclick="addBoardRow()" style="width:100%;padding:7px;font-size:12px;font-weight:500;border:1px dashed var(--orange);border-radius:6px;background:var(--orange-pale);color:var(--orange);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.15s;">+ Add another length</button>
+        <div style="margin-top:10px;padding:10px 12px;background:var(--orange-pale);border-radius:6px;font-size:12px;display:flex;flex-direction:column;gap:5px;">
+          <div style="display:flex;justify-content:space-between;">
+            <span style="color:var(--text-muted);">Total boards</span>
+            <span style="font-family:'DM Mono',monospace;color:var(--navy);font-weight:500;" id="manual-boards-display">—</span>
           </div>
-          <div>
-            <label class="form-label">Board length</label>
-            <select id="manual-board-len" onchange="calc()">
-              <option value="12">12 ft</option>
-              <option value="16">16 ft</option>
-              <option value="20" selected>20 ft</option>
-            </select>
-          </div>
-        </div>
-        <div style="padding:8px 10px;background:var(--orange-pale);border-radius:6px;font-size:12px;display:flex;flex-direction:column;gap:4px;">
           <div style="display:flex;justify-content:space-between;">
             <span style="color:var(--text-muted);">Total LF</span>
-            <span style="font-family:'DM Mono',monospace;color:var(--orange);" id="manual-lf-display">600 LF</span>
+            <span style="font-family:'DM Mono',monospace;color:var(--orange);font-weight:500;" id="manual-lf-display">—</span>
           </div>
           <div style="display:flex;justify-content:space-between;">
-            <span style="color:var(--text-muted);">Est. area</span>
-            <span style="font-family:'DM Mono',monospace;color:var(--orange);" id="manual-area-display">275 sqft</span>
+            <span style="color:var(--text-muted);">Est. coverage area</span>
+            <span style="font-family:'DM Mono',monospace;color:var(--orange);font-weight:500;" id="manual-area-display">—</span>
           </div>
         </div>
-        <div style="font-size:10px;color:var(--text-muted);margin-top:6px;">Labor & fascia calculated from estimated area</div>
+        <div style="font-size:10px;color:var(--text-muted);margin-top:5px;">Labor & fascia calculated from estimated coverage area</div>
       </div>
     </div>
 
@@ -651,6 +701,7 @@ label.form-label { font-size: 12px; color: var(--text-secondary); display: block
   <div class="tab-row">
     <button class="tab-btn active" onclick="switchTab('single',this)">Single Line</button>
     <button class="tab-btn" onclick="switchTab('compare',this)">Compare Two Lines</button>
+    <button class="tab-btn" onclick="switchTab('proposal',this)">📄 Proposal</button>
   </div>
 
   <!-- SINGLE VIEW -->
@@ -752,6 +803,75 @@ label.form-label { font-size: 12px; color: var(--text-secondary); display: block
         <div style="margin-top:8px;font-size:11px;color:var(--text-muted);" id="cmp-badge-b"></div>
       </div>
     </div>
+  <!-- PROPOSAL TAB -->
+  <div id="tab-proposal" style="display:none;">
+
+    <!-- Client Info Bar -->
+    <div class="card gap-mb">
+      <div class="section-header" style="margin-top:0;">Client Information</div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;">
+        <div>
+          <label class="form-label">Client name</label>
+          <input type="text" id="p-client-name" placeholder="John Smith" oninput="renderProposal()">
+        </div>
+        <div>
+          <label class="form-label">Client address</label>
+          <input type="text" id="p-client-address" placeholder="123 Main St, Chicago IL" oninput="renderProposal()">
+        </div>
+        <div>
+          <label class="form-label">Project address</label>
+          <input type="text" id="p-project-address" placeholder="Same as above" oninput="renderProposal()">
+        </div>
+        <div>
+          <label class="form-label">Proposal date</label>
+          <input type="date" id="p-date" oninput="renderProposal()">
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px;">
+        <div>
+          <label class="form-label">Project description</label>
+          <input type="text" id="p-description" placeholder="Deck board replacement — AZEK Vintage, 14×16" oninput="renderProposal()">
+        </div>
+        <div>
+          <label class="form-label">Valid until</label>
+          <input type="date" id="p-valid-until" oninput="renderProposal()">
+        </div>
+      </div>
+    </div>
+
+    <!-- Proposal Sections Toggle -->
+    <div class="card gap-mb">
+      <div class="section-header" style="margin-top:0;">Include in Proposal</div>
+      <div style="display:flex;gap:16px;flex-wrap:wrap;">
+        <div class="toggle-row"><div class="toggle on" id="ptog-materials" onclick="ptoggle('materials')"><div class="toggle-knob"></div></div><span class="toggle-label">Materials breakdown</span></div>
+        <div class="toggle-row"><div class="toggle on" id="ptog-labor" onclick="ptoggle('labor')"><div class="toggle-knob"></div></div><span class="toggle-label">Labor breakdown</span></div>
+        <div class="toggle-row"><div class="toggle on" id="ptog-total" onclick="ptoggle('total')"><div class="toggle-knob"></div></div><span class="toggle-label">Cost summary</span></div>
+        <div class="toggle-row"><div class="toggle on" id="ptog-scope" onclick="ptoggle('scope')"><div class="toggle-knob"></div></div><span class="toggle-label">Scope of work</span></div>
+        <div class="toggle-row"><div class="toggle on" id="ptog-terms" onclick="ptoggle('terms')"><div class="toggle-knob"></div></div><span class="toggle-label">Terms & conditions</span></div>
+        <div class="toggle-row"><div class="toggle on" id="ptog-signature" onclick="ptoggle('signature')"><div class="toggle-knob"></div></div><span class="toggle-label">Signature line</span></div>
+        <div class="toggle-row"><div class="toggle" id="ptog-notes" onclick="ptoggle('notes')"><div class="toggle-knob"></div></div><span class="toggle-label">Custom notes</span></div>
+      </div>
+      <div id="p-notes-area" style="display:none;margin-top:10px;">
+        <label class="form-label">Custom notes</label>
+        <textarea id="p-notes" rows="3" style="width:100%;padding:8px 12px;background:var(--surface-2);border:1px solid var(--border);border-radius:6px;color:var(--text-primary);font-family:'DM Sans',sans-serif;font-size:13px;resize:vertical;" placeholder="Any additional notes, warranties, special conditions..." oninput="renderProposal()"></textarea>
+      </div>
+      <div style="margin-top:10px;">
+        <label class="form-label">Terms & Conditions (editable)</label>
+        <textarea id="p-terms-text" rows="4" style="width:100%;padding:8px 12px;background:var(--surface-2);border:1px solid var(--border);border-radius:6px;color:var(--text-primary);font-family:'DM Sans',sans-serif;font-size:12px;resize:vertical;" oninput="renderProposal()">50% deposit required to schedule work. Remaining balance due upon completion. All materials remain property of FB Construction until paid in full. FB Construction is not responsible for damage to underground utilities, irrigation, or landscaping unless marked prior to work. Proposal valid for 30 days from date of issue. Prices subject to change due to material availability and tariffs.</textarea>
+      </div>
+    </div>
+
+    <!-- Proposal Preview + Actions -->
+    <div style="display:flex;gap:10px;margin-bottom:1rem;align-items:center;">
+      <button onclick="printProposal()" style="padding:10px 20px;background:var(--navy);color:#fff;border:none;border-radius:7px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:opacity 0.15s;" onmouseover="this.style.opacity=0.85" onmouseout="this.style.opacity=1">🖨 Print / Save PDF</button>
+      <button onclick="renderProposal()" style="padding:10px 20px;background:var(--surface);color:var(--navy);border:1px solid var(--border);border-radius:7px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;">↻ Refresh from estimator</button>
+      <span style="font-size:11px;color:var(--text-muted);margin-left:4px;">Tip: use browser Print → Save as PDF for a PDF file</span>
+    </div>
+
+    <!-- Proposal Preview -->
+    <div id="proposal-preview" style="background:#fff;border:1px solid var(--border);border-radius:10px;padding:0;overflow:hidden;box-shadow:0 4px 20px rgba(45,63,82,0.1);">
+      <div id="proposal-content" style="padding:48px 56px;font-family:'DM Sans',sans-serif;color:#1C2B3A;max-width:900px;margin:0 auto;"></div>
+    </div>
   </div>
 
 </div>
@@ -800,13 +920,67 @@ let inputMode = 'dimensions'; // 'dimensions' or 'boards'
 const fmt = n => '$'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
 const $ = id => document.getElementById(id);
 
+let boardRowId = 0;
+
+function addBoardRow(qty=20, len=20) {
+  const id = ++boardRowId;
+  const container = $('board-rows');
+  const div = document.createElement('div');
+  div.className = 'board-row';
+  div.id = 'brow-'+id;
+  div.innerHTML = `
+    <div>
+      <div style="font-size:10px;color:var(--text-muted);margin-bottom:3px;">Qty</div>
+      <input type="number" id="brow-qty-${id}" value="${qty}" min="1" max="2000" style="width:100%;" oninput="calc()">
+    </div>
+    <div>
+      <div style="font-size:10px;color:var(--text-muted);margin-bottom:3px;">Length</div>
+      <select id="brow-len-${id}" onchange="calc()" style="width:100%;">
+        <option value="12">12 ft</option>
+        <option value="16">16 ft</option>
+        <option value="20" ${len===20?'selected':''}>20 ft</option>
+      </select>
+    </div>
+    <button class="remove-row-btn" onclick="removeBoardRow(${id})" title="Remove">×</button>`;
+  container.appendChild(div);
+  calc();
+}
+
+function removeBoardRow(id) {
+  const el = $('brow-'+id);
+  if (el) el.remove();
+  // Always keep at least one row
+  if ($('board-rows').children.length === 0) addBoardRow();
+  else calc();
+}
+
+function getBoardRows() {
+  const rows = [];
+  $('board-rows').querySelectorAll('.board-row').forEach(row => {
+    const id = row.id.replace('brow-','');
+    const qty = parseInt($('brow-qty-'+id).value)||0;
+    const len = parseInt($('brow-len-'+id).value)||20;
+    if (qty > 0) rows.push({qty, len, lf: qty * len});
+  });
+  return rows;
+}
+
+function getBoardRowTotals() {
+  const rows = getBoardRows();
+  const totalBoards = rows.reduce((s,r)=>s+r.qty, 0);
+  const totalLF     = rows.reduce((s,r)=>s+r.lf,  0);
+  const estArea     = Math.round(totalLF * BOARD_WIDTH_FT);
+  return { rows, totalBoards, totalLF, estArea };
+}
+
 function setInputMode(m) {
   inputMode = m;
   $('dim-mode-btn').className    = 'rail-btn'+(m==='dimensions'?' active':'');
   $('boards-mode-btn').className = 'rail-btn'+(m==='boards'?' active':'');
   $('dimensions-mode').style.display = m==='dimensions' ? '' : 'none';
   $('boards-mode').style.display     = m==='boards'     ? '' : 'none';
-  calc();
+  if (m==='boards' && $('board-rows').children.length === 0) addBoardRow(20, 20);
+  else calc();
 }
 
 function syncDim(dim, val) {
@@ -931,15 +1105,14 @@ function calcCosts(lid) {
   let dl, dw, area, adjLF, boards, bl, actLF;
 
   if (inputMode === 'boards') {
-    // Board count mode — user specifies exact boards and length
-    boards  = parseInt($('manual-boards').value)||1;
-    bl      = parseInt($('manual-board-len').value)||20;
-    actLF   = boards * bl;
-    adjLF   = actLF;
-    // Back-calculate estimated area from LF (no waste factor applied — user gave exact count)
-    area    = actLF * BOARD_WIDTH_FT;
-    dl      = Math.round(Math.sqrt(area));  // approximate for fascia/labor
-    dw      = Math.round(area / dl);
+    const totals = getBoardRowTotals();
+    actLF  = totals.totalLF;
+    boards = totals.totalBoards;
+    adjLF  = actLF;
+    area   = totals.estArea;
+    bl     = 0; // mixed lengths
+    dl     = Math.round(Math.sqrt(area));
+    dw     = dl > 0 ? Math.round(area / dl) : 1;
   } else {
     // Dimensions mode
     dl   = getDim('len');
@@ -1037,21 +1210,16 @@ function calc() {
     $('auto-fascia-detail').textContent = 'Perimeter: '+(2*dl+2*dw)+' ft → '+fasciaInfo.count+' pcs × 12 ft';
   } else {
     // Board count mode
-    const bc  = parseInt($('manual-boards').value)||1;
-    const blen = parseInt($('manual-board-len').value)||20;
-    const totalLF = bc * blen;
-    const estArea = Math.round(totalLF * BOARD_WIDTH_FT);
-    const estSide = Math.round(Math.sqrt(estArea));
-    $('manual-lf-display').textContent   = totalLF.toLocaleString()+' LF';
-    $('manual-area-display').textContent = estArea.toLocaleString()+' sqft';
+    const totals = getBoardRowTotals();
+    $('manual-boards-display').textContent = totals.totalBoards+' boards';
+    $('manual-lf-display').textContent     = totals.totalLF.toLocaleString()+' LF';
+    $('manual-area-display').textContent   = totals.estArea.toLocaleString()+' sqft';
 
-    // Auto fascia from estimated dimensions
-    const fasciaInfo = autoFasciaCount(estSide, Math.round(estArea/estSide));
+    const estSide = Math.max(1, Math.round(Math.sqrt(totals.estArea)));
+    const fasciaInfo = autoFasciaCount(estSide, Math.max(1, Math.round(totals.estArea/estSide)));
     $('auto-fascia-count').textContent  = fasciaInfo.count;
     $('auto-fascia-detail').textContent = 'Est. perimeter: ~'+(4*estSide)+' ft → '+fasciaInfo.count+' pcs × 12 ft';
-
-    // Hide board length UI in board count mode
-    $('board-len-options').innerHTML = '<div style="font-size:12px;color:var(--text-muted);padding:8px 0;">Board length set by selection above</div>';
+    $('board-len-options').innerHTML = '<div style="font-size:12px;color:var(--text-muted);padding:6px 0;">Board lengths set by entries above</div>';
   }
 
   // Stair display
@@ -1191,12 +1359,215 @@ function switchTab(t, btn) {
   tab=t;
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
-  $('tab-single').style.display=t==='single'?'':'none';
-  $('tab-compare').style.display=t==='compare'?'':'none';
-  calc();
+  $('tab-single').style.display   = t==='single'   ? '' : 'none';
+  $('tab-compare').style.display  = t==='compare'  ? '' : 'none';
+  $('tab-proposal').style.display = t==='proposal' ? '' : 'none';
+  if (t==='proposal') renderProposal();
+  else calc();
 }
 
-buildPills('line-pills-a',selA,'active-a',id=>{selA=id;setPills('line-pills-a',id,'active-a');calc();});
+// ── PROPOSAL ──────────────────────────────────────────────────────────
+const pOpts = { materials:true, labor:true, total:true, scope:true, terms:true, signature:true, notes:false };
+
+function ptoggle(k) {
+  pOpts[k] = !pOpts[k];
+  $('ptog-'+k).classList.toggle('on', pOpts[k]);
+  if (k==='notes') $('p-notes-area').style.display = pOpts[k] ? '' : 'none';
+  renderProposal();
+}
+
+function getProposalData() {
+  const r = calcCosts(selA);
+  return r;
+}
+
+function fmtD(n) { return n==null||isNaN(n) ? '—' : '$'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+
+function renderProposal() {
+  const r = getProposalData();
+  const L = r.L;
+  const client  = $('p-client-name').value    || 'Client Name';
+  const addr    = $('p-client-address').value || '';
+  const projAddr= $('p-project-address').value|| addr;
+  const desc    = $('p-description').value    || (L.name+' Deck — '+(mode==='build'?'Full Build':'Board Replacement'));
+  const dateVal = $('p-date').value;
+  const validVal= $('p-valid-until').value;
+  const dateStr = dateVal ? new Date(dateVal+'T00:00:00').toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}) : new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+  const validStr= validVal ? new Date(validVal+'T00:00:00').toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}) : '';
+  const notes   = $('p-notes').value;
+  const terms   = $('p-terms-text').value;
+
+  // Build logo base64 src from existing img tag
+  const logoSrc = document.querySelector('.logo-area img')?.src || '';
+
+  let html = `
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:36px;padding-bottom:24px;border-bottom:3px solid #E8751A;">
+    <div>
+      ${logoSrc ? `<img src="${logoSrc}" style="height:52px;margin-bottom:8px;display:block;">` : '<div style="font-size:28px;font-weight:700;color:#2D3F52;">FB Construction</div>'}
+      <div style="font-size:12px;color:#7A92A8;margin-top:4px;">fbconstruction.com</div>
+    </div>
+    <div style="text-align:right;">
+      <div style="font-size:22px;font-weight:700;color:#2D3F52;letter-spacing:0.02em;">PROPOSAL</div>
+      <div style="font-size:12px;color:#7A92A8;margin-top:4px;">Date: ${dateStr}</div>
+      ${validStr ? `<div style="font-size:12px;color:#7A92A8;">Valid until: ${validStr}</div>` : ''}
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-bottom:32px;">
+    <div>
+      <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:#7A92A8;margin-bottom:6px;">Prepared for</div>
+      <div style="font-size:15px;font-weight:600;color:#1C2B3A;">${client}</div>
+      ${addr ? `<div style="font-size:13px;color:#445A6F;margin-top:2px;">${addr}</div>` : ''}
+      ${projAddr && projAddr !== addr ? `<div style="font-size:12px;color:#7A92A8;margin-top:2px;">Project: ${projAddr}</div>` : ''}
+    </div>
+    <div>
+      <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:#7A92A8;margin-bottom:6px;">Project description</div>
+      <div style="font-size:14px;font-weight:500;color:#1C2B3A;">${desc}</div>
+      <div style="font-size:12px;color:#7A92A8;margin-top:4px;">${Math.round(r.area).toLocaleString()} sqft · ${L.badge} · ${mode==='build'?'Full Build':'Board Replacement'}</div>
+    </div>
+  </div>`;
+
+  // SCOPE
+  if (pOpts.scope) {
+    const scopeItems = [
+      ...(r.isBuild ? ['Pressure-treated framing at 12" OC (joists, beams, posts, hardware)','Framing installation labor'] : ['Board replacement — existing framing to remain']),
+      `${L.name} decking boards — ${r.bl > 0 ? r.bl+' ft stock' : 'multiple lengths'} — ${r.boards} boards / ${Math.round(r.actLF).toLocaleString()} LF`,
+      ...(opts.fascia   ? [`Fascia boards — ${r.fc} pieces × 12 ft`] : []),
+      ...(opts.railing  ? [`${railType.charAt(0).toUpperCase()+railType.slice(1)} railing — ${r.rlf} LF`] : []),
+      ...(opts.stairs   ? [`Stairs — ${r.stairCount} section(s), ${r.risersPerStair} risers each, ${r.stairWidth} ft wide`] : []),
+      ...(opts.fastener ? ['Hidden fastener system'] : []),
+      'Cleanup and haul away of all job debris',
+    ];
+    html += `<div class="p-section">
+      <div class="p-section-title">Scope of Work</div>
+      <ul style="margin:0;padding-left:18px;display:flex;flex-direction:column;gap:5px;">
+        ${scopeItems.map(i=>`<li style="font-size:13px;color:#1C2B3A;">${i}</li>`).join('')}
+      </ul>
+    </div>`;
+  }
+
+  // MATERIALS
+  if (pOpts.materials) {
+    const matRows = [
+      ['Decking boards', `${Math.round(r.actLF).toLocaleString()} LF × $${L.lf.toFixed(2)}/LF`, fmtD(r.deck)],
+      ...(opts.fascia   ? [['Fascia', `${r.fc} pcs × $${L.fa.toFixed(2)}/pc`, fmtD(r.fascia)]] : []),
+      ...(opts.railing  ? [[`Railing (${railType})`, `${r.rlf} LF × $${RAIL_RATES[railType]}/LF`, fmtD(r.rail)]] : []),
+      ...(opts.stairs   ? [
+        ['Stair treads', `${r.stairTreadLF.toFixed(1)} LF × $${L.lf.toFixed(2)}/LF`, fmtD(r.stairTreadCost)],
+        ['Stair risers', `${r.totalRisers} pcs × $${L.ri.toFixed(2)}/pc`, fmtD(r.stairRiserCost)],
+      ] : []),
+      ...(opts.fastener ? [['Fasteners', r.fastQ, fmtD(r.fast)]] : []),
+      ...(r.isBuild     ? [['Framing bundle', `${Math.round(r.area).toLocaleString()} sqft × $${FRAME_MAT}/sqft`, fmtD(r.frame)]] : []),
+    ];
+    html += `<div class="p-section">
+      <div class="p-section-title">Materials</div>
+      <table class="p-table">
+        <thead><tr><th>Item</th><th>Detail</th><th style="text-align:right;">Amount</th></tr></thead>
+        <tbody>
+          ${matRows.map(([item,det,amt])=>`<tr><td>${item}</td><td style="color:#7A92A8;font-size:12px;">${det}</td><td class="td-right">${amt}</td></tr>`).join('')}
+          <tr class="p-total-row"><td colspan="2"><strong>Materials Subtotal</strong></td><td class="td-right">${fmtD(r.matSub)}</td></tr>
+          <tr><td colspan="2" style="color:#7A92A8;">Sales Tax (10% on materials)</td><td class="td-right" style="color:#7A92A8;">${fmtD(r.tax)}</td></tr>
+        </tbody>
+      </table>
+    </div>`;
+  }
+
+  // LABOR
+  if (pOpts.labor) {
+    const labRows = [
+      ['Deck installation', `${Math.round(r.area).toLocaleString()} sqft × $${r.installRateSqft.toFixed(2)}/sqft`, fmtD(r.instL)],
+      ...(opts.railing && r.railingLabor > 0 ? [['Railing installation', `${r.rlf} LF × $${r.railingLaborRatePerLF.toFixed(2)}/LF`, fmtD(r.railingLabor)]] : []),
+      ...(r.isBuild ? [['Framing labor', `${Math.round(r.area).toLocaleString()} sqft × $${r.framingRateSqft.toFixed(2)}/sqft`, fmtD(r.frameL)]] : []),
+      ...(opts.stairs && r.stairLabor > 0 ? [['Stair construction', '', fmtD(r.stairLabor)]] : []),
+    ];
+    html += `<div class="p-section">
+      <div class="p-section-title">Labor</div>
+      <table class="p-table">
+        <thead><tr><th>Description</th><th>Detail</th><th style="text-align:right;">Amount</th></tr></thead>
+        <tbody>
+          ${labRows.map(([item,det,amt])=>`<tr><td>${item}</td><td style="color:#7A92A8;font-size:12px;">${det}</td><td class="td-right">${amt}</td></tr>`).join('')}
+          <tr class="p-total-row"><td colspan="2"><strong>Labor Subtotal</strong></td><td class="td-right">${fmtD(r.labSub)}</td></tr>
+        </tbody>
+      </table>
+    </div>`;
+  }
+
+  // COST SUMMARY
+  if (pOpts.total) {
+    html += `<div class="p-section">
+      <div class="p-section-title">Cost Summary</div>
+      <table class="p-table">
+        <tbody>
+          <tr><td>Materials</td><td class="td-right">${fmtD(r.matSub)}</td></tr>
+          <tr><td>Sales Tax (10%)</td><td class="td-right">${fmtD(r.tax)}</td></tr>
+          <tr><td>Labor</td><td class="td-right">${fmtD(r.labSub)}</td></tr>
+          <tr><td>Profit / Overhead (${r.marginPct}%)</td><td class="td-right">${fmtD(r.profit)}</td></tr>
+          <tr class="p-grand-row"><td><strong>TOTAL</strong></td><td class="td-right"><strong>${fmtD(r.grand)}</strong></td></tr>
+        </tbody>
+      </table>
+    </div>`;
+  }
+
+  // CUSTOM NOTES
+  if (pOpts.notes && notes) {
+    html += `<div class="p-section">
+      <div class="p-section-title">Notes</div>
+      <p style="font-size:13px;color:#1C2B3A;line-height:1.7;">${notes.replace(/\n/g,'<br>')}</p>
+    </div>`;
+  }
+
+  // TERMS
+  if (pOpts.terms) {
+    html += `<div class="p-section">
+      <div class="p-section-title">Terms & Conditions</div>
+      <p style="font-size:12px;color:#7A92A8;line-height:1.7;">${terms.replace(/\n/g,'<br>')}</p>
+    </div>`;
+  }
+
+  // SIGNATURE
+  if (pOpts.signature) {
+    html += `<div class="p-section" style="margin-top:40px;">
+      <div class="p-section-title">Authorization</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:48px;margin-top:16px;">
+        <div>
+          <div style="border-top:1px solid #C8D0D8;padding-top:8px;margin-top:40px;">
+            <div style="font-size:12px;color:#7A92A8;">Client Signature</div>
+            <div style="font-size:12px;color:#7A92A8;margin-top:4px;">Date: _______________</div>
+          </div>
+        </div>
+        <div>
+          <div style="border-top:1px solid #C8D0D8;padding-top:8px;margin-top:40px;">
+            <div style="font-size:12px;color:#7A92A8;">FB Construction Authorized Signature</div>
+            <div style="font-size:12px;color:#7A92A8;margin-top:4px;">Date: _______________</div>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  $('proposal-content').innerHTML = html;
+}
+
+function printProposal() {
+  // Show proposal tab, then trigger print
+  const allTabs = ['tab-single','tab-compare','tab-proposal'];
+  const prevState = {};
+  allTabs.forEach(id => {
+    prevState[id] = $(id).style.display;
+    $(id).style.display = id==='tab-proposal' ? '' : 'none';
+  });
+  window.print();
+  // Restore
+  allTabs.forEach(id => { $(id).style.display = prevState[id]; });
+}
+
+// Set today's date as default
+document.addEventListener('DOMContentLoaded', () => {
+  const today = new Date().toISOString().split('T')[0];
+  if ($('p-date')) $('p-date').value = today;
+  const valid = new Date(); valid.setDate(valid.getDate()+30);
+  if ($('p-valid-until')) $('p-valid-until').value = valid.toISOString().split('T')[0];
+});
 buildPills('line-pills-cmp-a',selCA,'active-a',id=>{selCA=id;setPills('line-pills-cmp-a',id,'active-a');calc();});
 buildPills('line-pills-cmp-b',selCB,'active-b',id=>{selCB=id;setPills('line-pills-cmp-b',id,'active-b');calc();});
 
