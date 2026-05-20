@@ -438,30 +438,67 @@ label.form-label { font-size: 12px; color: var(--text-secondary); display: block
 
     <!-- Dimensions -->
     <div class="card">
-      <div style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:12px;">Dimensions</div>
-      <div class="slider-group">
-        <div class="slider-label-row">
-          <span class="slider-label">Length</span>
-          <div style="display:flex;align-items:center;gap:6px;">
-            <input type="number" id="len-input" min="1" max="300" value="14" style="width:70px;text-align:right;font-family:'DM Mono',monospace;font-size:14px;font-weight:500;color:var(--orange);padding:4px 8px;" oninput="syncDim('len',this.value)">
-            <span style="font-size:13px;color:var(--text-muted);">ft</span>
+      <!-- Input mode toggle -->
+      <div style="display:flex;gap:0;border:1px solid var(--border);border-radius:6px;overflow:hidden;margin-bottom:14px;">
+        <button class="rail-btn active" id="dim-mode-btn" onclick="setInputMode('dimensions')" style="font-size:12px;">By Dimensions</button>
+        <button class="rail-btn" id="boards-mode-btn" onclick="setInputMode('boards')" style="font-size:12px;">By Board Count</button>
+      </div>
+
+      <!-- Dimensions mode -->
+      <div id="dimensions-mode">
+        <div class="slider-group">
+          <div class="slider-label-row">
+            <span class="slider-label">Length</span>
+            <div style="display:flex;align-items:center;gap:6px;">
+              <input type="number" id="len-input" min="1" max="300" value="14" style="width:70px;text-align:right;font-family:'DM Mono',monospace;font-size:14px;font-weight:500;color:var(--orange);padding:4px 8px;" oninput="syncDim('len',this.value)">
+              <span style="font-size:13px;color:var(--text-muted);">ft</span>
+            </div>
+          </div>
+          <input type="range" id="len-slider" min="1" max="300" value="14" oninput="syncDim('len',this.value)">
+        </div>
+        <div class="slider-group">
+          <div class="slider-label-row">
+            <span class="slider-label">Width</span>
+            <div style="display:flex;align-items:center;gap:6px;">
+              <input type="number" id="wid-input" min="1" max="100" value="16" style="width:70px;text-align:right;font-family:'DM Mono',monospace;font-size:14px;font-weight:500;color:var(--orange);padding:4px 8px;" oninput="syncDim('wid',this.value)">
+              <span style="font-size:13px;color:var(--text-muted);">ft</span>
+            </div>
+          </div>
+          <input type="range" id="wid-slider" min="1" max="100" value="16" oninput="syncDim('wid',this.value)">
+        </div>
+        <div style="margin-top:10px;padding:8px 10px;background:var(--orange-pale);border-radius:6px;display:flex;justify-content:space-between;font-size:12px;">
+          <span style="color:var(--text-muted);">Area</span>
+          <span style="font-family:'DM Mono',monospace;color:var(--orange);" id="area-display">224 sqft</span>
+        </div>
+      </div>
+
+      <!-- Board count mode -->
+      <div id="boards-mode" style="display:none;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+          <div>
+            <label class="form-label">Board count</label>
+            <input type="number" id="manual-boards" value="30" min="1" max="2000" oninput="calc()">
+          </div>
+          <div>
+            <label class="form-label">Board length</label>
+            <select id="manual-board-len" onchange="calc()">
+              <option value="12">12 ft</option>
+              <option value="16">16 ft</option>
+              <option value="20" selected>20 ft</option>
+            </select>
           </div>
         </div>
-        <input type="range" id="len-slider" min="1" max="300" value="14" oninput="syncDim('len',this.value)">
-      </div>
-      <div class="slider-group">
-        <div class="slider-label-row">
-          <span class="slider-label">Width</span>
-          <div style="display:flex;align-items:center;gap:6px;">
-            <input type="number" id="wid-input" min="1" max="100" value="16" style="width:70px;text-align:right;font-family:'DM Mono',monospace;font-size:14px;font-weight:500;color:var(--orange);padding:4px 8px;" oninput="syncDim('wid',this.value)">
-            <span style="font-size:13px;color:var(--text-muted);">ft</span>
+        <div style="padding:8px 10px;background:var(--orange-pale);border-radius:6px;font-size:12px;display:flex;flex-direction:column;gap:4px;">
+          <div style="display:flex;justify-content:space-between;">
+            <span style="color:var(--text-muted);">Total LF</span>
+            <span style="font-family:'DM Mono',monospace;color:var(--orange);" id="manual-lf-display">600 LF</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;">
+            <span style="color:var(--text-muted);">Est. area</span>
+            <span style="font-family:'DM Mono',monospace;color:var(--orange);" id="manual-area-display">275 sqft</span>
           </div>
         </div>
-        <input type="range" id="wid-slider" min="1" max="100" value="16" oninput="syncDim('wid',this.value)">
-      </div>
-      <div style="margin-top:10px; padding:8px 10px; background:var(--orange-pale); border-radius:6px; display:flex; justify-content:space-between; font-size:12px;">
-        <span style="color:var(--text-muted);">Area</span>
-        <span style="font-family:'DM Mono',monospace; color:var(--orange);" id="area-display">224 sqft</span>
+        <div style="font-size:10px;color:var(--text-muted);margin-top:6px;">Labor & fascia calculated from estimated area</div>
       </div>
     </div>
 
@@ -502,7 +539,59 @@ label.form-label { font-size: 12px; color: var(--text-secondary); display: block
     </div>
   </div>
 
-  <!-- RAILING -->
+  <!-- LABOR & PROFIT -->
+  <div class="card gap-mb">
+    <div style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:14px;">Labor & Profit Settings</div>
+    <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:12px;align-items:end;">
+      <div>
+        <label class="form-label">Crew size</label>
+        <input type="number" id="l-crew" value="2" min="1" max="10" oninput="calc()">
+        <div style="font-size:10px;color:var(--text-muted);margin-top:3px;">workers</div>
+      </div>
+      <div>
+        <label class="form-label">Hourly rate</label>
+        <div style="display:flex;align-items:center;gap:4px;">
+          <span style="font-size:13px;color:var(--text-muted);">$</span>
+          <input type="number" id="l-rate" value="35" min="1" max="200" oninput="calc()">
+        </div>
+        <div style="font-size:10px;color:var(--text-muted);margin-top:3px;">per person/hr</div>
+      </div>
+      <div>
+        <label class="form-label">Install hrs/100sqft</label>
+        <input type="number" id="l-install-hrs" value="8" min="1" max="40" step="0.5" oninput="calc()">
+        <div style="font-size:10px;color:var(--text-muted);margin-top:3px;">board replacement</div>
+      </div>
+      <div>
+        <label class="form-label">Framing hrs/100sqft</label>
+        <input type="number" id="l-framing-hrs" value="6" min="1" max="40" step="0.5" oninput="calc()">
+        <div style="font-size:10px;color:var(--text-muted);margin-top:3px;">full build only</div>
+      </div>
+      <div>
+        <label class="form-label">Railing hrs/LF</label>
+        <input type="number" id="l-railing-hrs" value="0.5" min="0.1" max="4" step="0.1" oninput="calc()">
+        <div style="font-size:10px;color:var(--text-muted);margin-top:3px;">per linear foot</div>
+      </div>
+      <div>
+        <label class="form-label">Stair labor mult.</label>
+        <input type="number" id="l-stair-mult" value="2.0" min="1" max="5" step="0.5" oninput="calc()">
+        <div style="font-size:10px;color:var(--text-muted);margin-top:3px;">× install rate</div>
+      </div>
+      <div>
+        <label class="form-label">Profit margin</label>
+        <div style="display:flex;align-items:center;gap:4px;">
+          <input type="number" id="profit-margin" value="20" min="0" max="100" oninput="calc()">
+          <span style="font-size:13px;color:var(--text-muted);">%</span>
+        </div>
+        <div style="font-size:10px;color:var(--text-muted);margin-top:3px;">on all costs</div>
+      </div>
+    </div>
+    <div style="margin-top:12px;padding:10px 14px;background:var(--navy-pale);border-radius:6px;display:flex;gap:24px;flex-wrap:wrap;">
+      <div style="font-size:12px;color:var(--text-muted);">Deck install rate: <strong style="color:var(--navy);font-family:'DM Mono',monospace;" id="eff-install-rate">—</strong>/sqft</div>
+      <div style="font-size:12px;color:var(--text-muted);">Railing labor rate: <strong style="color:var(--navy);font-family:'DM Mono',monospace;" id="eff-railing-rate">—</strong>/LF</div>
+      <div style="font-size:12px;color:var(--text-muted);">Framing rate: <strong style="color:var(--navy);font-family:'DM Mono',monospace;" id="eff-framing-rate">—</strong>/sqft</div>
+      <div style="font-size:12px;color:var(--text-muted);">Total crew cost/hr: <strong style="color:var(--navy);font-family:'DM Mono',monospace;" id="eff-crew-cost">—</strong></div>
+    </div>
+  </div>
   <div class="card gap-mb">
     <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
       <div class="toggle-row" style="margin-bottom:0;"><div class="toggle" id="tog-railing" onclick="toggleOpt('railing')"><div class="toggle-knob"></div></div><span class="toggle-label" style="font-weight:500; font-size:14px;">Railing</span></div>
@@ -596,13 +685,18 @@ label.form-label { font-size: 12px; color: var(--text-secondary); display: block
         <div class="brow subtotal"><span>Material subtotal</span><span class="brow-val" id="b-mat-sub">—</span></div>
 
         <div class="breakdown-section-label">Labor</div>
-        <div class="brow"><span>Install (<span id="b-inst-sf">—</span> sqft × $13.00)</span><span class="brow-val" id="b-inst-labor">—</span></div>
-        <div class="brow" id="row-fram-labor"><span>Framing (<span id="b-fram-lab-sf">—</span> sqft × $8.00)</span><span class="brow-val" id="b-fram-labor">—</span></div>
+        <div class="brow"><span>Deck install (<span id="b-inst-sf">—</span> sqft × $<span id="b-inst-rate">—</span>/sqft)</span><span class="brow-val" id="b-inst-labor">—</span></div>
+        <div class="brow" id="row-railing-labor" style="display:none;"><span>Railing install (<span id="b-rail-labor-lf">—</span> LF × $<span id="b-rail-labor-rate">—</span>/LF)</span><span class="brow-val" id="b-rail-labor">—</span></div>
+        <div class="brow" id="row-fram-labor"><span>Framing (<span id="b-fram-lab-sf">—</span> sqft × $<span id="b-fram-rate">—</span>/sqft)</span><span class="brow-val" id="b-fram-labor">—</span></div>
+        <div class="brow" id="row-stair-labor" style="display:none;"><span>Stair labor</span><span class="brow-val" id="b-stair-labor">—</span></div>
         <div class="brow subtotal"><span>Labor subtotal</span><span class="brow-val" id="b-labor-sub">—</span></div>
 
-        <div class="breakdown-section-label">Totals</div>
-        <div class="brow subtotal"><span>Pre-tax total</span><span class="brow-val" id="b-pretax">—</span></div>
-        <div class="brow subtotal"><span>Tax (10%)</span><span class="brow-val" id="b-tax">—</span></div>
+        <div class="breakdown-section-label">Profit & Tax</div>
+        <div class="brow"><span>Materials subtotal</span><span class="brow-val" id="b-pretax-before">—</span></div>
+        <div class="brow"><span>Tax (10% on materials)</span><span class="brow-val" id="b-tax">—</span></div>
+        <div class="brow subtotal"><span>Materials + tax</span><span class="brow-val" id="b-mat-tax-sub">—</span></div>
+        <div class="brow"><span>Labor subtotal</span><span class="brow-val" id="b-labor-sub2">—</span></div>
+        <div class="brow"><span>Profit (<span id="b-margin-pct">—</span>% on all costs)</span><span class="brow-val" id="b-profit">—</span></div>
         <div class="grand-box replace" id="b-grand-box">
           <span class="grand-label">Grand Total</span>
           <span class="grand-value" id="b-grand">—</span>
@@ -665,11 +759,21 @@ label.form-label { font-size: 12px; color: var(--text-secondary); display: block
 <script>
 const BOARD_WIDTH_FT = 5.5 / 12;
 const TAX = 0.10;
-const LABOR_INSTALL = 13;
-const LABOR_FRAME = 8;
 const FRAME_MAT = 7.50;
 const RAIL_RATES = { composite:55, aluminum:50 };
 const BOARD_LENGTHS = [12, 16, 20];
+
+// Labor defaults: 2 guys × $35/hr × 8hrs/100sqft = $5.60/sqft install
+// Framing: 2 guys × $35/hr × 6hrs/100sqft = $4.20/sqft
+const LABOR_DEFAULTS = {
+  crew: 2,
+  rate: 35,
+  installHrs: 8,   // hrs per 100 sqft, board replacement
+  framingHrs: 6,   // hrs per 100 sqft, full build framing
+  stairMult: 2.0,  // stair labor multiplier vs install rate
+};
+// Computed: $/sqft = crew × rate × hrs / 100
+function laborPerSqft(crew, rate, hrs) { return crew * rate * hrs / 100; }
 
 const LINES = [
   { id:'azek_vintage',    name:'AZEK Vintage',  sn:'Vintage',   t:'pvc',   lf:6.75, fa:157.85, ri:111.61, badge:'Advanced PVC',       desc:'Lifetime · 50yr fade/stain · Cooler · Class A', specs:['Capped Advanced PVC','Lifetime decking warranty','50yr fade & stain warranty','Stays cooler on hot days','Class A flame spread'] },
@@ -691,6 +795,16 @@ const FRATES = {
 const opts = {fascia:true, fastener:false, railing:false, stairs:false};
 let mode='replace', railType='composite', selA='azek_vintage', selCA='azek_vintage', selCB='tt_reserve', tab='single';
 let selectedBoardLen = null; // null = auto (use best)
+let inputMode = 'dimensions'; // 'dimensions' or 'boards'
+
+function setInputMode(m) {
+  inputMode = m;
+  $('dim-mode-btn').className    = 'rail-btn'+(m==='dimensions'?' active':'');
+  $('boards-mode-btn').className = 'rail-btn'+(m==='boards'?' active':'');
+  $('dimensions-mode').style.display = m==='dimensions' ? '' : 'none';
+  $('boards-mode').style.display     = m==='boards'     ? '' : 'none';
+  calc();
+}
 
 const fmt = n => '$'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
 const $ = id => document.getElementById(id);
@@ -809,20 +923,36 @@ function setPills(cid, aid, ac) {
 
 function calcCosts(lid) {
   const L = LINES.find(x=>x.id===lid);
-  const dl = getDim('len');
-  const dw = getDim('wid');
   const wf = parseFloat($('waste').value);
   const rlf = parseInt($('railing-lf').value)||0;
   const F = FRATES[$('fastener-type').value];
   const isBuild = mode==='build';
 
-  // Board length: use manual selection or auto-best
-  const allOptions = calcAllBoardLengths(dl, dw, wf);
-  const bestInfo = bestBoardLength(dl, dw, wf);
-  const bl = selectedBoardLen !== null ? selectedBoardLen : bestInfo.bl;
-  const chosenOption = allOptions.find(o => o.bl === bl);
-  const boards = chosenOption.boards;
-  const actLF = chosenOption.actLF;
+  let dl, dw, area, adjLF, boards, bl, actLF;
+
+  if (inputMode === 'boards') {
+    // Board count mode — user specifies exact boards and length
+    boards  = parseInt($('manual-boards').value)||1;
+    bl      = parseInt($('manual-board-len').value)||20;
+    actLF   = boards * bl;
+    adjLF   = actLF;
+    // Back-calculate estimated area from LF (no waste factor applied — user gave exact count)
+    area    = actLF * BOARD_WIDTH_FT;
+    dl      = Math.round(Math.sqrt(area));  // approximate for fascia/labor
+    dw      = Math.round(area / dl);
+  } else {
+    // Dimensions mode
+    dl   = getDim('len');
+    dw   = getDim('wid');
+    area = dl * dw;
+    const allOptions = calcAllBoardLengths(dl, dw, wf);
+    const bestInfo   = bestBoardLength(dl, dw, wf);
+    bl      = selectedBoardLen !== null ? selectedBoardLen : bestInfo.bl;
+    const chosen = allOptions.find(o => o.bl === bl);
+    boards  = chosen.boards;
+    actLF   = chosen.actLF;
+    adjLF   = (area / BOARD_WIDTH_FT) * wf;
+  }
 
   const area = dl * dw;
   const adjLF = (area / BOARD_WIDTH_FT) * wf;
@@ -856,52 +986,87 @@ function calcCosts(lid) {
   const rail = opts.railing ? rlf * RAIL_RATES[railType] : 0;
   const matSub = deck + fascia + stairTreadCost + stairRiserCost + fast + frame + rail;
 
-  const instL = area * LABOR_INSTALL;
-  const stairLabor = opts.stairs ? stairCount * risersPerStair * stairWidth * LABOR_INSTALL * 1.5 : 0; // stairs at 1.5× rate
-  const frameL = isBuild ? area * LABOR_FRAME : 0;
-  const labSub = instL + stairLabor + frameL;
+  const crew = parseInt($('l-crew').value)||2;
+  const rate = parseFloat($('l-rate').value)||35;
+  const instL = area * laborPerSqft(crew, rate, parseFloat($('l-install-hrs').value)||8);
+  const framingLaborRate = laborPerSqft(crew, rate, parseFloat($('l-framing-hrs').value)||6);
+  const railingLaborRatePerLF = crew * rate * (parseFloat($('l-railing-hrs').value)||0.5);
+  const railingLabor = opts.railing ? rlf * railingLaborRatePerLF : 0;
+  const stairLabor = opts.stairs
+    ? stairCount * risersPerStair * stairWidth
+      * laborPerSqft(crew, rate, parseFloat($('l-install-hrs').value)||8)
+      * (parseFloat($('l-stair-mult').value)||2.0)
+    : 0;
+  const frameL = isBuild ? area * framingLaborRate : 0;
+  const labSub = instL + railingLabor + stairLabor + frameL;
 
-  const pretax = matSub + labSub;
-  const tax = pretax * TAX;
-  const grand = pretax + tax;
+  const marginPct = parseFloat($('profit-margin').value)||0;
+  const pretaxBeforeMargin = matSub + labSub;
+  const profit = pretaxBeforeMargin * (marginPct / 100);
+  const tax = matSub * TAX;  // tax on materials only
+  const grand = matSub + labSub + profit + tax;
+
+  // Derived $/sqft rates for display
+  const installRateSqft = laborPerSqft(crew, rate, parseFloat($('l-install-hrs').value)||8);
+  const framingRateSqft = framingLaborRate;
 
   return {
     L, area, adjLF, boards, bl, actLF, fc,
     deck, fascia, stairTreadLF, stairTreadCost, stairRiserCost,
     totalRisers, stairCount, risersPerStair, stairWidth,
     fast, fastQ, frame, rail, rlf, matSub,
-    instL, stairLabor, frameL, labSub,
-    pretax, tax, grand, psf: grand/area, isBuild
+    instL, railingLabor, railingLaborRatePerLF, stairLabor, frameL, labSub,
+    profit, marginPct, tax, grand,
+    psf: grand/area, isBuild,
+    installRateSqft, framingRateSqft, crew, rate
   };
 }
 
 function calc() {
-  const dl = getDim('len');
-  const dw = getDim('wid');
-  const wf = parseFloat($('waste').value);
-  $('area-display').textContent = (dl*dw).toLocaleString()+' sqft';
+  if (inputMode === 'dimensions') {
+    const dl = getDim('len');
+    const dw = getDim('wid');
+    const wf = parseFloat($('waste').value);
+    $('area-display').textContent = (dl*dw).toLocaleString()+' sqft';
 
-  // Build board length comparison UI
-  const allOptions = calcAllBoardLengths(dl, dw, wf);
-  const bestInfo = bestBoardLength(dl, dw, wf);
-  // If selected board len is no longer valid, reset to auto
-  buildBoardLenUI(allOptions, bestInfo.bl);
+    // Build board length comparison UI
+    const allOptions = calcAllBoardLengths(dl, dw, wf);
+    const bestInfo   = bestBoardLength(dl, dw, wf);
+    buildBoardLenUI(allOptions, bestInfo.bl);
 
-  // Update auto fascia display
-  const fasciaInfo = autoFasciaCount(dl, dw);
-  $('auto-fascia-count').textContent = fasciaInfo.count;
-  $('auto-fascia-detail').textContent = 'Perimeter: '+(2*dl+2*dw)+' ft → '+fasciaInfo.count+' pcs × 12 ft';
+    // Auto fascia from dimensions
+    const fasciaInfo = autoFasciaCount(dl, dw);
+    $('auto-fascia-count').textContent  = fasciaInfo.count;
+    $('auto-fascia-detail').textContent = 'Perimeter: '+(2*dl+2*dw)+' ft → '+fasciaInfo.count+' pcs × 12 ft';
+  } else {
+    // Board count mode
+    const bc  = parseInt($('manual-boards').value)||1;
+    const blen = parseInt($('manual-board-len').value)||20;
+    const totalLF = bc * blen;
+    const estArea = Math.round(totalLF * BOARD_WIDTH_FT);
+    const estSide = Math.round(Math.sqrt(estArea));
+    $('manual-lf-display').textContent   = totalLF.toLocaleString()+' LF';
+    $('manual-area-display').textContent = estArea.toLocaleString()+' sqft';
 
-  // Update stair totals display
-  if (opts.stairs) {
-    const sc = parseInt($('stair-count').value)||0;
-    const rps = parseInt($('risers-per-stair').value)||0;
-    const sw = parseFloat($('stair-width').value)||4;
-    $('total-risers-display').textContent = sc * rps;
-    $('stair-detail').textContent = sc+' stair section(s) × '+rps+' risers × '+sw+' ft wide · Treads: '+(sc*rps*sw).toFixed(1)+' LF';
+    // Auto fascia from estimated dimensions
+    const fasciaInfo = autoFasciaCount(estSide, Math.round(estArea/estSide));
+    $('auto-fascia-count').textContent  = fasciaInfo.count;
+    $('auto-fascia-detail').textContent = 'Est. perimeter: ~'+(4*estSide)+' ft → '+fasciaInfo.count+' pcs × 12 ft';
+
+    // Hide board length UI in board count mode
+    $('board-len-options').innerHTML = '<div style="font-size:12px;color:var(--text-muted);padding:8px 0;">Board length set by selection above</div>';
   }
 
-  if(tab==='single') calcSingle(); else calcCompare();
+  // Stair display
+  if (opts.stairs) {
+    const sc  = parseInt($('stair-count').value)||0;
+    const rps = parseInt($('risers-per-stair').value)||0;
+    const sw  = parseFloat($('stair-width').value)||4;
+    $('total-risers-display').textContent = sc * rps;
+    $('stair-detail').textContent = sc+' section(s) × '+rps+' risers × '+sw+' ft wide · Treads: '+(sc*rps*sw).toFixed(1)+' LF';
+  }
+
+  if (tab==='single') calcSingle(); else calcCompare();
 }
 
 function calcSingle() {
@@ -913,12 +1078,12 @@ function calcSingle() {
   $('m-area').textContent = Math.round(r.area).toLocaleString();
   $('m-lf').textContent = Math.round(r.adjLF).toLocaleString();
   $('m-boards').textContent = r.boards;
-  $('m-blen').textContent = r.bl+' ft '+(selectedBoardLen===null?'(auto)':'(manual)');
+  $('m-blen').textContent = r.bl+' ft '+(inputMode==='boards'?'(manual)':(selectedBoardLen===null?'(auto)':'(override)'));
   $('m-plf').textContent = '$'+L.lf.toFixed(2);
   $('m-railing').textContent = opts.railing ? fmt(r.rail) : '—';
   $('m-railing-sub').textContent = opts.railing ? r.rlf+' LF' : 'off';
   $('m-labor').textContent = fmt(r.labSub);
-  $('m-labor-sub').textContent = r.isBuild ? '$21/sqft' : '$13/sqft';
+  $('m-labor-sub').textContent = '$'+r.installRateSqft.toFixed(2)+'/sqft';
   $('m-psf').textContent = '$'+r.psf.toFixed(2);
 
   $('b-lf').textContent = r.actLF.toLocaleString();
@@ -955,14 +1120,34 @@ function calcSingle() {
   $('b-mat-sub').textContent = fmt(r.matSub);
 
   $('b-inst-sf').textContent = Math.round(r.area).toLocaleString();
+  $('b-inst-rate').textContent = r.installRateSqft.toFixed(2);
   $('b-inst-labor').textContent = fmt(r.instL);
+
+  $('row-railing-labor').style.display = opts.railing ? '' : 'none';
+  $('b-rail-labor-lf').textContent = r.rlf;
+  $('b-rail-labor-rate').textContent = r.railingLaborRatePerLF.toFixed(2);
+  $('b-rail-labor').textContent = fmt(r.railingLabor);
+
   $('b-fram-lab-sf').textContent = Math.round(r.area).toLocaleString();
+  $('b-fram-rate').textContent = r.framingRateSqft.toFixed(2);
   $('b-fram-labor').textContent = fmt(r.frameL);
+  $('b-stair-labor').textContent = fmt(r.stairLabor);
+  document.getElementById('row-stair-labor').style.display = opts.stairs ? '' : 'none';
   $('b-labor-sub').textContent = fmt(r.labSub);
-  $('b-pretax').textContent = fmt(r.pretax);
+  $('b-pretax-before').textContent = fmt(r.matSub);
   $('b-tax').textContent = fmt(r.tax);
+  $('b-mat-tax-sub').textContent = fmt(r.matSub + r.tax);
+  $('b-labor-sub2').textContent = fmt(r.labSub);
+  $('b-margin-pct').textContent = r.marginPct;
+  $('b-profit').textContent = fmt(r.profit);
   $('b-grand').textContent = fmt(r.grand);
   $('b-grand-box').className = 'grand-box '+(r.isBuild?'build':'replace');
+
+  // Effective rate display
+  $('eff-install-rate').textContent = '$'+r.installRateSqft.toFixed(2);
+  $('eff-railing-rate').textContent = '$'+r.railingLaborRatePerLF.toFixed(2);
+  $('eff-framing-rate').textContent = '$'+r.framingRateSqft.toFixed(2);
+  $('eff-crew-cost').textContent = '$'+(r.crew * r.rate).toFixed(0);
 
   $('specs-panel').innerHTML = L.specs.map(s=>`<div class="spec-item"><span class="spec-check">✦</span>${s}</div>`).join('');
   const scope = [
