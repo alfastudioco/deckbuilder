@@ -797,6 +797,9 @@ let mode='replace', railType='composite', selA='azek_vintage', selCA='azek_vinta
 let selectedBoardLen = null; // null = auto (use best)
 let inputMode = 'dimensions'; // 'dimensions' or 'boards'
 
+const fmt = n => '$'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+const $ = id => document.getElementById(id);
+
 function setInputMode(m) {
   inputMode = m;
   $('dim-mode-btn').className    = 'rail-btn'+(m==='dimensions'?' active':'');
@@ -805,9 +808,6 @@ function setInputMode(m) {
   $('boards-mode').style.display     = m==='boards'     ? '' : 'none';
   calc();
 }
-
-const fmt = n => '$'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
-const $ = id => document.getElementById(id);
 
 function syncDim(dim, val) {
   const v = Math.max(1, parseInt(val)||1);
