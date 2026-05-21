@@ -903,9 +903,6 @@ input[type=text]:focus, input[type=date]:focus, textarea:focus { border-color: v
     <div class="card gap-mb">
       <div class="section-header" style="margin-top:0;">Include in Proposal</div>
       <div style="display:flex;gap:16px;flex-wrap:wrap;">
-        <div class="toggle-row"><div class="toggle on" id="ptog-materials" onclick="ptoggle('materials')"><div class="toggle-knob"></div></div><span class="toggle-label">Materials breakdown</span></div>
-        <div class="toggle-row"><div class="toggle on" id="ptog-labor" onclick="ptoggle('labor')"><div class="toggle-knob"></div></div><span class="toggle-label">Labor breakdown</span></div>
-        <div class="toggle-row"><div class="toggle on" id="ptog-total" onclick="ptoggle('total')"><div class="toggle-knob"></div></div><span class="toggle-label">Cost summary</span></div>
         <div class="toggle-row"><div class="toggle on" id="ptog-scope" onclick="ptoggle('scope')"><div class="toggle-knob"></div></div><span class="toggle-label">Scope of work</span></div>
         <div class="toggle-row"><div class="toggle on" id="ptog-terms" onclick="ptoggle('terms')"><div class="toggle-knob"></div></div><span class="toggle-label">Terms & conditions</span></div>
         <div class="toggle-row"><div class="toggle on" id="ptog-signature" onclick="ptoggle('signature')"><div class="toggle-knob"></div></div><span class="toggle-label">Signature line</span></div>
@@ -913,12 +910,12 @@ input[type=text]:focus, input[type=date]:focus, textarea:focus { border-color: v
       </div>
       <div id="p-notes-area" style="display:none;margin-top:10px;">
         <label class="form-label">Custom notes</label>
-        <textarea id="p-notes" rows="3" style="width:100%;padding:8px 12px;background:var(--surface-2);border:1px solid var(--border);border-radius:6px;color:var(--text-primary);font-family:'DM Sans',sans-serif;font-size:13px;resize:vertical;" placeholder="Any additional notes, warranties, special conditions..." oninput="renderProposal()"></textarea>
+        <textarea id="p-notes" rows="3" style="width:100%;padding:8px 12px;background:var(--surface-2);border:1px solid var(--border);border-radius:6px;color:var(--text-primary);font-family:'DM Sans',sans-serif;font-size:13px;resize:vertical;" placeholder="Any additional notes..." oninput="renderProposal()"></textarea>
       </div>
       <div style="margin-top:10px;">
         <label class="form-label">Terms & Conditions (editable)</label>
         <textarea id="p-terms-text" rows="4" style="width:100%;padding:8px 12px;background:var(--surface-2);border:1px solid var(--border);border-radius:6px;color:var(--text-primary);font-family:'DM Sans',sans-serif;font-size:12px;resize:vertical;" oninput="renderProposal()">50% deposit required to schedule work. Remaining balance due upon completion. All materials remain property of FB Construction until paid in full. FB Construction is not responsible for damage to underground utilities, irrigation, or landscaping unless marked prior to work. Proposal valid for 30 days from date of issue. Prices subject to change due to material availability and tariffs.</textarea>
-      </div>
+      </div></div>
     </div>
 
     <!-- Proposal Preview + Actions -->
@@ -1525,7 +1522,7 @@ function switchTab(t, btn) {
 }
 
 // ── PROPOSAL ─────────────────────────────────────────────────────────
-const pOpts = { materials:true, labor:true, total:true, scope:true, terms:true, signature:true, notes:false };
+const pOpts = { scope:true, terms:true, signature:true, notes:false };
 // Store for manual overrides: { 'row-id': { label, detail, amount } }
 const pOverrides = {};
 
@@ -1584,122 +1581,113 @@ function renderProposal() {
     const client   = ($('p-client-name')    && $('p-client-name').value)    || 'Client Name';
     const addr     = ($('p-client-address') && $('p-client-address').value) || '';
     const projAddr = ($('p-project-address')&& $('p-project-address').value)|| addr;
-    const desc     = ($('p-description')    && $('p-description').value)    || (L.name+' Deck — '+(mode==='build'?'Full Build':'Board Replacement'));
-    const dateVal  = $('p-date')        && $('p-date').value;
+    const desc     = ($('p-description')    && $('p-description').value)    || (L.name + ' Deck — ' + (mode==='build' ? 'Full Build' : 'Board Replacement'));
+    const dateVal  = $('p-date') && $('p-date').value;
     const validVal = $('p-valid-until') && $('p-valid-until').value;
-    const dateStr  = dateVal  ? new Date(dateVal +'T00:00:00').toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}) : new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
-    const validStr = validVal ? new Date(validVal+'T00:00:00').toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}) : '';
+    const dateStr  = dateVal  ? new Date(dateVal  + 'T00:00:00').toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}) : new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+    const validStr = validVal ? new Date(validVal + 'T00:00:00').toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}) : '';
     const notes    = ($('p-notes')      && $('p-notes').value)      || '';
     const terms    = ($('p-terms-text') && $('p-terms-text').value) || '';
-    const logoSrc  = document.querySelector('.logo-area img')?.src || '';
+    const logoSrc  = document.querySelector('.logo-area img') ? document.querySelector('.logo-area img').src : '';
+    const grandFmt = '$' + r.grand.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
 
-    // Build scope items — plain English, no quantities or prices
     const scopeItems = [
-      ...(r.isBuild ? [
-        'Supply and install pressure-treated framing structure (joists, beams, posts, hardware)',
-      ] : [
-        'Remove existing deck boards and prepare surface for installation',
-      ]),
-      `Supply and install ${L.name} ${L.badge} decking boards`,
+      ...(r.isBuild ? ['Supply and install pressure-treated framing structure (joists, beams, posts, hardware)'] : ['Remove existing deck boards and prepare surface for installation']),
+      'Supply and install ' + L.name + ' ' + L.badge + ' decking boards',
       ...(opts.fascia   ? ['Supply and install matching fascia boards'] : []),
-      ...(opts.railing  ? [`Supply and install ${railType} railing system`] : []),
-      ...(opts.stairs   ? [`Supply and install deck stairs (${r.stairCount} section${r.stairCount>1?'s':''})`] : []),
+      ...(opts.railing  ? ['Supply and install ' + railType + ' railing system'] : []),
+      ...(opts.stairs   ? ['Supply and install deck stairs (' + r.stairCount + ' section' + (r.stairCount > 1 ? 's' : '') + ')'] : []),
       ...(opts.fastener ? ['Hidden fastener system for clean board finish'] : []),
       ...(opts.lattice  ? ['Supply and install lattice'] : []),
       ...(opts.haul     ? ['Debris removal and haul away of all job materials'] : []),
       'Site cleanup upon project completion',
     ];
 
-    const grandFormatted = '$'+r.grand.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+    // Header
+    let logoHtml = logoSrc
+      ? '<img src="' + logoSrc + '" style="height:52px;display:block;">'
+      : '<div style="font-size:26px;font-weight:700;color:#2D3F52;">FB Construction</div>';
 
-    let html = `
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:28px;padding-bottom:20px;border-bottom:3px solid #E8751A;">
-      <div>
-        ${logoSrc ? `<img src="${logoSrc}" style="height:48px;display:block;">` : '<div style="font-size:26px;font-weight:700;color:#2D3F52;">FB Construction</div>'}
-        <div style="font-size:11px;color:#7A92A8;margin-top:5px;line-height:1.7;">3026 Commercial Ave, Northbrook, IL 60062<br><a href=\"https://www.fbcoinc.com\" style=\"color:#E8751A;text-decoration:none;\">fbcoinc.com</a></div>
-      </div>
-      <div style="text-align:right;">
-        <div style="font-size:20px;font-weight:700;color:#2D3F52;letter-spacing:0.03em;">PROPOSAL</div>
-        <div style="font-size:11px;color:#7A92A8;margin-top:3px;">Date: ${dateStr}</div>
-        ${validStr ? `<div style="font-size:11px;color:#7A92A8;">Valid until: ${validStr}</div>` : ''}
-      </div>
-    </div>
+    let html = '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;padding-bottom:18px;border-bottom:3px solid #E8751A;">'
+      + '<div>' + logoHtml
+      + '<div style="font-size:11px;color:#7A92A8;margin-top:6px;line-height:1.8;">3026 Commercial Ave, Northbrook, IL 60062<br>'
+      + '<a href="https://www.fbcoinc.com" style="color:#E8751A;text-decoration:none;">fbcoinc.com</a></div>'
+      + '</div>'
+      + '<div style="text-align:right;">'
+      + '<div style="font-size:22px;font-weight:700;color:#2D3F52;letter-spacing:0.03em;">PROPOSAL</div>'
+      + '<div style="font-size:11px;color:#7A92A8;margin-top:4px;">Date: ' + dateStr + '</div>'
+      + (validStr ? '<div style="font-size:11px;color:#7A92A8;">Valid until: ' + validStr + '</div>' : '')
+      + '</div></div>';
 
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-bottom:24px;">
-      <div>
-        <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:#7A92A8;margin-bottom:5px;">Prepared for</div>
-        <div style="font-size:15px;font-weight:600;color:#1C2B3A;">${editCell('p-client-inline', client)}</div>
-        ${addr     ? `<div style="font-size:12px;color:#445A6F;margin-top:2px;">${editCell('p-addr-inline', addr)}</div>`     : ''}
-        ${projAddr && projAddr!==addr ? `<div style="font-size:11px;color:#7A92A8;margin-top:2px;">Project site: ${editCell('p-proj-inline', projAddr)}</div>` : ''}
-      </div>
-      <div>
-        <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:#7A92A8;margin-bottom:5px;">Project</div>
-        <div style="font-size:14px;font-weight:500;color:#1C2B3A;">${editCell('p-desc-inline', desc)}</div>
-        <div style="font-size:11px;color:#7A92A8;margin-top:3px;">${Math.round(r.area).toLocaleString()} sq ft · ${L.badge}</div>
-      </div>
-    </div>`;
+    // Client + Project info
+    html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-bottom:22px;">'
+      + '<div><div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:#7A92A8;margin-bottom:6px;">Prepared for</div>'
+      + '<div style="font-size:15px;font-weight:600;color:#1C2B3A;">' + editCell('p-client-inline', client) + '</div>'
+      + (addr ? '<div style="font-size:12px;color:#445A6F;margin-top:3px;">' + editCell('p-addr-inline', addr) + '</div>' : '')
+      + (projAddr && projAddr !== addr ? '<div style="font-size:11px;color:#7A92A8;margin-top:2px;">Project: ' + editCell('p-proj-inline', projAddr) + '</div>' : '')
+      + '</div>'
+      + '<div><div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:#7A92A8;margin-bottom:6px;">Project Description</div>'
+      + '<div style="font-size:13px;font-weight:500;color:#1C2B3A;">' + editCell('p-desc-inline', desc) + '</div>'
+      + '<div style="font-size:11px;color:#7A92A8;margin-top:4px;">' + Math.round(r.area).toLocaleString() + ' sq ft &nbsp;·&nbsp; ' + L.badge + '</div>'
+      + '</div></div>';
 
-    // SCOPE
+    // Scope of work
     if (pOpts.scope) {
-      html += `<div style="margin-bottom:22px;">
-        <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:#E8751A;border-bottom:1.5px solid #E8751A;padding-bottom:5px;margin-bottom:10px;">Scope of Work</div>
-        <table style="width:100%;border-collapse:collapse;">
-          ${scopeItems.map((item,i)=>`
-          <tr>
-            <td style="width:20px;padding:4px 8px 4px 0;vertical-align:top;color:#E8751A;font-size:13px;">✓</td>
-            <td style="padding:4px 0;font-size:13px;color:#1C2B3A;">${editCell('scope-'+i, item)}</td>
-          </tr>`).join('')}
-        </table>
-      </div>`;
+      let scopeRows = scopeItems.map(function(item, i) {
+        return '<tr>'
+          + '<td style="width:22px;padding:5px 8px 5px 0;vertical-align:top;color:#E8751A;font-size:14px;font-weight:700;">✓</td>'
+          + '<td style="padding:5px 0;font-size:13px;color:#1C2B3A;line-height:1.5;">' + editCell('scope-' + i, item) + '</td>'
+          + '</tr>';
+      }).join('');
+      html += '<div style="margin-bottom:20px;">'
+        + '<div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:#E8751A;border-bottom:2px solid #E8751A;padding-bottom:5px;margin-bottom:12px;">Scope of Work</div>'
+        + '<table style="width:100%;border-collapse:collapse;">' + scopeRows + '</table>'
+        + '</div>';
     }
 
-    // NOTES
+    // Notes
     if (pOpts.notes && notes) {
-      html += `<div style="margin-bottom:22px;">
-        <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:#E8751A;border-bottom:1.5px solid #E8751A;padding-bottom:5px;margin-bottom:10px;">Notes</div>
-        <p style="font-size:12px;color:#1C2B3A;line-height:1.7;">${notes.replace(/\n/g,'<br>')}</p>
-      </div>`;
+      html += '<div style="margin-bottom:18px;">'
+        + '<div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:#E8751A;border-bottom:2px solid #E8751A;padding-bottom:5px;margin-bottom:10px;">Notes</div>'
+        + '<p style="font-size:12px;color:#1C2B3A;line-height:1.7;">' + notes.replace(/\n/g,'<br>') + '</p>'
+        + '</div>';
     }
 
-    // TERMS
+    // Terms
     if (pOpts.terms) {
-      html += `<div style="margin-bottom:22px;">
-        <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:#E8751A;border-bottom:1.5px solid #E8751A;padding-bottom:5px;margin-bottom:8px;">Terms & Conditions</div>
-        <p style="font-size:10px;color:#7A92A8;line-height:1.6;">${terms.replace(/\n/g,'<br>')}</p>
-      </div>`;
+      html += '<div style="margin-bottom:18px;">'
+        + '<div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:#E8751A;border-bottom:2px solid #E8751A;padding-bottom:5px;margin-bottom:8px;">Terms &amp; Conditions</div>'
+        + '<p style="font-size:10px;color:#7A92A8;line-height:1.6;">' + terms.replace(/\n/g,'<br>') + '</p>'
+        + '</div>';
     }
 
-    // TOTAL — single price, no breakdown
-    html += `<div style="background:#FEF3EA;border:1.5px solid #E8751A;border-radius:10px;padding:18px 24px;margin-bottom:22px;display:flex;justify-content:space-between;align-items:center;">
-      <div>
-        <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:#8B5E00;margin-bottom:3px;">Total Investment</div>
-        <div style="font-size:11px;color:#8B5E00;">Includes all materials, labor, and applicable tax</div>
-      </div>
-      <div style="font-size:28px;font-weight:700;color:#E8751A;font-family:'DM Mono',monospace;">${editCell('p-grand-total', grandFormatted)}</div>
-    </div>`;
+    // Total — single price
+    html += '<div style="background:#FEF3EA;border:2px solid #E8751A;border-radius:10px;padding:16px 24px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center;">'
+      + '<div>'
+      + '<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#8B5E00;margin-bottom:3px;">Total Project Investment</div>'
+      + '<div style="font-size:11px;color:#8B5E00;">Includes all materials, labor &amp; applicable taxes</div>'
+      + '</div>'
+      + '<div style="font-size:28px;font-weight:700;color:#E8751A;font-family:\'DM Mono\',monospace;">' + editCell('p-grand-total', grandFmt) + '</div>'
+      + '</div>';
 
-    // SIGNATURE
+    // Signature
     if (pOpts.signature) {
-      html += `<div style="display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:8px;">
-        <div>
-          <div style="border-top:1px solid #C8D0D8;padding-top:6px;margin-top:36px;">
-            <div style="font-size:10px;color:#7A92A8;">Client Signature &nbsp;&nbsp;&nbsp;&nbsp; Date ___________</div>
-          </div>
-        </div>
-        <div>
-          <div style="border-top:1px solid #C8D0D8;padding-top:6px;margin-top:36px;">
-            <div style="font-size:10px;color:#7A92A8;">FB Construction &nbsp;&nbsp;&nbsp;&nbsp; Date ___________</div>
-          </div>
-        </div>
-      </div>`;
+      html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:4px;">'
+        + '<div><div style="border-top:1px solid #C8D0D8;padding-top:6px;margin-top:32px;">'
+        + '<div style="font-size:10px;color:#7A92A8;">Client Signature &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Date ___________</div>'
+        + '</div></div>'
+        + '<div><div style="border-top:1px solid #C8D0D8;padding-top:6px;margin-top:32px;">'
+        + '<div style="font-size:10px;color:#7A92A8;">FB Construction Authorized &nbsp;&nbsp; Date ___________</div>'
+        + '</div></div>'
+        + '</div>';
     }
 
     $('proposal-content').innerHTML = html;
-    document.querySelectorAll('.p-editable').forEach(el => { el.title = 'Click to edit'; });
+    document.querySelectorAll('.p-editable').forEach(function(el) { el.title = 'Click to edit'; });
 
   } catch(e) {
     console.error('Proposal render error:', e);
-    if ($('proposal-content')) $('proposal-content').innerHTML = '<div style="padding:20px;color:#C0392B;">Error: '+e.message+'</div>';
+    if ($('proposal-content')) $('proposal-content').innerHTML = '<div style="padding:20px;color:#C0392B;">Error rendering proposal: ' + e.message + '</div>';
   }
 }
 function printProposal() {
