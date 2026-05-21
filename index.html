@@ -259,6 +259,8 @@ function defaultArea(name='Back Porch'){
     name,
     lineId: 'azek_vintage',
     mode: 'replace',
+    boardInputMode: 'auto',  // 'auto' or 'manual'
+    boardRows: [],           // [{qty, len}] for manual mode
     len: 14, wid: 16,
     selectedBoardLen: null,
     waste: 1.10,
@@ -318,12 +320,23 @@ function calcAreaCosts(a){
   if(!L) return null;
   const crew=parseInt($('l-crew').value)||2, rate=parseFloat($('l-rate').value)||35;
   const isBuild = a.mode==='build';
-  const blInfo = bestBoardLength(a.len, a.wid, a.waste);
-  const bl = a.selectedBoardLen||blInfo.bl;
-  const opts = calcAllBoardLengths(a.len,a.wid,a.waste);
-  const chosen = opts.find(o=>o.bl===bl)||opts[0];
-  const area=a.len*a.wid, adjLF=(area/BOARD_WIDTH_FT)*a.waste;
-  const boards=chosen.boards, actLF=chosen.actLF;
+  let area, adjLF, boards, bl, actLF;
+  if(a.boardInputMode==='manual' && a.boardRows && a.boardRows.length) {
+    actLF = a.boardRows.reduce((s,r)=>s+r.qty*r.len, 0);
+    boards = a.boardRows.reduce((s,r)=>s+r.qty, 0);
+    area = actLF * BOARD_WIDTH_FT;
+    adjLF = actLF;
+    bl = 0;
+  } else {
+    const blInfo = bestBoardLength(a.len, a.wid, a.waste);
+    bl = a.selectedBoardLen||blInfo.bl;
+    const blOpts = calcAllBoardLengths(a.len,a.wid,a.waste);
+    const chosen = blOpts.find(o=>o.bl===bl)||blOpts[0];
+    area = a.len*a.wid;
+    adjLF = (area/BOARD_WIDTH_FT)*a.waste;
+    boards = chosen.boards;
+    actLF = chosen.actLF;
+  }
   const deck=actLF*L.lf;
   const fascia=a.fasciaOn?(a.fasciaCount*L.fa):0;
   const F=FRATES[a.fastenerType];
@@ -350,6 +363,45 @@ function calcAreaCosts(a){
   const tax=matSub*TAX;
   const grand=matSub+tax+labSub+profit;
   return {L,area,adjLF,boards,bl,actLF,deck,fascia,fast,fastQ,frame,rail,stairTreadLF,stairTreadCost,stairRiserCost,latticeCost,haulCost,matSub,instL,railLabor,frameL,stairLabor,labSub,profit,marginPct,tax,grand,psf:grand/area,isBuild,installRateSqft:laborPerSqft(crew,rate,parseFloat($('l-install-hrs').value)||8)};
+}
+
+
+function buildManualBoardRows(a) {
+  const id = a.id;
+  if (!a.boardRows || !a.boardRows.length) a.boardRows = [{qty:20,len:20}];
+  const totalBoards = a.boardRows.reduce((s,r)=>s+r.qty,0);
+  const totalLF     = a.boardRows.reduce((s,r)=>s+r.qty*r.len,0);
+  const estArea     = Math.round(totalLF * BOARD_WIDTH_FT);
+
+  let rowsHtml = a.boardRows.map((row,i) => `
+    <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:6px;align-items:center;margin-bottom:5px;">
+      <div><div style="font-size:9px;color:var(--text-muted);margin-bottom:2px;">Qty</div>
+        <input type="number" value="${row.qty}" min="1" max="2000"
+          style="width:100%;padding:5px 8px;border:1px solid var(--border);border-radius:5px;font-size:12px;font-family:'DM Mono',monospace;"
+          oninput="areas.find(x=>x.id===${id}).boardRows[${i}].qty=parseInt(this.value)||0;renderAreas();renderSummary();">
+      </div>
+      <div><div style="font-size:9px;color:var(--text-muted);margin-bottom:2px;">Length</div>
+        <select style="width:100%;padding:5px 8px;border:1px solid var(--border);border-radius:5px;font-size:12px;"
+          onchange="areas.find(x=>x.id===${id}).boardRows[${i}].len=parseInt(this.value);renderAreas();renderSummary();">
+          <option value="12" ${row.len===12?'selected':''}>12 ft</option>
+          <option value="16" ${row.len===16?'selected':''}>16 ft</option>
+          <option value="20" ${row.len===20?'selected':''}>20 ft</option>
+        </select>
+      </div>
+      <div style="padding-top:16px;">
+        <button onclick="const ar=areas.find(x=>x.id===${id});ar.boardRows.splice(${i},1);if(!ar.boardRows.length)ar.boardRows=[{qty:1,len:20}];renderAreas();renderSummary();"
+          style="width:26px;height:26px;border-radius:50%;border:1px solid var(--border);background:var(--surface);color:var(--text-muted);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;">×</button>
+      </div>
+    </div>`).join('');
+
+  return rowsHtml
+    + `<button onclick="areas.find(x=>x.id===${id}).boardRows.push({qty:10,len:20});renderAreas();renderSummary();"
+        style="width:100%;padding:5px;font-size:11px;font-weight:500;border:1px dashed var(--orange);border-radius:5px;background:var(--orange-pale);color:var(--orange);cursor:pointer;margin-bottom:6px;">+ Add length</button>`
+    + `<div style="padding:7px 10px;background:var(--orange-pale);border-radius:6px;font-size:11px;display:flex;flex-direction:column;gap:3px;">
+        <div style="display:flex;justify-content:space-between;"><span style="color:var(--text-muted);">Total boards</span><span style="font-family:'DM Mono',monospace;color:var(--navy);font-weight:500;">${totalBoards}</span></div>
+        <div style="display:flex;justify-content:space-between;"><span style="color:var(--text-muted);">Total LF</span><span style="font-family:'DM Mono',monospace;color:var(--orange);font-weight:500;">${totalLF} LF</span></div>
+        <div style="display:flex;justify-content:space-between;"><span style="color:var(--text-muted);">Est. coverage</span><span style="font-family:'DM Mono',monospace;color:var(--orange);font-weight:500;">${estArea} sqft</span></div>
+      </div>`;
 }
 
 // ── RENDER AREAS ──────────────────────────────────────────────────────────────
