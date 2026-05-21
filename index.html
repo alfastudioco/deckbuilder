@@ -444,6 +444,7 @@ input[type=text]:focus, input[type=date]:focus, textarea:focus { border-color: v
   #proposal-preview { border: none !important; box-shadow: none !important; }
   body { background: white !important; }
   body::before { display: none !important; }
+  .p-editable { border-bottom: none !important; }
 }
 @media (max-width: 800px) {
   .metrics-row { grid-template-columns: repeat(4, 1fr); }
@@ -898,15 +899,45 @@ const LABOR_DEFAULTS = {
 function laborPerSqft(crew, rate, hrs) { return crew * rate * hrs / 100; }
 
 const LINES = [
-  { id:'azek_vintage',    name:'AZEK Vintage',  sn:'Vintage',   t:'pvc',   lf:6.75, fa:157.85, ri:111.61, badge:'Advanced PVC',       desc:'Lifetime · 50yr fade/stain · Cooler · Class A', specs:['Capped Advanced PVC','Lifetime decking warranty','50yr fade & stain warranty','Stays cooler on hot days','Class A flame spread'] },
-  { id:'azek_landmark',   name:'AZEK Landmark', sn:'Landmark',  t:'pvc',   lf:5.84, fa:104.70, ri:91.06,  badge:'Advanced PVC',       desc:'Lifetime · 50yr fade/stain · Cooler · Class A', specs:['Capped Advanced PVC','Lifetime decking warranty','50yr fade & stain warranty','Stays cooler on hot days','Class A flame spread'] },
-  { id:'azek_harvest',    name:'AZEK Harvest',  sn:'Harvest',   t:'pvc',   lf:5.24, fa:93.99,  ri:81.75,  badge:'Advanced PVC',       desc:'Lifetime · 50yr fade/stain · Cooler · Class A', specs:['Capped Advanced PVC','Lifetime decking warranty','50yr fade & stain warranty','Stays cooler on hot days','Class A flame spread'] },
-  { id:'tt_legacy',       name:'TT Legacy',     sn:'Legacy',    t:'comp4', lf:6.30, fa:149.96, ri:83.36,  badge:'4-Sided Composite',  desc:'4-sided capped · 30yr warranties · Strong & reliable', specs:['4-sided capped composite','30yr fade warranty','30yr stain warranty','30yr deck warranty','Strong, reliable build'] },
-  { id:'tt_reserve',      name:'TT Reserve',    sn:'Reserve',   t:'comp4', lf:5.24, fa:125.05, ri:72.45,  badge:'4-Sided Composite',  desc:'4-sided capped · 30yr warranties · Strong & reliable', specs:['4-sided capped composite','30yr fade warranty','30yr stain warranty','30yr deck warranty','Strong, reliable build'] },
-  { id:'tt_terrain',      name:'TT Terrain',    sn:'Terrain',   t:'comp3', lf:3.69, fa:94.81,  ri:55.10,  badge:'3-Sided Composite',  desc:'3-sided capped · 25yr warranties · High value', specs:['3-sided capped composite','25yr fade warranty','25yr stain warranty','25yr deck warranty','High value, low maintenance'] },
-  { id:'tt_prime_plus',   name:'TT Prime+',     sn:'Prime+',    t:'comp3', lf:3.69, fa:94.81,  ri:55.10,  badge:'3-Sided Composite',  desc:'3-sided capped · 25yr warranties · High value', specs:['3-sided capped composite','25yr fade warranty','25yr stain warranty','25yr deck warranty','High value, low maintenance'] },
-  { id:'tt_prime',        name:'TT Prime',      sn:'Prime',     t:'comp3', lf:2.45, fa:93.39,  ri:53.49,  badge:'3-Sided Composite',  desc:'3-sided capped · 25yr warranties · High value', specs:['3-sided capped composite','25yr fade warranty','25yr stain warranty','25yr deck warranty','High value, low maintenance'] },
-  { id:'tt_terrain_plus', name:'TT Terrain+',   sn:'Terrain+',  t:'comp3', lf:2.83, fa:94.81,  ri:55.10,  badge:'3-Sided Composite',  desc:'3-sided capped · 25yr warranties · High value', specs:['3-sided capped composite','25yr fade warranty','25yr stain warranty','25yr deck warranty','High value, low maintenance'] },
+  // AZEK Advanced PVC — group color: #185FA5 (blue)
+  { id:'azek_vintage',    name:'AZEK Vintage',  sn:'Vintage',   t:'pvc',   grp:'azek',   grpColor:'#185FA5', grpLabel:'AZEK PVC',
+    lf:6.75, fa:157.85, ri:111.61, badge:'Advanced PVC',
+    colors:['Brownstone','Slate Gray','Kona'],
+    desc:'Lifetime · 50yr fade/stain · Cooler · Class A', specs:['Capped Advanced PVC','Lifetime decking warranty','50yr fade & stain warranty','Stays cooler on hot days','Class A flame spread'] },
+  { id:'azek_landmark',   name:'AZEK Landmark', sn:'Landmark',  t:'pvc',   grp:'azek',   grpColor:'#185FA5', grpLabel:'AZEK PVC',
+    lf:5.84, fa:104.70, ri:91.06,  badge:'Advanced PVC',
+    colors:['Am. Walnut','Coastline','Boardwalk','Dark Hickory','Castle Gate','English Walnut','Mahogany','Weathered Teak','Cypress'],
+    desc:'Lifetime · 50yr fade/stain · Cooler · Class A', specs:['Capped Advanced PVC','Lifetime decking warranty','50yr fade & stain warranty','Stays cooler on hot days','Class A flame spread'] },
+  { id:'azek_harvest',    name:'AZEK Harvest',  sn:'Harvest',   t:'pvc',   grp:'azek',   grpColor:'#185FA5', grpLabel:'AZEK PVC',
+    lf:5.24, fa:93.99,  ri:81.75,  badge:'Advanced PVC',
+    colors:['Toasted Wheat','Timber Gray'],
+    desc:'Lifetime · 50yr fade/stain · Cooler · Class A', specs:['Capped Advanced PVC','Lifetime decking warranty','50yr fade & stain warranty','Stays cooler on hot days','Class A flame spread'] },
+  // TimberTech 4-Sided Composite — group color: #3B6D11 (green)
+  { id:'tt_legacy',       name:'TT Legacy',     sn:'Legacy',    t:'comp4', grp:'tt4',    grpColor:'#3B6D11', grpLabel:'4-Sided Composite',
+    lf:6.30, fa:149.96, ri:83.36,  badge:'4-Sided Composite',
+    colors:['Brown Oak','Antique Leather','Ashwood','Silver Maple','Dark Roast','Espresso','Driftwood','Pecan','Reclaimed Chestnut','Mocha','Tigerwood','Whitewash Cedar'],
+    desc:'4-sided capped · 30yr warranties · Strong & reliable', specs:['4-sided capped composite','30yr fade warranty','30yr stain warranty','30yr deck warranty','Strong, reliable build'] },
+  { id:'tt_reserve',      name:'TT Reserve',    sn:'Reserve',   t:'comp4', grp:'tt4',    grpColor:'#3B6D11', grpLabel:'4-Sided Composite',
+    lf:5.24, fa:125.05, ri:72.45,  badge:'4-Sided Composite',
+    colors:['French White Oak','Coconut Husk'],
+    desc:'4-sided capped · 30yr warranties · Strong & reliable', specs:['4-sided capped composite','30yr fade warranty','30yr stain warranty','30yr deck warranty','Strong, reliable build'] },
+  // TimberTech 3-Sided Composite — group color: #7A5C00 (amber/brown)
+  { id:'tt_terrain',      name:'TT Terrain',    sn:'Terrain',   t:'comp3', grp:'tt3',    grpColor:'#8B5E00', grpLabel:'3-Sided Composite',
+    lf:3.69, fa:94.81,  ri:55.10,  badge:'3-Sided Composite',
+    colors:['Dark Teak','Dark Oak','Dark Cocoa','Maritime Gray','Natural White Oak','Sea Salt Gray','Weathered Oak'],
+    desc:'3-sided capped · 25yr warranties · High value', specs:['3-sided capped composite','25yr fade warranty','25yr stain warranty','25yr deck warranty','High value, low maintenance'] },
+  { id:'tt_prime_plus',   name:'TT Prime+',     sn:'Prime+',    t:'comp3', grp:'tt3',    grpColor:'#8B5E00', grpLabel:'3-Sided Composite',
+    lf:3.69, fa:94.81,  ri:55.10,  badge:'3-Sided Composite',
+    colors:['Dark Teak','Dark Oak','Dark Cocoa','Maritime Gray','Natural White Oak','Sea Salt Gray','Weathered Oak'],
+    desc:'3-sided capped · 25yr warranties · High value', specs:['3-sided capped composite','25yr fade warranty','25yr stain warranty','25yr deck warranty','High value, low maintenance'] },
+  { id:'tt_prime',        name:'TT Prime',      sn:'Prime',     t:'comp3', grp:'tt3',    grpColor:'#8B5E00', grpLabel:'3-Sided Composite',
+    lf:2.45, fa:93.39,  ri:53.49,  badge:'3-Sided Composite',
+    colors:['Dark Teak','Dark Oak','Dark Cocoa','Maritime Gray','Natural White Oak','Sea Salt Gray','Weathered Oak'],
+    desc:'3-sided capped · 25yr warranties · High value', specs:['3-sided capped composite','25yr fade warranty','25yr stain warranty','25yr deck warranty','High value, low maintenance'] },
+  { id:'tt_terrain_plus', name:'TT Terrain+',   sn:'Terrain+',  t:'comp3', grp:'tt3',    grpColor:'#8B5E00', grpLabel:'3-Sided Composite',
+    lf:2.83, fa:94.81,  ri:55.10,  badge:'3-Sided Composite',
+    colors:['Dark Teak','Dark Oak','Dark Cocoa','Maritime Gray','Natural White Oak','Sea Salt Gray','Weathered Oak'],
+    desc:'3-sided capped · 25yr warranties · High value', specs:['3-sided capped composite','25yr fade warranty','25yr stain warranty','25yr deck warranty','High value, low maintenance'] },
 ];
 
 const FRATES = {
@@ -1081,19 +1112,52 @@ function autoRailing() {
   calc();
 }
 
-function buildPills(cid, aid, ac, cb) {
-  const c=$(cid); c.innerHTML='';
+function buildPills(cid, aid, ac, onClick) {
+  const c = $(cid);
+  c.innerHTML = '';
+  const groups = [];
+  const seen = {};
   LINES.forEach(L => {
-    const el=document.createElement('span');
-    el.className='pill'+(L.id===aid?' '+ac:'');
-    el.textContent=L.sn; el.dataset.id=L.id;
-    el.onclick=()=>cb(L.id);
-    c.appendChild(el);
+    if (!seen[L.grp]) { seen[L.grp] = true; groups.push({ grp:L.grp, color:L.grpColor, label:L.grpLabel, lines:[] }); }
+    groups.find(g=>g.grp===L.grp).lines.push(L);
+  });
+  groups.forEach(g => {
+    const hdr = document.createElement('div');
+    hdr.style.cssText = `display:flex;align-items:center;gap:6px;margin:6px 0 4px;font-size:10px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:${g.color};`;
+    hdr.innerHTML = `<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${g.color};flex-shrink:0;"></span>${g.label}`;
+    c.appendChild(hdr);
+    const row = document.createElement('div');
+    row.style.cssText = `display:flex;flex-wrap:wrap;gap:6px;padding:4px 0 10px 14px;border-left:2px solid ${g.color}33;margin-left:3px;`;
+    g.lines.forEach(L => {
+      const isActive = L.id === aid;
+      const el = document.createElement('div');
+      el.dataset.id = L.id;
+      el.style.cssText = `display:inline-flex;flex-direction:column;gap:2px;padding:7px 10px;border-radius:8px;border:1.5px solid ${isActive ? g.color : 'var(--border)'};background:${isActive ? g.color+'18' : 'var(--surface-2)'};cursor:pointer;transition:all 0.15s;min-width:82px;`;
+      el.innerHTML = `
+        <div style="font-size:12px;font-weight:600;color:${isActive ? g.color : 'var(--text-secondary)'};">${L.sn}</div>
+        <div style="font-size:11px;font-weight:500;color:${isActive ? g.color : 'var(--text-muted)'};">$${L.lf.toFixed(2)}/LF</div>
+        <div style="display:flex;gap:2px;margin-top:2px;flex-wrap:wrap;">
+          ${(L.colors||[]).slice(0,8).map(col=>`<span title="${col}" style="width:7px;height:7px;border-radius:50%;background:var(--border);border:0.5px solid var(--border-light);display:inline-block;"></span>`).join('')}
+          ${(L.colors||[]).length > 8 ? `<span style="font-size:9px;color:var(--text-muted);">+${L.colors.length-8}</span>` : ''}
+        </div>`;
+      el.onclick = () => onClick(L.id);
+      row.appendChild(el);
+    });
+    c.appendChild(row);
   });
 }
 function setPills(cid, aid, ac) {
-  document.querySelectorAll('#'+cid+' .pill').forEach(p=>{
-    p.className='pill'+(p.dataset.id===aid?' '+ac:'');
+  const container = $(cid);
+  container.querySelectorAll('[data-id]').forEach(el => {
+    const L = LINES.find(x=>x.id===el.dataset.id);
+    if (!L) return;
+    const isActive = el.dataset.id === aid;
+    el.style.border = `1.5px solid ${isActive ? L.grpColor : 'var(--border)'}`;
+    el.style.background = isActive ? L.grpColor+'18' : 'var(--surface-2)';
+    const nameEl = el.querySelector('div:first-child');
+    const priceEl = el.querySelector('div:nth-child(2)');
+    if (nameEl) nameEl.style.color = isActive ? L.grpColor : 'var(--text-secondary)';
+    if (priceEl) priceEl.style.color = isActive ? L.grpColor : 'var(--text-muted)';
   });
 }
 
@@ -1368,8 +1432,10 @@ function switchTab(t, btn) {
   else calc();
 }
 
-// ── PROPOSAL ──────────────────────────────────────────────────────────
+// ── PROPOSAL ─────────────────────────────────────────────────────────
 const pOpts = { materials:true, labor:true, total:true, scope:true, terms:true, signature:true, notes:false };
+// Store for manual overrides: { 'row-id': { label, detail, amount } }
+const pOverrides = {};
 
 function ptoggle(k) {
   pOpts[k] = !pOpts[k];
@@ -1378,179 +1444,222 @@ function ptoggle(k) {
   renderProposal();
 }
 
-function getProposalData() {
-  const r = calcCosts(selA);
-  return r;
+function fmtD(n) {
+  if (n==null||isNaN(n)) return '—';
+  return '$'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
 }
 
-function fmtD(n) { return n==null||isNaN(n) ? '—' : '$'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+// Make a contenteditable cell that saves overrides
+function editCell(id, value, cls='') {
+  const saved = pOverrides[id] !== undefined ? pOverrides[id] : value;
+  return `<span contenteditable="true" 
+    data-pid="${id}" 
+    data-orig="${value.replace(/"/g,'&quot;')}"
+    class="p-editable${cls?' '+cls:''}"
+    onblur="saveOverride(this)"
+    onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}"
+    style="outline:none;border-bottom:1px dashed #C8D0D8;cursor:text;min-width:20px;display:inline-block;"
+    >${saved}</span>`;
+}
+
+function saveOverride(el) {
+  const id = el.dataset.pid;
+  const val = el.innerText.trim();
+  if (val === el.dataset.orig) {
+    delete pOverrides[id];
+  } else {
+    pOverrides[id] = val;
+  }
+  // Recalculate totals in proposal
+  recalcProposalTotals();
+}
+
+function recalcProposalTotals() {
+  // Re-render to pick up overrides — lightweight since we're just updating
+  renderProposal();
+}
+
+function parseAmt(id, fallback) {
+  const val = pOverrides[id] !== undefined ? pOverrides[id] : fmtD(fallback);
+  const num = parseFloat(val.replace(/[$,]/g,''));
+  return isNaN(num) ? fallback : num;
+}
 
 function renderProposal() {
   try {
     const r = calcCosts(selA);
     const L = r.L;
-    const client  = ($('p-client-name') && $('p-client-name').value)    || 'Client Name';
-    const addr    = ($('p-client-address') && $('p-client-address').value) || '';
-    const projAddr= ($('p-project-address') && $('p-project-address').value) || addr;
-    const desc    = ($('p-description') && $('p-description').value)    || (L.name+' Deck — '+(mode==='build'?'Full Build':'Board Replacement'));
-    const dateVal = $('p-date') && $('p-date').value;
-    const validVal= $('p-valid-until') && $('p-valid-until').value;
-    const dateStr = dateVal ? new Date(dateVal+'T00:00:00').toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}) : new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
-    const validStr= validVal ? new Date(validVal+'T00:00:00').toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}) : '';
-    const notes   = ($('p-notes') && $('p-notes').value) || '';
-    const terms   = ($('p-terms-text') && $('p-terms-text').value) || '';
+    const client   = ($('p-client-name') && $('p-client-name').value) || 'Client Name';
+    const addr     = ($('p-client-address') && $('p-client-address').value) || '';
+    const projAddr = ($('p-project-address') && $('p-project-address').value) || addr;
+    const desc     = ($('p-description') && $('p-description').value) || (L.name+' Deck — '+(mode==='build'?'Full Build':'Board Replacement'));
+    const dateVal  = $('p-date') && $('p-date').value;
+    const validVal = $('p-valid-until') && $('p-valid-until').value;
+    const dateStr  = dateVal ? new Date(dateVal+'T00:00:00').toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}) : new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+    const validStr = validVal ? new Date(validVal+'T00:00:00').toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}) : '';
+    const notes    = ($('p-notes') && $('p-notes').value) || '';
+    const terms    = ($('p-terms-text') && $('p-terms-text').value) || '';
     const railLabor = r.railingLabor || 0;
     const railLaborRate = r.railingLaborRatePerLF || 0;
+    const logoSrc = document.querySelector('.logo-area img')?.src || '';
 
-  // Build logo base64 src from existing img tag
-  const logoSrc = document.querySelector('.logo-area img')?.src || '';
-
-  let html = `
-  <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:36px;padding-bottom:24px;border-bottom:3px solid #E8751A;">
-    <div>
-      ${logoSrc ? `<img src="${logoSrc}" style="height:52px;margin-bottom:8px;display:block;">` : '<div style="font-size:28px;font-weight:700;color:#2D3F52;">FB Construction</div>'}
-      <div style="font-size:12px;color:#7A92A8;margin-top:4px;">fbconstruction.com</div>
-    </div>
-    <div style="text-align:right;">
-      <div style="font-size:22px;font-weight:700;color:#2D3F52;letter-spacing:0.02em;">PROPOSAL</div>
-      <div style="font-size:12px;color:#7A92A8;margin-top:4px;">Date: ${dateStr}</div>
-      ${validStr ? `<div style="font-size:12px;color:#7A92A8;">Valid until: ${validStr}</div>` : ''}
-    </div>
-  </div>
-
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-bottom:32px;">
-    <div>
-      <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:#7A92A8;margin-bottom:6px;">Prepared for</div>
-      <div style="font-size:15px;font-weight:600;color:#1C2B3A;">${client}</div>
-      ${addr ? `<div style="font-size:13px;color:#445A6F;margin-top:2px;">${addr}</div>` : ''}
-      ${projAddr && projAddr !== addr ? `<div style="font-size:12px;color:#7A92A8;margin-top:2px;">Project: ${projAddr}</div>` : ''}
-    </div>
-    <div>
-      <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:#7A92A8;margin-bottom:6px;">Project description</div>
-      <div style="font-size:14px;font-weight:500;color:#1C2B3A;">${desc}</div>
-      <div style="font-size:12px;color:#7A92A8;margin-top:4px;">${Math.round(r.area).toLocaleString()} sqft · ${L.badge} · ${mode==='build'?'Full Build':'Board Replacement'}</div>
-    </div>
-  </div>`;
-
-  // SCOPE
-  if (pOpts.scope) {
-    const scopeItems = [
-      ...(r.isBuild ? ['Pressure-treated framing at 12" OC (joists, beams, posts, hardware)','Framing installation labor'] : ['Board replacement — existing framing to remain']),
-      `${L.name} decking boards — ${r.bl > 0 ? r.bl+' ft stock' : 'multiple lengths'} — ${r.boards} boards / ${Math.round(r.actLF).toLocaleString()} LF`,
-      ...(opts.fascia   ? [`Fascia boards — ${r.fc} pieces × 12 ft`] : []),
-      ...(opts.railing  ? [`${railType.charAt(0).toUpperCase()+railType.slice(1)} railing — ${r.rlf} LF`] : []),
-      ...(opts.stairs   ? [`Stairs — ${r.stairCount} section(s), ${r.risersPerStair} risers each, ${r.stairWidth} ft wide`] : []),
-      ...(opts.fastener ? ['Hidden fastener system'] : []),
-      'Cleanup and haul away of all job debris',
-    ];
-    html += `<div class="p-section">
-      <div class="p-section-title">Scope of Work</div>
-      <ul style="margin:0;padding-left:18px;display:flex;flex-direction:column;gap:5px;">
-        ${scopeItems.map(i=>`<li style="font-size:13px;color:#1C2B3A;">${i}</li>`).join('')}
-      </ul>
-    </div>`;
-  }
-
-  // MATERIALS
-  if (pOpts.materials) {
+    // Build all line item rows with editable cells
     const matRows = [
-      ['Decking boards', `${Math.round(r.actLF).toLocaleString()} LF × $${L.lf.toFixed(2)}/LF`, fmtD(r.deck)],
-      ...(opts.fascia   ? [['Fascia', `${r.fc} pcs × $${L.fa.toFixed(2)}/pc`, fmtD(r.fascia)]] : []),
-      ...(opts.railing  ? [[`Railing (${railType})`, `${r.rlf} LF × $${RAIL_RATES[railType]}/LF`, fmtD(r.rail)]] : []),
+      { id:'deck',    label:`Decking — ${L.name}`,         detail:`${Math.round(r.actLF).toLocaleString()} LF × $${L.lf.toFixed(2)}/LF`, amt: r.deck },
+      ...(opts.fascia   ? [{ id:'fascia',  label:'Fascia boards',                  detail:`${r.fc} pcs × $${L.fa.toFixed(2)}/pc`,               amt: r.fascia }] : []),
+      ...(opts.railing  ? [{ id:'rail',    label:`Railing (${railType})`,          detail:`${r.rlf} LF × $${RAIL_RATES[railType]}/LF`,           amt: r.rail }] : []),
       ...(opts.stairs   ? [
-        ['Stair treads', `${r.stairTreadLF.toFixed(1)} LF × $${L.lf.toFixed(2)}/LF`, fmtD(r.stairTreadCost)],
-        ['Stair risers', `${r.totalRisers} pcs × $${L.ri.toFixed(2)}/pc`, fmtD(r.stairRiserCost)],
+        { id:'stair-trd', label:'Stair treads',             detail:`${r.stairTreadLF.toFixed(1)} LF × $${L.lf.toFixed(2)}/LF`,  amt: r.stairTreadCost },
+        { id:'stair-rsr', label:'Stair risers',             detail:`${r.totalRisers} pcs × $${L.ri.toFixed(2)}/pc`,              amt: r.stairRiserCost },
       ] : []),
-      ...(opts.fastener ? [['Fasteners', r.fastQ, fmtD(r.fast)]] : []),
-      ...(r.isBuild     ? [['Framing bundle', `${Math.round(r.area).toLocaleString()} sqft × $${FRAME_MAT}/sqft`, fmtD(r.frame)]] : []),
+      ...(opts.fastener ? [{ id:'fast',    label:'Fastener system',                detail: r.fastQ,                                              amt: r.fast }] : []),
+      ...(r.isBuild     ? [{ id:'frame',   label:'Framing bundle (PT lumber)',     detail:`${Math.round(r.area).toLocaleString()} sqft × $${FRAME_MAT}/sqft`, amt: r.frame }] : []),
     ];
-    html += `<div class="p-section">
-      <div class="p-section-title">Materials</div>
-      <table class="p-table">
-        <thead><tr><th>Item</th><th>Detail</th><th style="text-align:right;">Amount</th></tr></thead>
-        <tbody>
-          ${matRows.map(([item,det,amt])=>`<tr><td>${item}</td><td style="color:#7A92A8;font-size:12px;">${det}</td><td class="td-right">${amt}</td></tr>`).join('')}
-          <tr class="p-total-row"><td colspan="2"><strong>Materials Subtotal</strong></td><td class="td-right">${fmtD(r.matSub)}</td></tr>
-          <tr><td colspan="2" style="color:#7A92A8;">Sales Tax (10% on materials)</td><td class="td-right" style="color:#7A92A8;">${fmtD(r.tax)}</td></tr>
-        </tbody>
-      </table>
-    </div>`;
-  }
 
-  // LABOR
-  if (pOpts.labor) {
     const labRows = [
-      ['Deck installation', `${Math.round(r.area).toLocaleString()} sqft × $${r.installRateSqft.toFixed(2)}/sqft`, fmtD(r.instL)],
-      ...(opts.railing && railLabor > 0 ? [['Railing installation', `${r.rlf} LF × $${railLaborRate.toFixed(2)}/LF`, fmtD(railLabor)]] : []),
-      ...(r.isBuild ? [['Framing labor', `${Math.round(r.area).toLocaleString()} sqft × $${r.framingRateSqft.toFixed(2)}/sqft`, fmtD(r.frameL)]] : []),
-      ...(opts.stairs && r.stairLabor > 0 ? [['Stair construction', '', fmtD(r.stairLabor)]] : []),
+      { id:'lab-inst',  label:'Deck installation',         detail:`${Math.round(r.area).toLocaleString()} sqft × $${r.installRateSqft.toFixed(2)}/sqft`, amt: r.instL },
+      ...(opts.railing && railLabor > 0 ? [{ id:'lab-rail', label:'Railing installation', detail:`${r.rlf} LF × $${railLaborRate.toFixed(2)}/LF`, amt: railLabor }] : []),
+      ...(r.isBuild   ? [{ id:'lab-frame', label:'Framing labor',            detail:`${Math.round(r.area).toLocaleString()} sqft × $${r.framingRateSqft.toFixed(2)}/sqft`, amt: r.frameL }] : []),
+      ...(opts.stairs && r.stairLabor > 0 ? [{ id:'lab-stair', label:'Stair construction', detail:'', amt: r.stairLabor }] : []),
     ];
-    html += `<div class="p-section">
-      <div class="p-section-title">Labor</div>
-      <table class="p-table">
-        <thead><tr><th>Description</th><th>Detail</th><th style="text-align:right;">Amount</th></tr></thead>
-        <tbody>
-          ${labRows.map(([item,det,amt])=>`<tr><td>${item}</td><td style="color:#7A92A8;font-size:12px;">${det}</td><td class="td-right">${amt}</td></tr>`).join('')}
-          <tr class="p-total-row"><td colspan="2"><strong>Labor Subtotal</strong></td><td class="td-right">${fmtD(r.labSub)}</td></tr>
-        </tbody>
-      </table>
-    </div>`;
-  }
 
-  // COST SUMMARY
-  if (pOpts.total) {
-    html += `<div class="p-section">
-      <div class="p-section-title">Cost Summary</div>
-      <table class="p-table">
-        <tbody>
-          <tr><td>Materials</td><td class="td-right">${fmtD(r.matSub)}</td></tr>
-          <tr><td>Sales Tax (10%)</td><td class="td-right">${fmtD(r.tax)}</td></tr>
-          <tr><td>Labor</td><td class="td-right">${fmtD(r.labSub)}</td></tr>
-          <tr><td>Profit / Overhead (${r.marginPct}%)</td><td class="td-right">${fmtD(r.profit)}</td></tr>
-          <tr class="p-grand-row"><td><strong>TOTAL</strong></td><td class="td-right"><strong>${fmtD(r.grand)}</strong></td></tr>
-        </tbody>
-      </table>
-    </div>`;
-  }
+    // Compute live totals using overrides
+    const matTotal  = matRows.reduce((s,row) => s + parseAmt('amt-'+row.id, row.amt), 0);
+    const labTotal  = labRows.reduce((s,row) => s + parseAmt('amt-'+row.id, row.amt), 0);
+    const taxAmt    = matTotal * 0.10;
+    const marginPct = parseFloat(($('profit-margin') && $('profit-margin').value)||0);
+    const profitAmt = (matTotal + taxAmt + labTotal) * (marginPct/100);
+    const grandAmt  = matTotal + taxAmt + labTotal + profitAmt;
 
-  // CUSTOM NOTES
-  if (pOpts.notes && notes) {
-    html += `<div class="p-section">
-      <div class="p-section-title">Notes</div>
-      <p style="font-size:13px;color:#1C2B3A;line-height:1.7;">${notes.replace(/\n/g,'<br>')}</p>
-    </div>`;
-  }
+    function tableRow(row) {
+      return `<tr>
+        <td>${editCell('lbl-'+row.id, row.label)}</td>
+        <td style="color:#7A92A8;font-size:12px;">${editCell('det-'+row.id, row.detail)}</td>
+        <td class="td-right">${editCell('amt-'+row.id, fmtD(row.amt), 'td-right')}</td>
+      </tr>`;
+    }
 
-  // TERMS
-  if (pOpts.terms) {
-    html += `<div class="p-section">
-      <div class="p-section-title">Terms & Conditions</div>
-      <p style="font-size:12px;color:#7A92A8;line-height:1.7;">${terms.replace(/\n/g,'<br>')}</p>
-    </div>`;
-  }
+    let html = `
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:36px;padding-bottom:24px;border-bottom:3px solid #E8751A;">
+      <div>
+        ${logoSrc ? `<img src="${logoSrc}" style="height:52px;margin-bottom:8px;display:block;">` : '<div style="font-size:28px;font-weight:700;color:#2D3F52;">FB Construction</div>'}
+      </div>
+      <div style="text-align:right;">
+        <div style="font-size:22px;font-weight:700;color:#2D3F52;letter-spacing:0.02em;">PROPOSAL</div>
+        <div style="font-size:12px;color:#7A92A8;margin-top:4px;">Date: ${dateStr}</div>
+        ${validStr ? `<div style="font-size:12px;color:#7A92A8;">Valid until: ${validStr}</div>` : ''}
+      </div>
+    </div>
 
-  // SIGNATURE
-  if (pOpts.signature) {
-    html += `<div class="p-section" style="margin-top:40px;">
-      <div class="p-section-title">Authorization</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:48px;margin-top:16px;">
-        <div>
-          <div style="border-top:1px solid #C8D0D8;padding-top:8px;margin-top:40px;">
-            <div style="font-size:12px;color:#7A92A8;">Client Signature</div>
-            <div style="font-size:12px;color:#7A92A8;margin-top:4px;">Date: _______________</div>
-          </div>
-        </div>
-        <div>
-          <div style="border-top:1px solid #C8D0D8;padding-top:8px;margin-top:40px;">
-            <div style="font-size:12px;color:#7A92A8;">FB Construction Authorized Signature</div>
-            <div style="font-size:12px;color:#7A92A8;margin-top:4px;">Date: _______________</div>
-          </div>
-        </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-bottom:32px;">
+      <div>
+        <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:#7A92A8;margin-bottom:6px;">Prepared for</div>
+        <div style="font-size:15px;font-weight:600;color:#1C2B3A;">${client}</div>
+        ${addr ? `<div style="font-size:13px;color:#445A6F;margin-top:2px;">${addr}</div>` : ''}
+        ${projAddr && projAddr !== addr ? `<div style="font-size:12px;color:#7A92A8;margin-top:2px;">Project: ${projAddr}</div>` : ''}
+      </div>
+      <div>
+        <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:#7A92A8;margin-bottom:6px;">Project description</div>
+        <div style="font-size:14px;font-weight:500;color:#1C2B3A;">${editCell('p-desc-inline', desc)}</div>
+        <div style="font-size:12px;color:#7A92A8;margin-top:4px;">${Math.round(r.area).toLocaleString()} sqft · ${L.badge} · ${mode==='build'?'Full Build':'Board Replacement'}</div>
       </div>
     </div>`;
-  }
 
-  $('proposal-content').innerHTML = html;
+    if (pOpts.scope) {
+      const scopeItems = [
+        ...(r.isBuild ? ['Pressure-treated framing at 12" OC (joists, beams, posts, hardware)','Framing installation labor'] : ['Board replacement — existing framing to remain']),
+        `${L.name} decking — ${r.bl > 0 ? r.bl+' ft stock' : 'multiple lengths'} — ${r.boards} boards / ${Math.round(r.actLF).toLocaleString()} LF`,
+        ...(opts.fascia   ? [`Fascia boards — ${r.fc} pieces × 12 ft`] : []),
+        ...(opts.railing  ? [`${railType.charAt(0).toUpperCase()+railType.slice(1)} railing — ${r.rlf} LF`] : []),
+        ...(opts.stairs   ? [`Stairs — ${r.stairCount} section(s), ${r.risersPerStair} risers each, ${r.stairWidth} ft wide`] : []),
+        ...(opts.fastener ? ['Hidden fastener system'] : []),
+        'Cleanup and haul away of all job debris',
+      ];
+      html += `<div class="p-section">
+        <div class="p-section-title">Scope of Work</div>
+        <ul style="margin:0;padding-left:18px;display:flex;flex-direction:column;gap:5px;" id="p-scope-list">
+          ${scopeItems.map((item,i)=>`<li style="font-size:13px;color:#1C2B3A;">${editCell('scope-'+i, item)}</li>`).join('')}
+        </ul>
+      </div>`;
+    }
+
+    if (pOpts.materials) {
+      html += `<div class="p-section">
+        <div class="p-section-title">Materials</div>
+        <table class="p-table">
+          <thead><tr><th>Item</th><th>Detail</th><th style="text-align:right;">Amount</th></tr></thead>
+          <tbody>
+            ${matRows.map(row => tableRow(row)).join('')}
+            <tr class="p-total-row"><td colspan="2"><strong>Materials Subtotal</strong></td><td class="td-right"><strong>${fmtD(matTotal)}</strong></td></tr>
+            <tr><td colspan="2" style="color:#7A92A8;">Sales Tax (10% on materials)</td><td class="td-right" style="color:#7A92A8;">${fmtD(taxAmt)}</td></tr>
+          </tbody>
+        </table>
+      </div>`;
+    }
+
+    if (pOpts.labor) {
+      html += `<div class="p-section">
+        <div class="p-section-title">Labor</div>
+        <table class="p-table">
+          <thead><tr><th>Description</th><th>Detail</th><th style="text-align:right;">Amount</th></tr></thead>
+          <tbody>
+            ${labRows.map(row => tableRow(row)).join('')}
+            <tr class="p-total-row"><td colspan="2"><strong>Labor Subtotal</strong></td><td class="td-right"><strong>${fmtD(labTotal)}</strong></td></tr>
+          </tbody>
+        </table>
+      </div>`;
+    }
+
+    if (pOpts.total) {
+      html += `<div class="p-section">
+        <div class="p-section-title">Cost Summary</div>
+        <table class="p-table">
+          <tbody>
+            <tr><td>Materials</td><td class="td-right">${fmtD(matTotal)}</td></tr>
+            <tr><td>Sales Tax (10%)</td><td class="td-right">${fmtD(taxAmt)}</td></tr>
+            <tr><td>Labor</td><td class="td-right">${fmtD(labTotal)}</td></tr>
+            <tr><td>${editCell('p-profit-label','Profit / Overhead ('+marginPct+'%)')}</td><td class="td-right">${fmtD(profitAmt)}</td></tr>
+            <tr class="p-grand-row"><td><strong>TOTAL</strong></td><td class="td-right"><strong>${fmtD(grandAmt)}</strong></td></tr>
+          </tbody>
+        </table>
+      </div>`;
+    }
+
+    if (pOpts.notes && notes) {
+      html += `<div class="p-section">
+        <div class="p-section-title">Notes</div>
+        <p style="font-size:13px;color:#1C2B3A;line-height:1.7;">${notes.replace(/\n/g,'<br>')}</p>
+      </div>`;
+    }
+
+    if (pOpts.terms) {
+      html += `<div class="p-section">
+        <div class="p-section-title">Terms & Conditions</div>
+        <p style="font-size:12px;color:#7A92A8;line-height:1.7;">${terms.replace(/\n/g,'<br>')}</p>
+      </div>`;
+    }
+
+    if (pOpts.signature) {
+      html += `<div class="p-section" style="margin-top:40px;">
+        <div class="p-section-title">Authorization</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:48px;margin-top:16px;">
+          <div><div style="border-top:1px solid #C8D0D8;padding-top:8px;margin-top:40px;">
+            <div style="font-size:12px;color:#7A92A8;">Client Signature &nbsp;&nbsp;&nbsp; Date: _______________</div>
+          </div></div>
+          <div><div style="border-top:1px solid #C8D0D8;padding-top:8px;margin-top:40px;">
+            <div style="font-size:12px;color:#7A92A8;">FB Construction Authorized Signature &nbsp;&nbsp;&nbsp; Date: _______________</div>
+          </div></div>
+        </div>
+      </div>`;
+    }
+
+    $('proposal-content').innerHTML = html;
+
+    // Add hint to editable cells on hover
+    document.querySelectorAll('.p-editable').forEach(el => {
+      el.title = 'Click to edit';
+    });
+
   } catch(e) {
     console.error('Proposal render error:', e);
     if ($('proposal-content')) $('proposal-content').innerHTML = '<div style="padding:20px;color:#C0392B;">Error rendering proposal: '+e.message+'</div>';
@@ -1558,25 +1667,21 @@ function renderProposal() {
 }
 
 function printProposal() {
-  // Show proposal tab, then trigger print
   const allTabs = ['tab-single','tab-compare','tab-proposal'];
   const prevState = {};
-  allTabs.forEach(id => {
-    prevState[id] = $(id).style.display;
-    $(id).style.display = id==='tab-proposal' ? '' : 'none';
-  });
+  allTabs.forEach(id => { prevState[id] = $(id).style.display; $(id).style.display = id==='tab-proposal' ? '' : 'none'; });
   window.print();
-  // Restore
   allTabs.forEach(id => { $(id).style.display = prevState[id]; });
 }
 
-// Set today's date as default
 document.addEventListener('DOMContentLoaded', () => {
   const today = new Date().toISOString().split('T')[0];
   if ($('p-date')) $('p-date').value = today;
   const valid = new Date(); valid.setDate(valid.getDate()+30);
   if ($('p-valid-until')) $('p-valid-until').value = valid.toISOString().split('T')[0];
 });
+
+buildPills('line-pills-a',selA,'active-a',id=>{selA=id;setPills('line-pills-a',id,'active-a');calc();});
 buildPills('line-pills-cmp-a',selCA,'active-a',id=>{selCA=id;setPills('line-pills-cmp-a',id,'active-a');calc();});
 buildPills('line-pills-cmp-b',selCB,'active-b',id=>{selCB=id;setPills('line-pills-cmp-b',id,'active-b');calc();});
 
