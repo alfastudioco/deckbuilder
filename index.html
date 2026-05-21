@@ -899,44 +899,48 @@ const LABOR_DEFAULTS = {
 function laborPerSqft(crew, rate, hrs) { return crew * rate * hrs / 100; }
 
 const LINES = [
-  // AZEK Advanced PVC — group color: #185FA5 (blue)
-  { id:'azek_vintage',    name:'AZEK Vintage',  sn:'Vintage',   t:'pvc',   grp:'azek',   grpColor:'#185FA5', grpLabel:'AZEK PVC',
+  // AZEK Advanced PVC
+  { id:'azek_vintage',     name:'AZEK Vintage',   sn:'Vintage',   t:'pvc',   grp:'azek', grpColor:'#185FA5', grpLabel:'AZEK PVC',
     lf:6.75, fa:157.85, ri:111.61, badge:'Advanced PVC',
+    colors:['Coastline','Dark Hickory','English Walnut','Mahogany','Weathered Teak','Cypress'],
+    desc:'Lifetime · 50yr fade/stain · Cooler · Class A', specs:['Capped Advanced PVC','Lifetime decking warranty','50yr fade & stain warranty','Stays cooler on hot days','Class A flame spread'] },
+  { id:'azek_landmark',    name:'AZEK Landmark',  sn:'Landmark',  t:'pvc',   grp:'azek', grpColor:'#185FA5', grpLabel:'AZEK PVC',
+    lf:5.84, fa:104.70, ri:91.06,  badge:'Advanced PVC',
+    colors:['American Walnut','Boardwalk','Castle Gate','French White Oak'],
+    desc:'Lifetime · 50yr fade/stain · Cooler · Class A', specs:['Capped Advanced PVC','Lifetime decking warranty','50yr fade & stain warranty','Stays cooler on hot days','Class A flame spread'] },
+  { id:'azek_harvest',     name:'AZEK Harvest',   sn:'Harvest',   t:'pvc',   grp:'azek', grpColor:'#185FA5', grpLabel:'AZEK PVC',
+    lf:5.24, fa:93.99,  ri:81.75,  badge:'Advanced PVC',
     colors:['Brownstone','Slate Gray','Kona'],
     desc:'Lifetime · 50yr fade/stain · Cooler · Class A', specs:['Capped Advanced PVC','Lifetime decking warranty','50yr fade & stain warranty','Stays cooler on hot days','Class A flame spread'] },
-  { id:'azek_landmark',   name:'AZEK Landmark', sn:'Landmark',  t:'pvc',   grp:'azek',   grpColor:'#185FA5', grpLabel:'AZEK PVC',
-    lf:5.84, fa:104.70, ri:91.06,  badge:'Advanced PVC',
-    colors:['Am. Walnut','Coastline','Boardwalk','Dark Hickory','Castle Gate','English Walnut','Mahogany','Weathered Teak','Cypress'],
-    desc:'Lifetime · 50yr fade/stain · Cooler · Class A', specs:['Capped Advanced PVC','Lifetime decking warranty','50yr fade & stain warranty','Stays cooler on hot days','Class A flame spread'] },
-  { id:'azek_harvest',    name:'AZEK Harvest',  sn:'Harvest',   t:'pvc',   grp:'azek',   grpColor:'#185FA5', grpLabel:'AZEK PVC',
+  { id:'azek_harvest_plus',name:'AZEK Harvest+',  sn:'Harvest+',  t:'pvc',   grp:'azek', grpColor:'#185FA5', grpLabel:'AZEK PVC',
     lf:5.24, fa:93.99,  ri:81.75,  badge:'Advanced PVC',
     colors:['Toasted Wheat','Timber Gray'],
     desc:'Lifetime · 50yr fade/stain · Cooler · Class A', specs:['Capped Advanced PVC','Lifetime decking warranty','50yr fade & stain warranty','Stays cooler on hot days','Class A flame spread'] },
-  // TimberTech 4-Sided Composite — group color: #3B6D11 (green)
-  { id:'tt_legacy',       name:'TT Legacy',     sn:'Legacy',    t:'comp4', grp:'tt4',    grpColor:'#3B6D11', grpLabel:'4-Sided Composite',
+  // TimberTech 4-Sided Composite
+  { id:'tt_legacy',        name:'TT Legacy',      sn:'Legacy',    t:'comp4', grp:'tt4',  grpColor:'#3B6D11', grpLabel:'4-Sided Composite',
     lf:6.30, fa:149.96, ri:83.36,  badge:'4-Sided Composite',
-    colors:['Brown Oak','Antique Leather','Ashwood','Silver Maple','Dark Roast','Espresso','Driftwood','Pecan','Reclaimed Chestnut','Mocha','Tigerwood','Whitewash Cedar'],
+    colors:['Ashwood','Espresso','Pecan','Mocha','Tigerwood','Whitewash Cedar'],
     desc:'4-sided capped · 30yr warranties · Strong & reliable', specs:['4-sided capped composite','30yr fade warranty','30yr stain warranty','30yr deck warranty','Strong, reliable build'] },
-  { id:'tt_reserve',      name:'TT Reserve',    sn:'Reserve',   t:'comp4', grp:'tt4',    grpColor:'#3B6D11', grpLabel:'4-Sided Composite',
+  { id:'tt_reserve',       name:'TT Reserve',     sn:'Reserve',   t:'comp4', grp:'tt4',  grpColor:'#3B6D11', grpLabel:'4-Sided Composite',
     lf:5.24, fa:125.05, ri:72.45,  badge:'4-Sided Composite',
-    colors:['French White Oak','Coconut Husk'],
+    colors:['Antique Leather','Dark Roast','Driftwood','Reclaimed Chestnut'],
     desc:'4-sided capped · 30yr warranties · Strong & reliable', specs:['4-sided capped composite','30yr fade warranty','30yr stain warranty','30yr deck warranty','Strong, reliable build'] },
-  // TimberTech 3-Sided Composite — group color: #7A5C00 (amber/brown)
-  { id:'tt_terrain',      name:'TT Terrain',    sn:'Terrain',   t:'comp3', grp:'tt3',    grpColor:'#8B5E00', grpLabel:'3-Sided Composite',
+  // TimberTech 3-Sided Composite
+  { id:'tt_terrain',       name:'TT Terrain',     sn:'Terrain',   t:'comp3', grp:'tt3',  grpColor:'#8B5E00', grpLabel:'3-Sided Composite',
     lf:3.69, fa:94.81,  ri:55.10,  badge:'3-Sided Composite',
-    colors:['Dark Teak','Dark Oak','Dark Cocoa','Maritime Gray','Natural White Oak','Sea Salt Gray','Weathered Oak'],
+    colors:['Brown Oak','Silver Maple'],
     desc:'3-sided capped · 25yr warranties · High value', specs:['3-sided capped composite','25yr fade warranty','25yr stain warranty','25yr deck warranty','High value, low maintenance'] },
-  { id:'tt_prime_plus',   name:'TT Prime+',     sn:'Prime+',    t:'comp3', grp:'tt3',    grpColor:'#8B5E00', grpLabel:'3-Sided Composite',
-    lf:3.69, fa:94.81,  ri:55.10,  badge:'3-Sided Composite',
-    colors:['Dark Teak','Dark Oak','Dark Cocoa','Maritime Gray','Natural White Oak','Sea Salt Gray','Weathered Oak'],
-    desc:'3-sided capped · 25yr warranties · High value', specs:['3-sided capped composite','25yr fade warranty','25yr stain warranty','25yr deck warranty','High value, low maintenance'] },
-  { id:'tt_prime',        name:'TT Prime',      sn:'Prime',     t:'comp3', grp:'tt3',    grpColor:'#8B5E00', grpLabel:'3-Sided Composite',
-    lf:2.45, fa:93.39,  ri:53.49,  badge:'3-Sided Composite',
-    colors:['Dark Teak','Dark Oak','Dark Cocoa','Maritime Gray','Natural White Oak','Sea Salt Gray','Weathered Oak'],
-    desc:'3-sided capped · 25yr warranties · High value', specs:['3-sided capped composite','25yr fade warranty','25yr stain warranty','25yr deck warranty','High value, low maintenance'] },
-  { id:'tt_terrain_plus', name:'TT Terrain+',   sn:'Terrain+',  t:'comp3', grp:'tt3',    grpColor:'#8B5E00', grpLabel:'3-Sided Composite',
+  { id:'tt_terrain_plus',  name:'TT Terrain+',    sn:'Terrain+',  t:'comp3', grp:'tt3',  grpColor:'#8B5E00', grpLabel:'3-Sided Composite',
     lf:2.83, fa:94.81,  ri:55.10,  badge:'3-Sided Composite',
-    colors:['Dark Teak','Dark Oak','Dark Cocoa','Maritime Gray','Natural White Oak','Sea Salt Gray','Weathered Oak'],
+    colors:['Dark Oak','Natural White Oak','Weathered Oak'],
+    desc:'3-sided capped · 25yr warranties · High value', specs:['3-sided capped composite','25yr fade warranty','25yr stain warranty','25yr deck warranty','High value, low maintenance'] },
+  { id:'tt_prime',         name:'TT Prime/Premier',sn:'Prime',    t:'comp3', grp:'tt3',  grpColor:'#8B5E00', grpLabel:'3-Sided Composite',
+    lf:2.45, fa:93.39,  ri:53.49,  badge:'3-Sided Composite',
+    colors:['Dark Teak','Maritime Gray'],
+    desc:'3-sided capped · 25yr warranties · High value', specs:['3-sided capped composite','25yr fade warranty','25yr stain warranty','25yr deck warranty','High value, low maintenance'] },
+  { id:'tt_prime_plus',    name:'TT Prime+',      sn:'Prime+',    t:'comp3', grp:'tt3',  grpColor:'#8B5E00', grpLabel:'3-Sided Composite',
+    lf:3.69, fa:94.81,  ri:55.10,  badge:'3-Sided Composite',
+    colors:['Coconut Husk','Dark Cocoa','Sea Salt Gray'],
     desc:'3-sided capped · 25yr warranties · High value', specs:['3-sided capped composite','25yr fade warranty','25yr stain warranty','25yr deck warranty','High value, low maintenance'] },
 ];
 
@@ -1136,9 +1140,10 @@ function buildPills(cid, aid, ac, onClick) {
       el.innerHTML = `
         <div style="font-size:12px;font-weight:600;color:${isActive ? g.color : 'var(--text-secondary)'};">${L.sn}</div>
         <div style="font-size:11px;font-weight:500;color:${isActive ? g.color : 'var(--text-muted)'};">$${L.lf.toFixed(2)}/LF</div>
-        <div style="display:flex;gap:3px;margin-top:3px;flex-wrap:wrap;max-width:200px;">
-          ${(L.colors||[]).map(col=>`<span style="font-size:9px;padding:1px 5px;border-radius:3px;background:${isActive ? g.color+'22' : 'var(--border-light)'};color:${isActive ? g.color : 'var(--text-muted)'};border:0.5px solid ${isActive ? g.color+'44' : 'var(--border)'};white-space:nowrap;">${col}</span>`).join('')}
-        </div>`;
+        ${isActive ? `<div style="margin-top:5px;display:flex;flex-direction:column;gap:2px;">
+          ${(L.colors||[]).map(col=>`<span style="font-size:10px;color:${g.color};line-height:1.5;">• ${col}</span>`).join('')}
+        </div>` : ''}
+      `;
       el.onclick = () => onClick(L.id);
       row.appendChild(el);
     });
@@ -1151,18 +1156,15 @@ function setPills(cid, aid, ac) {
     const L = LINES.find(x=>x.id===el.dataset.id);
     if (!L) return;
     const isActive = el.dataset.id === aid;
-    el.style.border = `1.5px solid ${isActive ? L.grpColor : 'var(--border)'}`;
+    el.style.border     = `1.5px solid ${isActive ? L.grpColor : 'var(--border)'}`;
     el.style.background = isActive ? L.grpColor+'18' : 'var(--surface-2)';
-    const nameEl  = el.querySelector('div:first-child');
-    const priceEl = el.querySelector('div:nth-child(2)');
-    if (nameEl)  nameEl.style.color  = isActive ? L.grpColor : 'var(--text-secondary)';
-    if (priceEl) priceEl.style.color = isActive ? L.grpColor : 'var(--text-muted)';
-    // Refresh color name tags
-    el.querySelectorAll('span[style*="border-radius:3px"]').forEach(tag => {
-      tag.style.background = isActive ? L.grpColor+'22' : 'var(--border-light)';
-      tag.style.color       = isActive ? L.grpColor      : 'var(--text-muted)';
-      tag.style.border      = `0.5px solid ${isActive ? L.grpColor+'44' : 'var(--border)'}`;
-    });
+    el.innerHTML = `
+      <div style="font-size:12px;font-weight:600;color:${isActive ? L.grpColor : 'var(--text-secondary)'};">${L.sn}</div>
+      <div style="font-size:11px;font-weight:500;color:${isActive ? L.grpColor : 'var(--text-muted)'};">$${L.lf.toFixed(2)}/LF</div>
+      ${isActive ? `<div style="margin-top:5px;display:flex;flex-direction:column;gap:2px;">
+        ${(L.colors||[]).map(col=>`<span style="font-size:10px;color:${L.grpColor};line-height:1.5;">• ${col}</span>`).join('')}
+      </div>` : ''}
+    `;
   });
 }
 
