@@ -1136,9 +1136,8 @@ function buildPills(cid, aid, ac, onClick) {
       el.innerHTML = `
         <div style="font-size:12px;font-weight:600;color:${isActive ? g.color : 'var(--text-secondary)'};">${L.sn}</div>
         <div style="font-size:11px;font-weight:500;color:${isActive ? g.color : 'var(--text-muted)'};">$${L.lf.toFixed(2)}/LF</div>
-        <div style="display:flex;gap:2px;margin-top:2px;flex-wrap:wrap;">
-          ${(L.colors||[]).slice(0,8).map(col=>`<span title="${col}" style="width:7px;height:7px;border-radius:50%;background:var(--border);border:0.5px solid var(--border-light);display:inline-block;"></span>`).join('')}
-          ${(L.colors||[]).length > 8 ? `<span style="font-size:9px;color:var(--text-muted);">+${L.colors.length-8}</span>` : ''}
+        <div style="display:flex;gap:3px;margin-top:3px;flex-wrap:wrap;max-width:200px;">
+          ${(L.colors||[]).map(col=>`<span style="font-size:9px;padding:1px 5px;border-radius:3px;background:${isActive ? g.color+'22' : 'var(--border-light)'};color:${isActive ? g.color : 'var(--text-muted)'};border:0.5px solid ${isActive ? g.color+'44' : 'var(--border)'};white-space:nowrap;">${col}</span>`).join('')}
         </div>`;
       el.onclick = () => onClick(L.id);
       row.appendChild(el);
@@ -1154,10 +1153,16 @@ function setPills(cid, aid, ac) {
     const isActive = el.dataset.id === aid;
     el.style.border = `1.5px solid ${isActive ? L.grpColor : 'var(--border)'}`;
     el.style.background = isActive ? L.grpColor+'18' : 'var(--surface-2)';
-    const nameEl = el.querySelector('div:first-child');
+    const nameEl  = el.querySelector('div:first-child');
     const priceEl = el.querySelector('div:nth-child(2)');
-    if (nameEl) nameEl.style.color = isActive ? L.grpColor : 'var(--text-secondary)';
+    if (nameEl)  nameEl.style.color  = isActive ? L.grpColor : 'var(--text-secondary)';
     if (priceEl) priceEl.style.color = isActive ? L.grpColor : 'var(--text-muted)';
+    // Refresh color name tags
+    el.querySelectorAll('span[style*="border-radius:3px"]').forEach(tag => {
+      tag.style.background = isActive ? L.grpColor+'22' : 'var(--border-light)';
+      tag.style.color       = isActive ? L.grpColor      : 'var(--text-muted)';
+      tag.style.border      = `0.5px solid ${isActive ? L.grpColor+'44' : 'var(--border)'}`;
+    });
   });
 }
 
