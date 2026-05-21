@@ -572,12 +572,12 @@ input[type=text]:focus, input[type=date]:focus, textarea:focus { border-color: v
     <div class="card">
       <div style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:12px;">Accessories</div>
       <div style="margin-bottom:12px;">
-        <div class="toggle-row"><div class="toggle on" id="tog-fascia" onclick="toggleOpt('fascia')"><div class="toggle-knob"></div></div><span class="toggle-label">Fascia (auto from perimeter)</span></div>
-        <div style="padding:8px 10px; background:var(--surface-2); border-radius:6px; border:1px solid var(--border); font-size:12px; display:flex; justify-content:space-between;">
-          <span style="color:var(--text-muted);">12 ft pieces needed</span>
-          <span style="font-family:'DM Mono',monospace; color:var(--navy); font-weight:500;" id="auto-fascia-count">—</span>
+        <div class="toggle-row" style="margin-bottom:6px;"><div class="toggle on" id="tog-fascia" onclick="toggleOpt('fascia')"><div class="toggle-knob"></div></div><span class="toggle-label">Fascia (12 ft pieces)</span></div>
+        <div style="display:flex;gap:6px;align-items:center;">
+          <input type="number" id="fascia-count" value="6" min="0" max="500" style="width:80px;font-family:'DM Mono',monospace;font-weight:500;color:var(--navy);" oninput="calc()">
+          <button onclick="autoFasciaCalc()" style="flex:1;padding:7px 10px;font-size:11px;font-weight:500;border:1px solid var(--border);border-radius:6px;background:var(--surface-2);color:var(--text-secondary);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.15s;white-space:nowrap;" onmouseover="this.style.borderColor='var(--orange)';this.style.color='var(--orange)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-secondary)'">↺ Auto from perimeter</button>
         </div>
-        <div style="font-size:10px;color:var(--text-muted);margin-top:3px;" id="auto-fascia-detail">based on deck perimeter</div>
+        <div style="font-size:10px;color:var(--text-muted);margin-top:4px;" id="auto-fascia-detail">based on deck perimeter</div>
       </div>
       <div class="toggle-row"><div class="toggle" id="tog-fastener" onclick="toggleOpt('fastener')"><div class="toggle-knob"></div></div><span class="toggle-label">Fasteners</span></div>
       <select id="fastener-type" onchange="calc()" style="margin-top:4px; font-size:12px;">
@@ -1112,8 +1112,16 @@ function toggleOpt(k) {
   calc();
 }
 
+function autoFasciaCalc() {
+  const dl = getDim('len');
+  const dw = getDim('wid');
+  const fasciaInfo = autoFasciaCount(dl, dw);
+  $('fascia-count').value = fasciaInfo.count;
+  $('auto-fascia-detail').textContent = 'Perimeter: '+(2*dl+2*dw)+' ft → '+fasciaInfo.count+' pcs × 12 ft';
+  calc();
+}
+
 function autoRailing() {
-  const l = getDim('len'), w = getDim('wid');
   const lf = l+w+w;
   $('railing-lf').value=lf;
   $('rail-hint').textContent=l+' + '+w+' + '+w+' = '+lf+' LF (3 sides)';
@@ -1204,9 +1212,9 @@ function calcCosts(lid) {
     adjLF   = (area / BOARD_WIDTH_FT) * wf;
   }
 
-  // Auto fascia
-  const fasciaInfo = autoFasciaCount(dl, dw);
-  const fc = fasciaInfo.count;
+  // Fascia — read directly from editable input
+  const fc = opts.fascia ? (parseInt($('fascia-count').value)||0) : 0;
+  const fasciaInfo = autoFasciaCount(dl, dw); // still used for detail label only
 
   // Deck material costs
   const deck = actLF * L.lf;
@@ -1281,10 +1289,9 @@ function calc() {
     const bestInfo   = bestBoardLength(dl, dw, wf);
     buildBoardLenUI(allOptions, bestInfo.bl);
 
-    // Auto fascia from dimensions
+    // Update fascia detail label only — don't overwrite user's input
     const fasciaInfo = autoFasciaCount(dl, dw);
-    $('auto-fascia-count').textContent  = fasciaInfo.count;
-    $('auto-fascia-detail').textContent = 'Perimeter: '+(2*dl+2*dw)+' ft → '+fasciaInfo.count+' pcs × 12 ft';
+    $('auto-fascia-detail').textContent = 'Perimeter: '+(2*dl+2*dw)+' ft · Auto = '+fasciaInfo.count+' pcs · Edit above to override';
   } else {
     // Board count mode
     const totals = getBoardRowTotals();
@@ -1294,8 +1301,7 @@ function calc() {
 
     const estSide = Math.max(1, Math.round(Math.sqrt(totals.estArea)));
     const fasciaInfo = autoFasciaCount(estSide, Math.max(1, Math.round(totals.estArea/estSide)));
-    $('auto-fascia-count').textContent  = fasciaInfo.count;
-    $('auto-fascia-detail').textContent = 'Est. perimeter: ~'+(4*estSide)+' ft → '+fasciaInfo.count+' pcs × 12 ft';
+    $('auto-fascia-detail').textContent = 'Est. perimeter: ~'+(4*estSide)+' ft · Auto = '+fasciaInfo.count+' pcs · Edit above to override';
     $('board-len-options').innerHTML = '<div style="font-size:12px;color:var(--text-muted);padding:6px 0;">Board lengths set by entries above</div>';
   }
 
@@ -1698,6 +1704,7 @@ buildPills('line-pills-cmp-b',selCB,'active-b',id=>{selCB=id;setPills('line-pill
 
 $('railing-config').style.display='none';
 $('stairs-config').style.display='none';
+autoFasciaCalc();
 calc();
 </script>
 </body>
