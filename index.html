@@ -442,9 +442,11 @@ input[type=text]:focus, input[type=date]:focus, textarea:focus { border-color: v
   .app > *:not(#tab-proposal) { display: none !important; }
   #tab-proposal > *:not(#proposal-preview) { display: none !important; }
   #proposal-preview { border: none !important; box-shadow: none !important; }
+  #proposal-content { padding: 28px 36px !important; }
   body { background: white !important; }
   body::before { display: none !important; }
   .p-editable { border-bottom: none !important; }
+  @page { margin: 0.4in; size: letter; }
 }
 @media (max-width: 800px) {
   .metrics-row { grid-template-columns: repeat(4, 1fr); }
@@ -699,6 +701,59 @@ input[type=text]:focus, input[type=date]:focus, textarea:focus { border-color: v
       </div>
     </div>
   </div>
+  </div>
+
+  <!-- LATTICE -->
+  <div class="card gap-mb">
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+      <div class="toggle-row" style="margin-bottom:0;"><div class="toggle" id="tog-lattice" onclick="toggleOpt('lattice')"><div class="toggle-knob"></div></div><span class="toggle-label" style="font-weight:500;font-size:14px;">Lattice</span></div>
+      <div id="lattice-config" style="display:none;flex:1;gap:12px;flex-wrap:wrap;margin-top:10px;">
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;">
+          <div>
+            <label class="form-label">Linear feet</label>
+            <input type="number" id="lattice-lf" value="0" min="0" max="2000" oninput="calc()">
+            <div style="font-size:10px;color:var(--text-muted);margin-top:3px;">LF of lattice</div>
+          </div>
+          <div>
+            <label class="form-label">Price per LF</label>
+            <div style="display:flex;align-items:center;gap:4px;">
+              <span style="font-size:13px;color:var(--text-muted);">$</span>
+              <input type="number" id="lattice-rate" value="12" min="0" max="500" step="0.50" oninput="calc()">
+            </div>
+            <div style="font-size:10px;color:var(--text-muted);margin-top:3px;">per linear foot</div>
+          </div>
+          <div style="background:var(--orange-pale);border-radius:6px;padding:10px 12px;border:1px solid rgba(232,117,26,0.2);">
+            <div style="font-size:10px;color:var(--text-muted);margin-bottom:4px;">Lattice subtotal</div>
+            <div style="font-family:'DM Mono',monospace;font-size:18px;font-weight:500;color:var(--orange);" id="lattice-subtotal">$0.00</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HAUL AWAY -->
+  <div class="card gap-mb">
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+      <div class="toggle-row" style="margin-bottom:0;"><div class="toggle" id="tog-haul" onclick="toggleOpt('haul')"><div class="toggle-knob"></div></div><span class="toggle-label" style="font-weight:500;font-size:14px;">Garbage / Haul Away</span></div>
+      <div id="haul-config" style="display:none;flex:1;gap:12px;flex-wrap:wrap;margin-top:10px;">
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
+          <div style="grid-column:span 2;">
+            <label class="form-label">Flat fee</label>
+            <div style="display:flex;align-items:center;gap:4px;">
+              <span style="font-size:13px;color:var(--text-muted);">$</span>
+              <input type="number" id="haul-fee" value="500" min="0" max="50000" step="50" oninput="calc()">
+            </div>
+            <div style="font-size:10px;color:var(--text-muted);margin-top:3px;">flat fee for debris removal & haul away</div>
+          </div>
+          <div style="background:var(--orange-pale);border-radius:6px;padding:10px 12px;border:1px solid rgba(232,117,26,0.2);">
+            <div style="font-size:10px;color:var(--text-muted);margin-bottom:4px;">Haul away total</div>
+            <div style="font-family:'DM Mono',monospace;font-size:18px;font-weight:500;color:var(--orange);" id="haul-subtotal">$500.00</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="tab-row">
     <button class="tab-btn active" onclick="switchTab('single',this)">Single Line</button>
     <button class="tab-btn" onclick="switchTab('compare',this)">Compare Two Lines</button>
@@ -734,6 +789,8 @@ input[type=text]:focus, input[type=date]:focus, textarea:focus { border-color: v
         <div class="brow" id="row-fastener"><span>Fasteners (<span id="b-fast-q">—</span>)</span><span class="brow-val" id="b-fastener">—</span></div>
         <div class="brow" id="row-framing"><span>Framing bundle (<span id="b-fram-sf">—</span> sqft × $7.50)</span><span class="brow-val" id="b-framing">—</span></div>
         <div class="brow" id="row-railing-mat"><span>Railing — <span id="b-rail-t">composite</span> (<span id="b-rail-lf">—</span> LF × $<span id="b-rail-r">55</span>)</span><span class="brow-val" id="b-railing">—</span></div>
+        <div class="brow" id="row-lattice-mat" style="display:none;"><span>Lattice (<span id="b-lattice-lf">—</span> LF × $<span id="b-lattice-rate">—</span>/LF)</span><span class="brow-val" id="b-lattice">—</span></div>
+        <div class="brow" id="row-haul-mat" style="display:none;"><span>Garbage / Haul Away (flat fee)</span><span class="brow-val" id="b-haul">—</span></div>
         <div class="brow subtotal"><span>Material subtotal</span><span class="brow-val" id="b-mat-sub">—</span></div>
 
         <div class="breakdown-section-label">Labor</div>
@@ -873,7 +930,7 @@ input[type=text]:focus, input[type=date]:focus, textarea:focus { border-color: v
 
     <!-- Proposal Preview -->
     <div id="proposal-preview" style="background:#fff;border:1px solid var(--border);border-radius:10px;padding:0;overflow:hidden;box-shadow:0 4px 20px rgba(45,63,82,0.1);">
-      <div id="proposal-content" style="padding:48px 56px;font-family:'DM Sans',sans-serif;color:#1C2B3A;max-width:900px;margin:0 auto;"></div>
+      <div id="proposal-content" style="padding:36px 48px;font-family:'DM Sans',sans-serif;color:#1C2B3A;max-width:860px;margin:0 auto;"></div>
     </div>
   </div>
 
@@ -953,7 +1010,7 @@ const FRATES = {
   concealoc1000_sqft:{rate:1145/1000,mode:'sqft'}, cortex_comp_lf:{rate:87.54/100,mode:'lf'}, cortex_pvc_sqft:{rate:109.83/100,mode:'sqft'}
 };
 
-const opts = {fascia:true, fastener:false, railing:false, stairs:false};
+const opts = {fascia:true, fastener:false, railing:false, stairs:false, lattice:false, haul:false};
 let mode='replace', railType='composite', selA='azek_vintage', selCA='azek_vintage', selCB='tt_reserve', tab='single';
 let selectedBoardLen = null; // null = auto (use best)
 let inputMode = 'dimensions'; // 'dimensions' or 'boards'
@@ -1109,6 +1166,8 @@ function toggleOpt(k) {
   $('tog-'+k).classList.toggle('on',opts[k]);
   if(k==='railing') $('railing-config').style.display=opts[k]?'flex':'none';
   if(k==='stairs')  $('stairs-config').style.display=opts[k]?'block':'none';
+  if(k==='lattice') $('lattice-config').style.display=opts[k]?'flex':'none';
+  if(k==='haul')    $('haul-config').style.display=opts[k]?'flex':'none';
   calc();
 }
 
@@ -1239,7 +1298,9 @@ function calcCosts(lid) {
 
   const frame = isBuild ? area * FRAME_MAT : 0;
   const rail = opts.railing ? rlf * RAIL_RATES[railType] : 0;
-  const matSub = deck + fascia + stairTreadCost + stairRiserCost + fast + frame + rail;
+  const latticeCost = opts.lattice ? (parseFloat($('lattice-lf').value)||0) * (parseFloat($('lattice-rate').value)||0) : 0;
+  const haulCost    = opts.haul    ? (parseFloat($('haul-fee').value)||0) : 0;
+  const matSub = deck + fascia + stairTreadCost + stairRiserCost + fast + frame + rail + latticeCost + haulCost;
 
   const crew = parseInt($('l-crew').value)||2;
   const rate = parseFloat($('l-rate').value)||35;
@@ -1269,7 +1330,7 @@ function calcCosts(lid) {
     L, area, adjLF, boards, bl, actLF, fc,
     deck, fascia, stairTreadLF, stairTreadCost, stairRiserCost,
     totalRisers, stairCount, risersPerStair, stairWidth,
-    fast, fastQ, frame, rail, rlf, matSub,
+    fast, fastQ, frame, rail, rlf, latticeCost, haulCost, matSub,
     instL, railingLabor, railingLaborRatePerLF, stairLabor, frameL, labSub,
     profit, marginPct, tax, grand,
     psf: grand/area, isBuild,
@@ -1354,9 +1415,23 @@ function calcSingle() {
   $('row-stairs-treads').style.display = opts.stairs ? '' : 'none';
   $('row-stairs-risers').style.display = opts.stairs ? '' : 'none';
   $('row-fastener').style.display = opts.fastener ? '' : 'none';
-  $('row-framing').style.display = r.isBuild ? '' : 'none';
-  $('row-railing-mat').style.display = opts.railing ? '' : 'none';
-  $('row-fram-labor').style.display = r.isBuild ? '' : 'none';
+  $('row-framing').style.display       = r.isBuild     ? '' : 'none';
+  $('row-railing-mat').style.display   = opts.railing  ? '' : 'none';
+  $('row-lattice-mat').style.display   = opts.lattice  ? '' : 'none';
+  $('row-haul-mat').style.display      = opts.haul     ? '' : 'none';
+  $('row-fram-labor').style.display    = r.isBuild     ? '' : 'none';
+  $('row-railing-labor').style.display = opts.railing  ? '' : 'none';
+  document.getElementById('row-stair-labor').style.display   = opts.stairs ? '' : 'none';
+  document.getElementById('row-stairs-treads').style.display = opts.stairs ? '' : 'none';
+  document.getElementById('row-stairs-risers').style.display = opts.stairs ? '' : 'none';
+
+  // Lattice & Haul
+  if ($('b-lattice-lf'))   $('b-lattice-lf').textContent   = $('lattice-lf') ? ($('lattice-lf').value||0) : 0;
+  if ($('b-lattice-rate')) $('b-lattice-rate').textContent = $('lattice-rate') ? ($('lattice-rate').value||0) : 0;
+  if ($('b-lattice'))      $('b-lattice').textContent      = fmt(r.latticeCost);
+  if ($('b-haul'))         $('b-haul').textContent         = fmt(r.haulCost);
+  if ($('lattice-subtotal')) $('lattice-subtotal').textContent = fmt(r.latticeCost);
+  if ($('haul-subtotal'))    $('haul-subtotal').textContent    = fmt(r.haulCost);
 
   $('b-fascia').textContent = fmt(r.fascia);
   $('b-fastener').textContent = fmt(r.fast);
@@ -1506,183 +1581,127 @@ function renderProposal() {
   try {
     const r = calcCosts(selA);
     const L = r.L;
-    const client   = ($('p-client-name') && $('p-client-name').value) || 'Client Name';
+    const client   = ($('p-client-name')    && $('p-client-name').value)    || 'Client Name';
     const addr     = ($('p-client-address') && $('p-client-address').value) || '';
-    const projAddr = ($('p-project-address') && $('p-project-address').value) || addr;
-    const desc     = ($('p-description') && $('p-description').value) || (L.name+' Deck — '+(mode==='build'?'Full Build':'Board Replacement'));
-    const dateVal  = $('p-date') && $('p-date').value;
+    const projAddr = ($('p-project-address')&& $('p-project-address').value)|| addr;
+    const desc     = ($('p-description')    && $('p-description').value)    || (L.name+' Deck — '+(mode==='build'?'Full Build':'Board Replacement'));
+    const dateVal  = $('p-date')        && $('p-date').value;
     const validVal = $('p-valid-until') && $('p-valid-until').value;
-    const dateStr  = dateVal ? new Date(dateVal+'T00:00:00').toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}) : new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+    const dateStr  = dateVal  ? new Date(dateVal +'T00:00:00').toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}) : new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
     const validStr = validVal ? new Date(validVal+'T00:00:00').toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}) : '';
-    const notes    = ($('p-notes') && $('p-notes').value) || '';
+    const notes    = ($('p-notes')      && $('p-notes').value)      || '';
     const terms    = ($('p-terms-text') && $('p-terms-text').value) || '';
-    const railLabor = r.railingLabor || 0;
-    const railLaborRate = r.railingLaborRatePerLF || 0;
-    const logoSrc = document.querySelector('.logo-area img')?.src || '';
+    const logoSrc  = document.querySelector('.logo-area img')?.src || '';
 
-    // Build all line item rows with editable cells
-    const matRows = [
-      { id:'deck',    label:`Decking — ${L.name}`,         detail:`${Math.round(r.actLF).toLocaleString()} LF × $${L.lf.toFixed(2)}/LF`, amt: r.deck },
-      ...(opts.fascia   ? [{ id:'fascia',  label:'Fascia boards',                  detail:`${r.fc} pcs × $${L.fa.toFixed(2)}/pc`,               amt: r.fascia }] : []),
-      ...(opts.railing  ? [{ id:'rail',    label:`Railing (${railType})`,          detail:`${r.rlf} LF × $${RAIL_RATES[railType]}/LF`,           amt: r.rail }] : []),
-      ...(opts.stairs   ? [
-        { id:'stair-trd', label:'Stair treads',             detail:`${r.stairTreadLF.toFixed(1)} LF × $${L.lf.toFixed(2)}/LF`,  amt: r.stairTreadCost },
-        { id:'stair-rsr', label:'Stair risers',             detail:`${r.totalRisers} pcs × $${L.ri.toFixed(2)}/pc`,              amt: r.stairRiserCost },
-      ] : []),
-      ...(opts.fastener ? [{ id:'fast',    label:'Fastener system',                detail: r.fastQ,                                              amt: r.fast }] : []),
-      ...(r.isBuild     ? [{ id:'frame',   label:'Framing bundle (PT lumber)',     detail:`${Math.round(r.area).toLocaleString()} sqft × $${FRAME_MAT}/sqft`, amt: r.frame }] : []),
+    // Build scope items — plain English, no quantities or prices
+    const scopeItems = [
+      ...(r.isBuild ? [
+        'Supply and install pressure-treated framing structure (joists, beams, posts, hardware)',
+      ] : [
+        'Remove existing deck boards and prepare surface for installation',
+      ]),
+      `Supply and install ${L.name} ${L.badge} decking boards`,
+      ...(opts.fascia   ? ['Supply and install matching fascia boards'] : []),
+      ...(opts.railing  ? [`Supply and install ${railType} railing system`] : []),
+      ...(opts.stairs   ? [`Supply and install deck stairs (${r.stairCount} section${r.stairCount>1?'s':''})`] : []),
+      ...(opts.fastener ? ['Hidden fastener system for clean board finish'] : []),
+      ...(opts.lattice  ? ['Supply and install lattice'] : []),
+      ...(opts.haul     ? ['Debris removal and haul away of all job materials'] : []),
+      'Site cleanup upon project completion',
     ];
 
-    const labRows = [
-      { id:'lab-inst',  label:'Deck installation',         detail:`${Math.round(r.area).toLocaleString()} sqft × $${r.installRateSqft.toFixed(2)}/sqft`, amt: r.instL },
-      ...(opts.railing && railLabor > 0 ? [{ id:'lab-rail', label:'Railing installation', detail:`${r.rlf} LF × $${railLaborRate.toFixed(2)}/LF`, amt: railLabor }] : []),
-      ...(r.isBuild   ? [{ id:'lab-frame', label:'Framing labor',            detail:`${Math.round(r.area).toLocaleString()} sqft × $${r.framingRateSqft.toFixed(2)}/sqft`, amt: r.frameL }] : []),
-      ...(opts.stairs && r.stairLabor > 0 ? [{ id:'lab-stair', label:'Stair construction', detail:'', amt: r.stairLabor }] : []),
-    ];
-
-    // Compute live totals using overrides
-    const matTotal  = matRows.reduce((s,row) => s + parseAmt('amt-'+row.id, row.amt), 0);
-    const labTotal  = labRows.reduce((s,row) => s + parseAmt('amt-'+row.id, row.amt), 0);
-    const taxAmt    = matTotal * 0.10;
-    const marginPct = parseFloat(($('profit-margin') && $('profit-margin').value)||0);
-    const profitAmt = (matTotal + taxAmt + labTotal) * (marginPct/100);
-    const grandAmt  = matTotal + taxAmt + labTotal + profitAmt;
-
-    function tableRow(row) {
-      return `<tr>
-        <td>${editCell('lbl-'+row.id, row.label)}</td>
-        <td style="color:#7A92A8;font-size:12px;">${editCell('det-'+row.id, row.detail)}</td>
-        <td class="td-right">${editCell('amt-'+row.id, fmtD(row.amt), 'td-right')}</td>
-      </tr>`;
-    }
+    const grandFormatted = '$'+r.grand.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
 
     let html = `
-    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:36px;padding-bottom:24px;border-bottom:3px solid #E8751A;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:28px;padding-bottom:20px;border-bottom:3px solid #E8751A;">
       <div>
-        ${logoSrc ? `<img src="${logoSrc}" style="height:52px;margin-bottom:8px;display:block;">` : '<div style="font-size:28px;font-weight:700;color:#2D3F52;">FB Construction</div>'}
+        ${logoSrc ? `<img src="${logoSrc}" style="height:48px;display:block;">` : '<div style="font-size:26px;font-weight:700;color:#2D3F52;">FB Construction</div>'}
+        <div style="font-size:11px;color:#7A92A8;margin-top:5px;line-height:1.7;">3026 Commercial Ave, Northbrook, IL 60062<br><a href=\"https://www.fbcoinc.com\" style=\"color:#E8751A;text-decoration:none;\">fbcoinc.com</a></div>
       </div>
       <div style="text-align:right;">
-        <div style="font-size:22px;font-weight:700;color:#2D3F52;letter-spacing:0.02em;">PROPOSAL</div>
-        <div style="font-size:12px;color:#7A92A8;margin-top:4px;">Date: ${dateStr}</div>
-        ${validStr ? `<div style="font-size:12px;color:#7A92A8;">Valid until: ${validStr}</div>` : ''}
+        <div style="font-size:20px;font-weight:700;color:#2D3F52;letter-spacing:0.03em;">PROPOSAL</div>
+        <div style="font-size:11px;color:#7A92A8;margin-top:3px;">Date: ${dateStr}</div>
+        ${validStr ? `<div style="font-size:11px;color:#7A92A8;">Valid until: ${validStr}</div>` : ''}
       </div>
     </div>
 
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-bottom:32px;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-bottom:24px;">
       <div>
-        <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:#7A92A8;margin-bottom:6px;">Prepared for</div>
-        <div style="font-size:15px;font-weight:600;color:#1C2B3A;">${client}</div>
-        ${addr ? `<div style="font-size:13px;color:#445A6F;margin-top:2px;">${addr}</div>` : ''}
-        ${projAddr && projAddr !== addr ? `<div style="font-size:12px;color:#7A92A8;margin-top:2px;">Project: ${projAddr}</div>` : ''}
+        <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:#7A92A8;margin-bottom:5px;">Prepared for</div>
+        <div style="font-size:15px;font-weight:600;color:#1C2B3A;">${editCell('p-client-inline', client)}</div>
+        ${addr     ? `<div style="font-size:12px;color:#445A6F;margin-top:2px;">${editCell('p-addr-inline', addr)}</div>`     : ''}
+        ${projAddr && projAddr!==addr ? `<div style="font-size:11px;color:#7A92A8;margin-top:2px;">Project site: ${editCell('p-proj-inline', projAddr)}</div>` : ''}
       </div>
       <div>
-        <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:#7A92A8;margin-bottom:6px;">Project description</div>
+        <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:#7A92A8;margin-bottom:5px;">Project</div>
         <div style="font-size:14px;font-weight:500;color:#1C2B3A;">${editCell('p-desc-inline', desc)}</div>
-        <div style="font-size:12px;color:#7A92A8;margin-top:4px;">${Math.round(r.area).toLocaleString()} sqft · ${L.badge} · ${mode==='build'?'Full Build':'Board Replacement'}</div>
+        <div style="font-size:11px;color:#7A92A8;margin-top:3px;">${Math.round(r.area).toLocaleString()} sq ft · ${L.badge}</div>
       </div>
     </div>`;
 
+    // SCOPE
     if (pOpts.scope) {
-      const scopeItems = [
-        ...(r.isBuild ? ['Pressure-treated framing at 12" OC (joists, beams, posts, hardware)','Framing installation labor'] : ['Board replacement — existing framing to remain']),
-        `${L.name} decking — ${r.bl > 0 ? r.bl+' ft stock' : 'multiple lengths'} — ${r.boards} boards / ${Math.round(r.actLF).toLocaleString()} LF`,
-        ...(opts.fascia   ? [`Fascia boards — ${r.fc} pieces × 12 ft`] : []),
-        ...(opts.railing  ? [`${railType.charAt(0).toUpperCase()+railType.slice(1)} railing — ${r.rlf} LF`] : []),
-        ...(opts.stairs   ? [`Stairs — ${r.stairCount} section(s), ${r.risersPerStair} risers each, ${r.stairWidth} ft wide`] : []),
-        ...(opts.fastener ? ['Hidden fastener system'] : []),
-        'Cleanup and haul away of all job debris',
-      ];
-      html += `<div class="p-section">
-        <div class="p-section-title">Scope of Work</div>
-        <ul style="margin:0;padding-left:18px;display:flex;flex-direction:column;gap:5px;" id="p-scope-list">
-          ${scopeItems.map((item,i)=>`<li style="font-size:13px;color:#1C2B3A;">${editCell('scope-'+i, item)}</li>`).join('')}
-        </ul>
-      </div>`;
-    }
-
-    if (pOpts.materials) {
-      html += `<div class="p-section">
-        <div class="p-section-title">Materials</div>
-        <table class="p-table">
-          <thead><tr><th>Item</th><th>Detail</th><th style="text-align:right;">Amount</th></tr></thead>
-          <tbody>
-            ${matRows.map(row => tableRow(row)).join('')}
-            <tr class="p-total-row"><td colspan="2"><strong>Materials Subtotal</strong></td><td class="td-right"><strong>${fmtD(matTotal)}</strong></td></tr>
-            <tr><td colspan="2" style="color:#7A92A8;">Sales Tax (10% on materials)</td><td class="td-right" style="color:#7A92A8;">${fmtD(taxAmt)}</td></tr>
-          </tbody>
+      html += `<div style="margin-bottom:22px;">
+        <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:#E8751A;border-bottom:1.5px solid #E8751A;padding-bottom:5px;margin-bottom:10px;">Scope of Work</div>
+        <table style="width:100%;border-collapse:collapse;">
+          ${scopeItems.map((item,i)=>`
+          <tr>
+            <td style="width:20px;padding:4px 8px 4px 0;vertical-align:top;color:#E8751A;font-size:13px;">✓</td>
+            <td style="padding:4px 0;font-size:13px;color:#1C2B3A;">${editCell('scope-'+i, item)}</td>
+          </tr>`).join('')}
         </table>
       </div>`;
     }
 
-    if (pOpts.labor) {
-      html += `<div class="p-section">
-        <div class="p-section-title">Labor</div>
-        <table class="p-table">
-          <thead><tr><th>Description</th><th>Detail</th><th style="text-align:right;">Amount</th></tr></thead>
-          <tbody>
-            ${labRows.map(row => tableRow(row)).join('')}
-            <tr class="p-total-row"><td colspan="2"><strong>Labor Subtotal</strong></td><td class="td-right"><strong>${fmtD(labTotal)}</strong></td></tr>
-          </tbody>
-        </table>
-      </div>`;
-    }
-
-    if (pOpts.total) {
-      html += `<div class="p-section">
-        <div class="p-section-title">Cost Summary</div>
-        <table class="p-table">
-          <tbody>
-            <tr><td>Materials</td><td class="td-right">${fmtD(matTotal)}</td></tr>
-            <tr><td>Sales Tax (10%)</td><td class="td-right">${fmtD(taxAmt)}</td></tr>
-            <tr><td>Labor</td><td class="td-right">${fmtD(labTotal)}</td></tr>
-            <tr><td>${editCell('p-profit-label','Profit / Overhead ('+marginPct+'%)')}</td><td class="td-right">${fmtD(profitAmt)}</td></tr>
-            <tr class="p-grand-row"><td><strong>TOTAL</strong></td><td class="td-right"><strong>${fmtD(grandAmt)}</strong></td></tr>
-          </tbody>
-        </table>
-      </div>`;
-    }
-
+    // NOTES
     if (pOpts.notes && notes) {
-      html += `<div class="p-section">
-        <div class="p-section-title">Notes</div>
-        <p style="font-size:13px;color:#1C2B3A;line-height:1.7;">${notes.replace(/\n/g,'<br>')}</p>
+      html += `<div style="margin-bottom:22px;">
+        <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:#E8751A;border-bottom:1.5px solid #E8751A;padding-bottom:5px;margin-bottom:10px;">Notes</div>
+        <p style="font-size:12px;color:#1C2B3A;line-height:1.7;">${notes.replace(/\n/g,'<br>')}</p>
       </div>`;
     }
 
+    // TERMS
     if (pOpts.terms) {
-      html += `<div class="p-section">
-        <div class="p-section-title">Terms & Conditions</div>
-        <p style="font-size:12px;color:#7A92A8;line-height:1.7;">${terms.replace(/\n/g,'<br>')}</p>
+      html += `<div style="margin-bottom:22px;">
+        <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:#E8751A;border-bottom:1.5px solid #E8751A;padding-bottom:5px;margin-bottom:8px;">Terms & Conditions</div>
+        <p style="font-size:10px;color:#7A92A8;line-height:1.6;">${terms.replace(/\n/g,'<br>')}</p>
       </div>`;
     }
 
+    // TOTAL — single price, no breakdown
+    html += `<div style="background:#FEF3EA;border:1.5px solid #E8751A;border-radius:10px;padding:18px 24px;margin-bottom:22px;display:flex;justify-content:space-between;align-items:center;">
+      <div>
+        <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:#8B5E00;margin-bottom:3px;">Total Investment</div>
+        <div style="font-size:11px;color:#8B5E00;">Includes all materials, labor, and applicable tax</div>
+      </div>
+      <div style="font-size:28px;font-weight:700;color:#E8751A;font-family:'DM Mono',monospace;">${editCell('p-grand-total', grandFormatted)}</div>
+    </div>`;
+
+    // SIGNATURE
     if (pOpts.signature) {
-      html += `<div class="p-section" style="margin-top:40px;">
-        <div class="p-section-title">Authorization</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:48px;margin-top:16px;">
-          <div><div style="border-top:1px solid #C8D0D8;padding-top:8px;margin-top:40px;">
-            <div style="font-size:12px;color:#7A92A8;">Client Signature &nbsp;&nbsp;&nbsp; Date: _______________</div>
-          </div></div>
-          <div><div style="border-top:1px solid #C8D0D8;padding-top:8px;margin-top:40px;">
-            <div style="font-size:12px;color:#7A92A8;">FB Construction Authorized Signature &nbsp;&nbsp;&nbsp; Date: _______________</div>
-          </div></div>
+      html += `<div style="display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:8px;">
+        <div>
+          <div style="border-top:1px solid #C8D0D8;padding-top:6px;margin-top:36px;">
+            <div style="font-size:10px;color:#7A92A8;">Client Signature &nbsp;&nbsp;&nbsp;&nbsp; Date ___________</div>
+          </div>
+        </div>
+        <div>
+          <div style="border-top:1px solid #C8D0D8;padding-top:6px;margin-top:36px;">
+            <div style="font-size:10px;color:#7A92A8;">FB Construction &nbsp;&nbsp;&nbsp;&nbsp; Date ___________</div>
+          </div>
         </div>
       </div>`;
     }
 
     $('proposal-content').innerHTML = html;
-
-    // Add hint to editable cells on hover
-    document.querySelectorAll('.p-editable').forEach(el => {
-      el.title = 'Click to edit';
-    });
+    document.querySelectorAll('.p-editable').forEach(el => { el.title = 'Click to edit'; });
 
   } catch(e) {
     console.error('Proposal render error:', e);
-    if ($('proposal-content')) $('proposal-content').innerHTML = '<div style="padding:20px;color:#C0392B;">Error rendering proposal: '+e.message+'</div>';
+    if ($('proposal-content')) $('proposal-content').innerHTML = '<div style="padding:20px;color:#C0392B;">Error: '+e.message+'</div>';
   }
 }
-
 function printProposal() {
   const allTabs = ['tab-single','tab-compare','tab-proposal'];
   const prevState = {};
