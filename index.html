@@ -4,136 +4,37 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>DeckPro Estimator · FB Construction</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg:#F2F4F7; --surface:#FFFFFF; --surface-2:#F7F8FA;
-  --navy:#2D3F52; --navy-light:#3D5268; --navy-pale:#EBEEF2;
-  --orange:#E8751A; --orange-light:#F0893A; --orange-pale:#FEF3EA;
-  --green:#1E6B3A; --green-light:#2A8A4A; --green-pale:#E6F4EC;
-  --text-primary:#1C2B3A; --text-secondary:#445A6F; --text-muted:#7A92A8;
-  --border:rgba(45,63,82,0.12); --border-light:rgba(45,63,82,0.07);
-  --card-bg:#FFFFFF; --card-border:rgba(45,63,82,0.1);
-}
+:root{--bg:#F2F4F7;--surface:#FFFFFF;--surface-2:#F7F8FA;--navy:#2D3F52;--navy-pale:#EBEEF2;--orange:#E8751A;--orange-light:#F0893A;--orange-pale:#FEF3EA;--green:#1E6B3A;--green-light:#2A8A4A;--green-pale:#E6F4EC;--text-primary:#1C2B3A;--text-secondary:#445A6F;--text-muted:#7A92A8;--border:rgba(45,63,82,0.12);--border-light:rgba(45,63,82,0.07);--card-bg:#FFFFFF;--card-border:rgba(45,63,82,0.1);}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text-primary);min-height:100vh;}
 body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 0% 0%,rgba(232,117,26,0.05) 0%,transparent 50%),linear-gradient(160deg,#F2F4F7 0%,#EEF1F5 100%);pointer-events:none;z-index:0;}
-.app{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:0 1.5rem 4rem;}
-
-/* HEADER */
-header{padding:1.25rem 2rem;display:flex;align-items:center;justify-content:space-between;border-bottom:4px solid var(--orange);margin-bottom:2rem;background:#FFFFFF;margin-left:-1.5rem;margin-right:-1.5rem;box-shadow:0 2px 6px rgba(45,63,82,0.07);}
+.app{position:relative;z-index:1;max-width:1140px;margin:0 auto;padding:0 1.5rem 4rem;}
+header{padding:1.25rem 2rem;display:flex;align-items:center;justify-content:space-between;border-bottom:4px solid var(--orange);margin-bottom:2rem;background:#FFF;margin-left:-1.5rem;margin-right:-1.5rem;box-shadow:0 2px 6px rgba(45,63,82,0.07);}
 .logo-area img{height:52px;width:auto;display:block;}
 .header-meta{text-align:right;font-size:12px;color:var(--text-muted);line-height:1.8;}
 .header-meta strong{color:var(--navy);}
-
-/* CARDS */
-.card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:10px;padding:1rem 1.25rem;backdrop-filter:blur(4px);}
+.card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:10px;padding:1rem 1.25rem;}
 .gap-mb{margin-bottom:1.25rem;}
-.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
-.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
-
-/* SECTION HEADER */
 .section-header{font-size:10px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--navy);margin-bottom:10px;display:flex;align-items:center;gap:8px;}
 .section-header::after{content:'';flex:1;height:1px;background:var(--border);}
-
-/* TABS */
 .tab-row{display:flex;gap:0;border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:1.5rem;width:fit-content;}
 .tab-btn{font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;padding:9px 22px;background:var(--surface);border:none;color:var(--text-muted);cursor:pointer;transition:all 0.2s;}
-.tab-btn.active{background:var(--navy);color:#FFFFFF;}
-
-/* PROJECT TYPE */
-.project-type-row{display:flex;gap:12px;margin-bottom:1.25rem;}
-.project-btn{flex:1;padding:14px 20px;border-radius:8px;border:1px solid var(--card-border);background:var(--card-bg);color:var(--text-secondary);cursor:pointer;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;text-align:left;transition:all 0.2s;display:flex;flex-direction:column;gap:4px;}
-.project-btn .ptype-icon{font-size:20px;margin-bottom:4px;}
-.project-btn .ptype-sub{font-size:11px;font-weight:400;color:var(--text-muted);}
-.project-btn.active-replace{background:var(--orange-pale);border-color:var(--orange);color:var(--navy);}
-.project-btn.active-build{background:var(--green-pale);border-color:var(--green-light);color:var(--navy);}
-.project-btn:hover:not(.active-replace):not(.active-build){border-color:var(--orange);color:var(--text-primary);}
-
-/* FORM ELEMENTS */
+.tab-btn.active{background:var(--navy);color:#FFF;}
 label.form-label{font-size:12px;color:var(--text-secondary);display:block;margin-bottom:5px;}
 select,input[type=number],input[type=text],input[type=date],textarea{width:100%;padding:8px 12px;background:var(--surface-2);border:1px solid var(--border);border-radius:6px;color:var(--text-primary);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;transition:border-color 0.2s;}
 select:focus,input:focus,textarea:focus{border-color:var(--orange);}
-select option{background:#FFFFFF;}
-
-/* SLIDER */
-.slider-group{margin-bottom:14px;}
-.slider-label-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;}
-.slider-label{font-size:13px;color:var(--text-secondary);}
-.slider-value{font-family:'DM Mono',monospace;font-size:15px;font-weight:500;color:var(--orange);}
-input[type=range]{-webkit-appearance:none;width:100%;height:4px;border-radius:2px;background:#D8DDE3;outline:none;}
-input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:var(--orange);cursor:pointer;border:2px solid #FFF;box-shadow:0 1px 4px rgba(232,117,26,0.35);transition:transform 0.1s;}
-input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.2);}
-
-/* TOGGLE */
 .toggle-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
 .toggle-label{font-size:13px;color:var(--text-secondary);}
 .toggle{width:38px;height:22px;border-radius:11px;background:#C8D0D8;border:1px solid var(--border);position:relative;cursor:pointer;transition:background 0.2s;flex-shrink:0;}
 .toggle.on{background:var(--orange);border-color:var(--orange-light);}
 .toggle-knob{width:16px;height:16px;border-radius:50%;background:#FFF;position:absolute;top:2px;left:2px;transition:left 0.2s;box-shadow:0 1px 3px rgba(0,0,0,0.2);}
 .toggle.on .toggle-knob{left:18px;}
-
-/* PILLS AREA */
-.pills-container{margin-bottom:10px;}
-
-/* BOARD LENGTH OPTIONS */
-.bl-option{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;border-radius:6px;border:1px solid var(--border);cursor:pointer;background:var(--surface-2);transition:all 0.15s;}
-.bl-option:hover{border-color:var(--orange);}
-.bl-label{font-family:'DM Mono',monospace;font-size:14px;font-weight:500;color:var(--text-secondary);}
-.bl-option.bl-selected{border-color:var(--navy);background:var(--navy-pale);}
-.bl-option.bl-selected .bl-label{color:var(--navy);}
-.bl-option.bl-best{border-color:var(--orange);background:var(--orange-pale);}
-.bl-option.bl-best .bl-label{color:var(--orange);}
-.bl-option.bl-selected.bl-best{box-shadow:0 0 0 2px rgba(232,117,26,0.3);}
-.bl-stats{font-size:11px;color:var(--text-muted);text-align:right;line-height:1.5;}
-.bl-badge{font-size:10px;font-weight:600;padding:1px 7px;border-radius:10px;background:var(--orange);color:#fff;margin-left:6px;}
-
-/* RAIL BTNS */
-.rail-type-row{display:flex;gap:0;border:1px solid var(--border);border-radius:6px;overflow:hidden;margin-top:6px;}
-.rail-btn{flex:1;padding:7px 12px;font-size:12px;font-weight:500;background:var(--surface-2);border:none;color:var(--text-muted);cursor:pointer;transition:all 0.15s;font-family:'DM Sans',sans-serif;}
-.rail-btn.active{background:var(--orange-pale);color:var(--orange);}
-.auto-btn{font-size:11px;padding:6px 10px;border-radius:5px;border:1px solid var(--border);background:var(--surface-2);color:var(--text-secondary);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.15s;white-space:nowrap;}
-.auto-btn:hover{border-color:var(--orange);color:var(--orange);}
-
-/* BOARD ROWS */
-.board-row{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:center;padding:8px 10px;background:var(--surface-2);border:1px solid var(--border);border-radius:6px;}
-.remove-row-btn{width:26px;height:26px;border-radius:50%;border:1px solid var(--border);background:var(--surface);color:var(--text-muted);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:all 0.15s;flex-shrink:0;}
-.remove-row-btn:hover{background:#FEE;border-color:#C0392B;color:#C0392B;}
-
-/* METRICS */
-.metrics-row{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin-bottom:1.25rem;}
-.metric{background:var(--card-bg);border:1px solid var(--card-border);border-top:3px solid var(--orange);border-radius:8px;padding:10px 12px;text-align:center;}
-.metric-label{font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:5px;}
-.metric-value{font-family:'DM Mono',monospace;font-size:16px;font-weight:500;color:var(--navy);}
-.metric-sub{font-size:10px;color:var(--text-muted);margin-top:2px;}
-
-/* BREAKDOWN */
-.breakdown-section-label{font-size:10px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);padding:8px 0 4px;border-top:1px solid var(--border-light);margin-top:6px;}
-.breakdown-section-label:first-child{border-top:none;margin-top:0;padding-top:0;}
-.brow{display:flex;justify-content:space-between;align-items:center;font-size:13px;padding:5px 0;border-bottom:1px solid var(--border-light);color:var(--text-secondary);}
-.brow:last-of-type{border-bottom:none;}
-.brow.subtotal{color:var(--text-primary);font-weight:500;border-top:1px solid var(--border);margin-top:4px;padding-top:8px;border-bottom:none;}
-.brow-val{font-family:'DM Mono',monospace;font-size:13px;color:var(--text-primary);}
-.grand-box{margin-top:12px;padding:14px 16px;border-radius:8px;display:flex;justify-content:space-between;align-items:center;}
-.grand-box.replace{background:var(--orange-pale);border:1px solid rgba(232,117,26,0.3);}
-.grand-box.build{background:var(--green-pale);border:1px solid rgba(42,138,74,0.3);}
-.grand-label{font-size:14px;font-weight:600;color:var(--navy);}
-.grand-value{font-family:'DM Mono',monospace;font-size:22px;font-weight:500;color:var(--orange);}
-.tariff-note{font-size:11px;color:#7A5A10;background:#FDF6E3;border:1px solid rgba(180,140,30,0.3);border-radius:6px;padding:7px 12px;margin-top:10px;}
-
-/* SPECS */
-.spec-item{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-secondary);padding:5px 0;border-bottom:1px solid var(--border-light);}
-.spec-item:last-child{border-bottom:none;}
-.spec-check{color:var(--orange);font-size:12px;}
-.badge{display:inline-block;font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;letter-spacing:0.05em;text-transform:uppercase;}
-.badge-pvc{background:var(--orange-pale);color:var(--orange);border:1px solid rgba(232,117,26,0.25);}
-.badge-comp{background:var(--navy-pale);color:var(--navy);border:1px solid rgba(45,63,82,0.2);}
-
-/* COMPARE */
 .compare-cols{display:flex;gap:14px;margin-bottom:1.25rem;}
 .compare-col{flex:1;border-radius:10px;padding:1.25rem;border:1px solid var(--card-border);background:var(--card-bg);}
-.compare-col.col-a{border-color:rgba(232,117,26,0.35);border-top:3px solid var(--orange);}
-.compare-col.col-b{border-color:rgba(42,138,74,0.3);border-top:3px solid var(--green);}
+.compare-col.col-a{border-top:3px solid var(--orange);}
+.compare-col.col-b{border-top:3px solid var(--green);}
 .col-heading{font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:10px;}
 .col-heading.a{color:var(--orange);}
 .col-heading.b{color:var(--green);}
@@ -146,23 +47,11 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.2);}
 .savings-bar{border-radius:8px;padding:10px 16px;font-size:13px;font-weight:500;margin-bottom:1rem;display:none;}
 .savings-bar.a{background:var(--orange-pale);color:var(--orange);border:1px solid rgba(232,117,26,0.25);}
 .savings-bar.b{background:var(--green-pale);color:var(--green);border:1px solid rgba(42,138,74,0.25);}
-
-/* PROPOSAL */
 .p-editable{outline:none;border-bottom:1px dashed #C8D0D8;cursor:text;min-width:20px;display:inline-block;}
 .p-section-title{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:#E8751A;border-bottom:2px solid #E8751A;padding-bottom:5px;margin-bottom:12px;}
-
-@keyframes fadeUp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
-.card,.metric,.compare-col{animation:fadeUp 0.4s ease both;}
-
-@media(max-width:800px){
-  .metrics-row{grid-template-columns:repeat(4,1fr);}
-  .grid-2,.grid-3{grid-template-columns:1fr;}
-  .compare-cols{flex-direction:column;}
-}
-@media(max-width:560px){
-  .metrics-row{grid-template-columns:repeat(2,1fr);}
-  .project-type-row{flex-direction:column;}
-}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+.card{animation:fadeUp 0.3s ease both;}
+@media(max-width:768px){.compare-cols{flex-direction:column;}}
 @media print{
   .app>*:not(#tab-proposal){display:none!important;}
   #tab-proposal>*:not(#proposal-preview){display:none!important;}
@@ -189,289 +78,55 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.2);}
     </div>
   </header>
 
-  <!-- PROJECT TYPE -->
-  <div class="section-header">Project Type</div>
-  <div class="project-type-row gap-mb">
-    <button class="project-btn active-replace" id="mode-replace" onclick="setMode('replace')">
-      <div class="ptype-icon">🔄</div>
-      <div>Board Replacement</div>
-      <div class="ptype-sub">Existing framing · Labor $5.60/sqft</div>
-    </button>
-    <button class="project-btn" id="mode-build" onclick="setMode('build')">
-      <div class="ptype-icon">🏗</div>
-      <div>Full Build from Scratch</div>
-      <div class="ptype-sub">PT framing incl. · 12" OC joists</div>
-    </button>
-  </div>
-
-  <!-- INPUTS -->
-  <div class="section-header">Deck Configuration</div>
-  <div class="grid-3 gap-mb">
-
-    <!-- Dimensions -->
-    <div class="card">
-      <div style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:12px;">Dimensions</div>
-      <!-- Mode toggle -->
-      <div style="display:flex;gap:0;border:1px solid var(--border);border-radius:6px;overflow:hidden;margin-bottom:14px;">
-        <button class="rail-btn active" id="dim-mode-btn" onclick="setInputMode('dimensions')" style="font-size:12px;">By Dimensions</button>
-        <button class="rail-btn" id="boards-mode-btn" onclick="setInputMode('boards')" style="font-size:12px;">By Board Count</button>
-      </div>
-      <!-- Dimensions mode -->
-      <div id="dimensions-mode">
-        <div class="slider-group">
-          <div class="slider-label-row">
-            <span class="slider-label">Length</span>
-            <div style="display:flex;align-items:center;gap:6px;">
-              <input type="number" id="len-input" min="1" max="300" value="14" style="width:70px;text-align:right;font-family:'DM Mono',monospace;font-size:14px;font-weight:500;color:var(--orange);padding:4px 8px;" oninput="syncDim('len',this.value)">
-              <span style="font-size:13px;color:var(--text-muted);">ft</span>
-            </div>
-          </div>
-          <input type="range" id="len-slider" min="1" max="300" value="14" oninput="syncDim('len',this.value)">
-        </div>
-        <div class="slider-group">
-          <div class="slider-label-row">
-            <span class="slider-label">Width</span>
-            <div style="display:flex;align-items:center;gap:6px;">
-              <input type="number" id="wid-input" min="1" max="100" value="16" style="width:70px;text-align:right;font-family:'DM Mono',monospace;font-size:14px;font-weight:500;color:var(--orange);padding:4px 8px;" oninput="syncDim('wid',this.value)">
-              <span style="font-size:13px;color:var(--text-muted);">ft</span>
-            </div>
-          </div>
-          <input type="range" id="wid-slider" min="1" max="100" value="16" oninput="syncDim('wid',this.value)">
-        </div>
-        <div style="margin-top:10px;padding:8px 10px;background:var(--orange-pale);border-radius:6px;display:flex;justify-content:space-between;font-size:12px;">
-          <span style="color:var(--text-muted);">Area</span>
-          <span style="font-family:'DM Mono',monospace;color:var(--orange);" id="area-display">224 sqft</span>
-        </div>
-      </div>
-      <!-- Board count mode -->
-      <div id="boards-mode" style="display:none;">
-        <div id="board-rows" style="display:flex;flex-direction:column;gap:6px;margin-bottom:8px;"></div>
-        <button onclick="addBoardRow()" style="width:100%;padding:7px;font-size:12px;font-weight:500;border:1px dashed var(--orange);border-radius:6px;background:var(--orange-pale);color:var(--orange);cursor:pointer;font-family:'DM Sans',sans-serif;">+ Add another length</button>
-        <div style="margin-top:10px;padding:10px 12px;background:var(--orange-pale);border-radius:6px;font-size:12px;display:flex;flex-direction:column;gap:5px;">
-          <div style="display:flex;justify-content:space-between;"><span style="color:var(--text-muted);">Total boards</span><span style="font-family:'DM Mono',monospace;color:var(--navy);font-weight:500;" id="manual-boards-display">—</span></div>
-          <div style="display:flex;justify-content:space-between;"><span style="color:var(--text-muted);">Total LF</span><span style="font-family:'DM Mono',monospace;color:var(--orange);font-weight:500;" id="manual-lf-display">—</span></div>
-          <div style="display:flex;justify-content:space-between;"><span style="color:var(--text-muted);">Est. area</span><span style="font-family:'DM Mono',monospace;color:var(--orange);font-weight:500;" id="manual-area-display">—</span></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Board Length -->
-    <div class="card">
-      <div style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:12px;">Board Length</div>
-      <div id="board-len-options" style="display:flex;flex-direction:column;gap:6px;margin-bottom:12px;"></div>
-      <div>
-        <label class="form-label">Waste / overage</label>
-        <select id="waste" onchange="calc()">
-          <option value="1.05">5% — minimal cuts</option>
-          <option value="1.10" selected>10% — standard</option>
-          <option value="1.15">15% — diagonal</option>
-          <option value="1.20">20% — complex</option>
-        </select>
-      </div>
-    </div>
-
-    <!-- Accessories -->
-    <div class="card">
-      <div style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:12px;">Accessories</div>
-      <div style="margin-bottom:12px;">
-        <div class="toggle-row"><div class="toggle on" id="tog-fascia" onclick="toggleOpt('fascia')"><div class="toggle-knob"></div></div><span class="toggle-label">Fascia (12 ft pieces)</span></div>
-        <div style="display:flex;gap:6px;align-items:center;">
-          <input type="number" id="fascia-count" value="6" min="0" max="500" style="width:80px;font-family:'DM Mono',monospace;font-weight:500;color:var(--navy);" oninput="calc()">
-          <button onclick="autoFasciaCalc()" class="auto-btn">↺ Auto</button>
-        </div>
-        <div style="font-size:10px;color:var(--text-muted);margin-top:4px;" id="auto-fascia-detail">based on deck perimeter</div>
-      </div>
-      <div class="toggle-row"><div class="toggle" id="tog-fastener" onclick="toggleOpt('fastener')"><div class="toggle-knob"></div></div><span class="toggle-label">Fasteners</span></div>
-      <select id="fastener-type" onchange="calc()" style="margin-top:4px;font-size:12px;">
-        <option value="concealoc_sqft">Concealoc – $1.446/sqft</option>
-        <option value="concealoc500_sqft">Concealoc gun pail – $1.180/sqft</option>
-        <option value="concealoc1000_sqft">Concealoc 1000 – $1.145/sqft</option>
-        <option value="cortex_comp_lf">Cortex composite – $0.875/LF</option>
-        <option value="cortex_pvc_sqft">Cortex PVC – $1.098/sqft</option>
-      </select>
-    </div>
-  </div>
-
-  <!-- LABOR & PROFIT -->
+  <!-- LABOR & PROFIT (global) -->
   <div class="card gap-mb">
     <div style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:14px;">Labor &amp; Profit Settings</div>
     <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:12px;align-items:end;">
-      <div><label class="form-label">Crew size</label><input type="number" id="l-crew" value="2" min="1" max="10" oninput="calc()"><div style="font-size:10px;color:var(--text-muted);margin-top:3px;">workers</div></div>
-      <div><label class="form-label">Hourly rate</label><div style="display:flex;align-items:center;gap:4px;"><span style="font-size:13px;color:var(--text-muted);">$</span><input type="number" id="l-rate" value="35" min="1" max="200" oninput="calc()"></div><div style="font-size:10px;color:var(--text-muted);margin-top:3px;">per person/hr</div></div>
-      <div><label class="form-label">Install hrs/100sqft</label><input type="number" id="l-install-hrs" value="8" min="1" max="40" step="0.5" oninput="calc()"><div style="font-size:10px;color:var(--text-muted);margin-top:3px;">board replacement</div></div>
-      <div><label class="form-label">Framing hrs/100sqft</label><input type="number" id="l-framing-hrs" value="6" min="1" max="40" step="0.5" oninput="calc()"><div style="font-size:10px;color:var(--text-muted);margin-top:3px;">full build only</div></div>
-      <div><label class="form-label">Railing hrs/LF</label><input type="number" id="l-railing-hrs" value="0.5" min="0.1" max="4" step="0.1" oninput="calc()"><div style="font-size:10px;color:var(--text-muted);margin-top:3px;">per linear foot</div></div>
-      <div><label class="form-label">Stair labor mult.</label><input type="number" id="l-stair-mult" value="2.0" min="1" max="5" step="0.5" oninput="calc()"><div style="font-size:10px;color:var(--text-muted);margin-top:3px;">× install rate</div></div>
-      <div><label class="form-label">Profit margin</label><div style="display:flex;align-items:center;gap:4px;"><input type="number" id="profit-margin" value="20" min="0" max="100" oninput="calc()"><span style="font-size:13px;color:var(--text-muted);">%</span></div><div style="font-size:10px;color:var(--text-muted);margin-top:3px;">on all costs</div></div>
-    </div>
-    <div style="margin-top:12px;padding:10px 14px;background:var(--navy-pale);border-radius:6px;display:flex;gap:24px;flex-wrap:wrap;">
-      <div style="font-size:12px;color:var(--text-muted);">Deck install: <strong style="color:var(--navy);font-family:'DM Mono',monospace;" id="eff-install-rate">—</strong>/sqft</div>
-      <div style="font-size:12px;color:var(--text-muted);">Railing: <strong style="color:var(--navy);font-family:'DM Mono',monospace;" id="eff-railing-rate">—</strong>/LF</div>
-      <div style="font-size:12px;color:var(--text-muted);">Framing: <strong style="color:var(--navy);font-family:'DM Mono',monospace;" id="eff-framing-rate">—</strong>/sqft</div>
-      <div style="font-size:12px;color:var(--text-muted);">Crew cost/hr: <strong style="color:var(--navy);font-family:'DM Mono',monospace;" id="eff-crew-cost">—</strong></div>
+      <div><label class="form-label">Crew size</label><input type="number" id="l-crew" value="2" min="1" max="10" oninput="renderAreas();renderSummary();"><div style="font-size:10px;color:var(--text-muted);margin-top:3px;">workers</div></div>
+      <div><label class="form-label">Hourly rate</label><div style="display:flex;align-items:center;gap:4px;"><span style="font-size:13px;color:var(--text-muted);">$</span><input type="number" id="l-rate" value="35" min="1" max="200" oninput="renderAreas();renderSummary();"></div><div style="font-size:10px;color:var(--text-muted);margin-top:3px;">per person/hr</div></div>
+      <div><label class="form-label">Install hrs/100sqft</label><input type="number" id="l-install-hrs" value="8" min="1" max="40" step="0.5" oninput="renderAreas();renderSummary();"><div style="font-size:10px;color:var(--text-muted);margin-top:3px;">deck boards</div></div>
+      <div><label class="form-label">Framing hrs/100sqft</label><input type="number" id="l-framing-hrs" value="6" min="1" max="40" step="0.5" oninput="renderAreas();renderSummary();"><div style="font-size:10px;color:var(--text-muted);margin-top:3px;">full build</div></div>
+      <div><label class="form-label">Railing hrs/LF</label><input type="number" id="l-railing-hrs" value="0.5" min="0.1" max="4" step="0.1" oninput="renderAreas();renderSummary();"><div style="font-size:10px;color:var(--text-muted);margin-top:3px;">per LF</div></div>
+      <div><label class="form-label">Stair mult.</label><input type="number" id="l-stair-mult" value="2.0" min="1" max="5" step="0.5" oninput="renderAreas();renderSummary();"><div style="font-size:10px;color:var(--text-muted);margin-top:3px;">× install rate</div></div>
+      <div><label class="form-label">Profit margin</label><div style="display:flex;align-items:center;gap:4px;"><input type="number" id="profit-margin" value="20" min="0" max="100" oninput="renderAreas();renderSummary();"><span style="font-size:13px;color:var(--text-muted);">%</span></div></div>
     </div>
   </div>
 
-  <!-- RAILING -->
+  <!-- AREAS -->
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+    <div class="section-header" style="flex:1;margin-bottom:0;">Project Areas</div>
+    <button onclick="addArea()" style="margin-left:12px;padding:8px 16px;background:var(--orange);color:#fff;border:none;border-radius:7px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;">+ Add Area</button>
+  </div>
+  <div id="areas-container" style="margin-bottom:1.25rem;"></div>
+
+  <!-- SUMMARY -->
   <div class="card gap-mb">
-    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
-      <div class="toggle-row" style="margin-bottom:0;"><div class="toggle" id="tog-railing" onclick="toggleOpt('railing')"><div class="toggle-knob"></div></div><span class="toggle-label" style="font-weight:500;font-size:14px;">Railing</span></div>
-      <div id="railing-config" style="display:none;gap:16px;flex-wrap:wrap;align-items:flex-end;flex:1;">
-        <div style="min-width:220px;"><div style="font-size:11px;color:var(--text-muted);margin-bottom:5px;">Type</div>
-          <div class="rail-type-row"><button class="rail-btn active" id="rail-composite" onclick="setRailing('composite')">Composite · $55/LF</button><button class="rail-btn" id="rail-aluminum" onclick="setRailing('aluminum')">Aluminum · $50/LF</button></div>
-        </div>
-        <div style="display:flex;gap:8px;align-items:flex-end;">
-          <div><div style="font-size:11px;color:var(--text-muted);margin-bottom:5px;">Linear feet</div><input type="number" id="railing-lf" value="60" min="0" max="2000" style="width:90px;" oninput="calc()"></div>
-          <button class="auto-btn" onclick="autoRailing()">Auto 3 sides</button>
-        </div>
-        <div id="rail-hint" style="font-size:11px;color:var(--text-muted);align-self:flex-end;padding-bottom:4px;"></div>
-      </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+      <div class="section-header" style="margin-bottom:0;flex:1;">Project Summary</div>
+      <div style="font-family:'DM Mono',monospace;font-size:22px;font-weight:700;color:var(--orange);" id="total-grand">—</div>
     </div>
+    <div id="summary-table"></div>
+    <div style="margin-top:8px;font-size:11px;color:var(--text-muted);">Total area: <strong id="total-area" style="color:var(--navy);">—</strong></div>
   </div>
 
-  <!-- STAIRS -->
-  <div class="card gap-mb">
-    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
-      <div class="toggle-row" style="margin-bottom:0;"><div class="toggle" id="tog-stairs" onclick="toggleOpt('stairs')"><div class="toggle-knob"></div></div><span class="toggle-label" style="font-weight:500;font-size:14px;">Stairs</span></div>
-      <div id="stairs-config" style="display:none;flex:1;width:100%;">
-        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:12px;">
-          <div><label class="form-label">Number of stairs</label><input type="number" id="stair-count" value="1" min="1" max="10" oninput="calc()"><div style="font-size:10px;color:var(--text-muted);margin-top:3px;">stair sections</div></div>
-          <div><label class="form-label">Risers per stair</label><input type="number" id="risers-per-stair" value="3" min="1" max="20" oninput="calc()"><div style="font-size:10px;color:var(--text-muted);margin-top:3px;">steps each</div></div>
-          <div><label class="form-label">Stair width (ft)</label><input type="number" id="stair-width" value="4" min="1" max="20" step="0.5" oninput="calc()"><div style="font-size:10px;color:var(--text-muted);margin-top:3px;">ft wide</div></div>
-          <div style="background:var(--orange-pale);border-radius:6px;padding:10px 12px;border:1px solid rgba(232,117,26,0.2);"><div style="font-size:10px;color:var(--text-muted);margin-bottom:4px;">Total risers</div><div style="font-family:'DM Mono',monospace;font-size:18px;font-weight:500;color:var(--orange);" id="total-risers-display">3</div></div>
-        </div>
-        <div style="margin-top:8px;font-size:11px;color:var(--text-muted);background:var(--surface-2);padding:6px 10px;border-radius:5px;" id="stair-detail">Riser pieces calculated per stair width</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- LATTICE -->
-  <div class="card gap-mb">
-    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
-      <div class="toggle-row" style="margin-bottom:0;"><div class="toggle" id="tog-lattice" onclick="toggleOpt('lattice')"><div class="toggle-knob"></div></div><span class="toggle-label" style="font-weight:500;font-size:14px;">Lattice</span></div>
-      <div id="lattice-config" style="display:none;flex:1;margin-top:10px;">
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;">
-          <div><label class="form-label">Linear feet</label><input type="number" id="lattice-lf" value="0" min="0" max="2000" oninput="calc()"></div>
-          <div><label class="form-label">Price per LF</label><div style="display:flex;align-items:center;gap:4px;"><span style="font-size:13px;color:var(--text-muted);">$</span><input type="number" id="lattice-rate" value="12" min="0" max="500" step="0.50" oninput="calc()"></div></div>
-          <div style="background:var(--orange-pale);border-radius:6px;padding:10px 12px;border:1px solid rgba(232,117,26,0.2);"><div style="font-size:10px;color:var(--text-muted);margin-bottom:4px;">Lattice subtotal</div><div style="font-family:'DM Mono',monospace;font-size:18px;font-weight:500;color:var(--orange);" id="lattice-subtotal">$0.00</div></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- HAUL AWAY -->
-  <div class="card gap-mb">
-    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
-      <div class="toggle-row" style="margin-bottom:0;"><div class="toggle" id="tog-haul" onclick="toggleOpt('haul')"><div class="toggle-knob"></div></div><span class="toggle-label" style="font-weight:500;font-size:14px;">Garbage / Haul Away</span></div>
-      <div id="haul-config" style="display:none;flex:1;margin-top:10px;">
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
-          <div style="grid-column:span 2;"><label class="form-label">Flat fee</label><div style="display:flex;align-items:center;gap:4px;"><span style="font-size:13px;color:var(--text-muted);">$</span><input type="number" id="haul-fee" value="500" min="0" max="50000" step="50" oninput="calc()"></div><div style="font-size:10px;color:var(--text-muted);margin-top:3px;">flat fee for debris removal &amp; haul away</div></div>
-          <div style="background:var(--orange-pale);border-radius:6px;padding:10px 12px;border:1px solid rgba(232,117,26,0.2);"><div style="font-size:10px;color:var(--text-muted);margin-bottom:4px;">Haul away total</div><div style="font-family:'DM Mono',monospace;font-size:18px;font-weight:500;color:var(--orange);" id="haul-subtotal">$500.00</div></div>
-        </div>
-      </div>
-    </div>
+  <!-- SAVE / LOAD -->
+  <div class="card gap-mb" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+    <button onclick="saveQuote()" style="padding:9px 18px;background:var(--navy);color:#fff;border:none;border-radius:7px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;">💾 Save Quote</button>
+    <button onclick="exportQuote()" style="padding:9px 18px;background:var(--surface);color:var(--navy);border:1px solid var(--border);border-radius:7px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;">⬇ Export JSON</button>
+    <button onclick="importQuote()" style="padding:9px 18px;background:var(--surface);color:var(--navy);border:1px solid var(--border);border-radius:7px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;">⬆ Import JSON</button>
+    <span style="font-size:11px;color:var(--text-muted);">Quotes save in this browser · Export JSON to share across devices</span>
   </div>
 
   <!-- TABS -->
   <div class="tab-row">
-    <button class="tab-btn active" onclick="switchTab('single',this)">Single Line</button>
-    <button class="tab-btn" onclick="switchTab('compare',this)">Compare Two Lines</button>
+    <button class="tab-btn active" onclick="switchTab('single',this)">Saved Quotes</button>
     <button class="tab-btn" onclick="switchTab('proposal',this)">📄 Proposal</button>
   </div>
 
-  <!-- SINGLE TAB -->
+  <!-- SAVED QUOTES TAB -->
   <div id="tab-single">
-    <div class="section-header" style="margin-top:0.25rem;">Product Line</div>
-    <div class="pills-container gap-mb" id="line-pills-a"></div>
-    <div style="display:flex;align-items:center;gap:8px;margin-bottom:1.25rem;font-size:12px;color:var(--text-secondary);">
-      <span class="badge badge-pvc" id="badge-a"></span>
-      <span id="desc-a"></span>
-    </div>
-    <div class="metrics-row">
-      <div class="metric"><div class="metric-label">Area</div><div class="metric-value" id="m-area">—</div><div class="metric-sub">sq ft</div></div>
-      <div class="metric"><div class="metric-label">Linear ft</div><div class="metric-value" id="m-lf">—</div><div class="metric-sub">w/ waste</div></div>
-      <div class="metric"><div class="metric-label">Boards</div><div class="metric-value" id="m-boards">—</div><div class="metric-sub" id="m-blen">20 ft</div></div>
-      <div class="metric"><div class="metric-label">Price/LF</div><div class="metric-value" id="m-plf">—</div><div class="metric-sub">decking</div></div>
-      <div class="metric"><div class="metric-label">Railing</div><div class="metric-value" id="m-railing">—</div><div class="metric-sub" id="m-railing-sub">—</div></div>
-      <div class="metric"><div class="metric-label">Labor</div><div class="metric-value" id="m-labor">—</div><div class="metric-sub" id="m-labor-sub">—</div></div>
-      <div class="metric"><div class="metric-label">Total/sqft</div><div class="metric-value" id="m-psf">—</div><div class="metric-sub">all-in</div></div>
-    </div>
-    <div class="grid-2">
-      <div class="card">
-        <div class="breakdown-section-label">Materials</div>
-        <div class="brow"><span>Decking (<span id="b-lf">—</span> LF × <span id="b-deckplf">—</span>)</span><span class="brow-val" id="b-decking">—</span></div>
-        <div class="brow" id="row-fascia"><span>Fascia (<span id="b-fasc-ct">—</span> pcs × $<span id="b-fasc-u">—</span>)</span><span class="brow-val" id="b-fascia">—</span></div>
-        <div class="brow" id="row-stairs-treads" style="display:none;"><span>Stair treads (<span id="b-stair-trd-lf">—</span> LF × <span id="b-stair-trd-plf">—</span>)</span><span class="brow-val" id="b-stair-treads">—</span></div>
-        <div class="brow" id="row-stairs-risers" style="display:none;"><span>Stair risers (<span id="b-stair-rsr-ct">—</span> pcs × $<span id="b-stair-rsr-u">—</span>)</span><span class="brow-val" id="b-stair-risers">—</span></div>
-        <div class="brow" id="row-fastener" style="display:none;"><span>Fasteners (<span id="b-fast-q">—</span>)</span><span class="brow-val" id="b-fastener">—</span></div>
-        <div class="brow" id="row-framing" style="display:none;"><span>Framing bundle (<span id="b-fram-sf">—</span> sqft × $7.50)</span><span class="brow-val" id="b-framing">—</span></div>
-        <div class="brow" id="row-railing-mat" style="display:none;"><span>Railing — <span id="b-rail-t">composite</span> (<span id="b-rail-lf">—</span> LF × $<span id="b-rail-r">55</span>)</span><span class="brow-val" id="b-railing">—</span></div>
-        <div class="brow" id="row-lattice-mat" style="display:none;"><span>Lattice (<span id="b-lattice-lf">—</span> LF × $<span id="b-lattice-rate">—</span>/LF)</span><span class="brow-val" id="b-lattice">—</span></div>
-        <div class="brow" id="row-haul-mat" style="display:none;"><span>Garbage / Haul Away (flat fee)</span><span class="brow-val" id="b-haul">—</span></div>
-        <div class="brow subtotal"><span>Material subtotal</span><span class="brow-val" id="b-mat-sub">—</span></div>
-        <div class="breakdown-section-label">Labor</div>
-        <div class="brow"><span>Deck install (<span id="b-inst-sf">—</span> sqft × $<span id="b-inst-rate">—</span>/sqft)</span><span class="brow-val" id="b-inst-labor">—</span></div>
-        <div class="brow" id="row-railing-labor" style="display:none;"><span>Railing install (<span id="b-rail-labor-lf">—</span> LF × $<span id="b-rail-labor-rate">—</span>/LF)</span><span class="brow-val" id="b-rail-labor">—</span></div>
-        <div class="brow" id="row-fram-labor" style="display:none;"><span>Framing (<span id="b-fram-lab-sf">—</span> sqft × $<span id="b-fram-rate">—</span>/sqft)</span><span class="brow-val" id="b-fram-labor">—</span></div>
-        <div class="brow" id="row-stair-labor" style="display:none;"><span>Stair labor</span><span class="brow-val" id="b-stair-labor">—</span></div>
-        <div class="brow subtotal"><span>Labor subtotal</span><span class="brow-val" id="b-labor-sub">—</span></div>
-        <div class="breakdown-section-label">Profit &amp; Tax</div>
-        <div class="brow"><span>Materials subtotal</span><span class="brow-val" id="b-pretax-before">—</span></div>
-        <div class="brow"><span>Tax (10% on materials)</span><span class="brow-val" id="b-tax">—</span></div>
-        <div class="brow subtotal"><span>Materials + tax</span><span class="brow-val" id="b-mat-tax-sub">—</span></div>
-        <div class="brow"><span>Labor subtotal</span><span class="brow-val" id="b-labor-sub2">—</span></div>
-        <div class="brow"><span>Profit (<span id="b-margin-pct">—</span>% on all costs)</span><span class="brow-val" id="b-profit">—</span></div>
-        <div class="grand-box replace" id="b-grand-box"><span class="grand-label">Grand Total</span><span class="grand-value" id="b-grand">—</span></div>
-        <div class="tariff-note">⚠ Prices may vary at time of order due to potential tariffs.</div>
-      </div>
-      <div class="card">
-        <div style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:10px;">Product Specs</div>
-        <div id="specs-panel"></div>
-        <div style="margin-top:1.25rem;">
-          <div style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:10px;">Scope of Work</div>
-          <div id="scope-panel"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- COMPARE TAB -->
-  <div id="tab-compare" style="display:none;">
-    <div class="compare-cols">
-      <div class="compare-col col-a">
-        <div class="col-heading a">Line A</div>
-        <div class="pills-container" id="line-pills-cmp-a"></div>
-      </div>
-      <div class="compare-col col-b">
-        <div class="col-heading b">Line B</div>
-        <div class="pills-container" id="line-pills-cmp-b"></div>
-      </div>
-    </div>
-    <div class="savings-bar" id="savings-bar"></div>
-    <div class="compare-cols">
-      <div class="compare-col col-a">
-        <div class="col-heading a" id="cmp-name-a">—</div>
-        <div class="cmp-row"><span>Price/LF</span><span class="cmp-val" id="cmp-plf-a">—</span></div>
-        <div class="cmp-row"><span>Materials</span><span class="cmp-val" id="cmp-mat-a">—</span></div>
-        <div class="cmp-row" id="cmp-row-framing-a"><span>Framing</span><span class="cmp-val" id="cmp-framing-a">—</span></div>
-        <div class="cmp-row" id="cmp-row-railing-a"><span>Railing</span><span class="cmp-val" id="cmp-railing-a">—</span></div>
-        <div class="cmp-row"><span>Labor</span><span class="cmp-val" id="cmp-labor-a">—</span></div>
-        <div class="cmp-row"><span>Tax (10%)</span><span class="cmp-val" id="cmp-tax-a">—</span></div>
-        <div class="cmp-row"><span style="font-weight:600;color:var(--text-primary);">Grand Total</span><span class="cmp-val cmp-total" id="cmp-total-a">—</span></div>
-        <div style="margin-top:8px;font-size:11px;color:var(--text-muted);" id="cmp-badge-a"></div>
-      </div>
-      <div class="compare-col col-b">
-        <div class="col-heading b" id="cmp-name-b">—</div>
-        <div class="cmp-row"><span>Price/LF</span><span class="cmp-val" id="cmp-plf-b">—</span></div>
-        <div class="cmp-row"><span>Materials</span><span class="cmp-val" id="cmp-mat-b">—</span></div>
-        <div class="cmp-row" id="cmp-row-framing-b"><span>Framing</span><span class="cmp-val" id="cmp-framing-b">—</span></div>
-        <div class="cmp-row" id="cmp-row-railing-b"><span>Railing</span><span class="cmp-val" id="cmp-railing-b">—</span></div>
-        <div class="cmp-row"><span>Labor</span><span class="cmp-val" id="cmp-labor-b">—</span></div>
-        <div class="cmp-row"><span>Tax (10%)</span><span class="cmp-val" id="cmp-tax-b">—</span></div>
-        <div class="cmp-row"><span style="font-weight:600;color:var(--text-primary);">Grand Total</span><span class="cmp-val cmp-total" id="cmp-total-b">—</span></div>
-        <div style="margin-top:8px;font-size:11px;color:var(--text-muted);" id="cmp-badge-b"></div>
-      </div>
-    </div>
+    <div class="section-header">Saved Quotes</div>
+    <div id="saved-quotes-list"></div>
   </div>
 
   <!-- PROPOSAL TAB -->
@@ -485,7 +140,7 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.2);}
         <div><label class="form-label">Proposal date</label><input type="date" id="p-date" oninput="renderProposal()"></div>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px;">
-        <div><label class="form-label">Project description</label><input type="text" id="p-description" placeholder="Deck board replacement — AZEK Vintage" oninput="renderProposal()"></div>
+        <div><label class="form-label">Project description</label><input type="text" id="p-description" placeholder="Multi-area deck project" oninput="renderProposal()"></div>
         <div><label class="form-label">Valid until</label><input type="date" id="p-valid-until" oninput="renderProposal()"></div>
       </div>
     </div>
@@ -497,19 +152,12 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.2);}
         <div class="toggle-row"><div class="toggle on" id="ptog-signature" onclick="ptoggle('signature')"><div class="toggle-knob"></div></div><span class="toggle-label">Signature line</span></div>
         <div class="toggle-row"><div class="toggle" id="ptog-notes" onclick="ptoggle('notes')"><div class="toggle-knob"></div></div><span class="toggle-label">Custom notes</span></div>
       </div>
-      <div id="p-notes-area" style="display:none;margin-top:10px;">
-        <label class="form-label">Custom notes</label>
-        <textarea id="p-notes" rows="3" style="resize:vertical;" placeholder="Any additional notes..." oninput="renderProposal()"></textarea>
-      </div>
-      <div style="margin-top:10px;">
-        <label class="form-label">Terms &amp; Conditions (editable)</label>
-        <textarea id="p-terms-text" rows="4" style="font-size:12px;resize:vertical;" oninput="renderProposal()">50% deposit required to schedule work. Remaining balance due upon completion. All materials remain property of FB Construction until paid in full. FB Construction is not responsible for damage to underground utilities, irrigation, or landscaping unless marked prior to work. Proposal valid for 30 days from date of issue. Prices subject to change due to material availability and tariffs.</textarea>
-      </div>
+      <div id="p-notes-area" style="display:none;margin-top:10px;"><label class="form-label">Custom notes</label><textarea id="p-notes" rows="3" style="resize:vertical;" oninput="renderProposal()"></textarea></div>
+      <div style="margin-top:10px;"><label class="form-label">Terms &amp; Conditions</label><textarea id="p-terms-text" rows="4" style="font-size:12px;resize:vertical;" oninput="renderProposal()">50% deposit required to schedule work. Remaining balance due upon completion. All materials remain property of FB Construction until paid in full. FB Construction is not responsible for damage to underground utilities, irrigation, or landscaping unless marked prior to work. Proposal valid for 30 days from date of issue. Prices subject to change due to material availability and tariffs.</textarea></div>
     </div>
     <div style="display:flex;gap:10px;margin-bottom:1rem;align-items:center;">
       <button onclick="printProposal()" style="padding:10px 20px;background:var(--navy);color:#fff;border:none;border-radius:7px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;">🖨 Print / Save PDF</button>
-      <button onclick="renderProposal()" style="padding:10px 20px;background:var(--surface);color:var(--navy);border:1px solid var(--border);border-radius:7px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;">↻ Refresh from estimator</button>
-      <span style="font-size:11px;color:var(--text-muted);">Use browser Print → Save as PDF for a PDF file</span>
+      <button onclick="renderProposal()" style="padding:10px 20px;background:var(--surface);color:var(--navy);border:1px solid var(--border);border-radius:7px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;">↻ Refresh</button>
     </div>
     <div id="proposal-preview" style="background:#fff;border:1px solid var(--border);border-radius:10px;overflow:hidden;box-shadow:0 4px 20px rgba(45,63,82,0.1);">
       <div id="proposal-content" style="padding:36px 48px;font-family:'DM Sans',sans-serif;color:#1C2B3A;max-width:860px;margin:0 auto;"></div>
@@ -519,785 +167,600 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.2);}
 </div>
 <script>
 
-const BOARD_WIDTH_FT = 5.5 / 12;
-const TAX = 0.10;
-const FRAME_MAT = 7.50;
-const RAIL_RATES = { composite:55, aluminum:50 };
-const BOARD_LENGTHS = [12, 16, 20];
-
-// Labor defaults: 2 guys × $35/hr × 8hrs/100sqft = $5.60/sqft install
-// Framing: 2 guys × $35/hr × 6hrs/100sqft = $4.20/sqft
-const LABOR_DEFAULTS = {
-  crew: 2,
-  rate: 35,
-  installHrs: 8,   // hrs per 100 sqft, board replacement
-  framingHrs: 6,   // hrs per 100 sqft, full build framing
-  stairMult: 2.0,  // stair labor multiplier vs install rate
-};
-// Computed: $/sqft = crew × rate × hrs / 100
-function laborPerSqft(crew, rate, hrs) { return crew * rate * hrs / 100; }
-
 const LINES = [
-  // ── AZEK Advanced PVC ──────────────────────────────────────────
-  { id:'azek_vintage',      name:'AZEK Vintage',   sn:'Vintage',  t:'pvc',   grp:'azek', grpColor:'#185FA5', grpLabel:'AZEK PVC',
+  { id:'azek_vintage',      name:'AZEK Vintage',      sn:'Vintage',    t:'pvc',   grp:'azek', grpColor:'#185FA5', grpLabel:'AZEK PVC',
     lf:6.75, fa:157.85, ri:111.61, badge:'Advanced PVC',
     colors:['Coastline','Dark Hickory','English Walnut','Mahogany','Weathered Teak','Cypress'],
     desc:'Lifetime · 50yr fade/stain · Cooler · Class A', specs:['Capped Advanced PVC','Lifetime decking warranty','50yr fade & stain warranty','Stays cooler on hot days','Class A flame spread'] },
-  { id:'azek_landmark',     name:'AZEK Landmark',  sn:'Landmark', t:'pvc',   grp:'azek', grpColor:'#185FA5', grpLabel:'AZEK PVC',
+  { id:'azek_landmark',     name:'AZEK Landmark',     sn:'Landmark',   t:'pvc',   grp:'azek', grpColor:'#185FA5', grpLabel:'AZEK PVC',
     lf:5.84, fa:104.70, ri:91.06,  badge:'Advanced PVC',
     colors:['American Walnut','Boardwalk','Castle Gate','French White Oak'],
     desc:'Lifetime · 50yr fade/stain · Cooler · Class A', specs:['Capped Advanced PVC','Lifetime decking warranty','50yr fade & stain warranty','Stays cooler on hot days','Class A flame spread'] },
-  { id:'azek_harvest_plus', name:'AZEK Harvest+',  sn:'Harvest+', t:'pvc',   grp:'azek', grpColor:'#185FA5', grpLabel:'AZEK PVC',
+  { id:'azek_harvest_plus', name:'AZEK Harvest+',     sn:'Harvest+',   t:'pvc',   grp:'azek', grpColor:'#185FA5', grpLabel:'AZEK PVC',
     lf:5.24, fa:93.99,  ri:81.75,  badge:'Advanced PVC',
     colors:['Toasted Wheat','Timber Gray'],
     desc:'Lifetime · 50yr fade/stain · Cooler · Class A', specs:['Capped Advanced PVC','Lifetime decking warranty','50yr fade & stain warranty','Stays cooler on hot days','Class A flame spread'] },
-  { id:'azek_harvest',      name:'AZEK Harvest',   sn:'Harvest',  t:'pvc',   grp:'azek', grpColor:'#185FA5', grpLabel:'AZEK PVC',
+  { id:'azek_harvest',      name:'AZEK Harvest',      sn:'Harvest',    t:'pvc',   grp:'azek', grpColor:'#185FA5', grpLabel:'AZEK PVC',
     lf:4.52, fa:79.01,  ri:68.74,  badge:'Advanced PVC',
     colors:['Brownstone','Slate Gray','Kona'],
     desc:'Lifetime · 50yr fade/stain · Cooler · Class A', specs:['Capped Advanced PVC','Lifetime decking warranty','50yr fade & stain warranty','Stays cooler on hot days','Class A flame spread'] },
-  // ── TimberTech 4-Sided Composite ───────────────────────────────
-  { id:'tt_legacy',         name:'TT Legacy',      sn:'Legacy',   t:'comp4', grp:'tt4',  grpColor:'#3B6D11', grpLabel:'4-Sided Composite',
+  { id:'tt_legacy',         name:'TT Legacy',         sn:'Legacy',     t:'comp4', grp:'tt4',  grpColor:'#3B6D11', grpLabel:'4-Sided Composite',
     lf:6.30, fa:149.96, ri:83.36,  badge:'4-Sided Composite',
     colors:['Ashwood','Espresso','Pecan','Mocha','Tigerwood','Whitewash Cedar'],
     desc:'4-sided capped · 30yr warranties · Strong & reliable', specs:['4-sided capped composite','30yr fade warranty','30yr stain warranty','30yr deck warranty','Strong, reliable build'] },
-  { id:'tt_reserve',        name:'TT Reserve',     sn:'Reserve',  t:'comp4', grp:'tt4',  grpColor:'#3B6D11', grpLabel:'4-Sided Composite',
+  { id:'tt_reserve',        name:'TT Reserve',        sn:'Reserve',    t:'comp4', grp:'tt4',  grpColor:'#3B6D11', grpLabel:'4-Sided Composite',
     lf:5.24, fa:125.05, ri:72.45,  badge:'4-Sided Composite',
     colors:['Antique Leather','Dark Roast','Driftwood','Reclaimed Chestnut'],
     desc:'4-sided capped · 30yr warranties · Strong & reliable', specs:['4-sided capped composite','30yr fade warranty','30yr stain warranty','30yr deck warranty','Strong, reliable build'] },
-  { id:'tt_terrain',        name:'TT Terrain',     sn:'Terrain',  t:'comp4', grp:'tt4',  grpColor:'#3B6D11', grpLabel:'4-Sided Composite',
+  { id:'tt_terrain',        name:'TT Terrain',        sn:'Terrain',    t:'comp4', grp:'tt4',  grpColor:'#3B6D11', grpLabel:'4-Sided Composite',
     lf:3.69, fa:94.81,  ri:55.10,  badge:'4-Sided Composite',
     colors:['Brown Oak','Silver Maple'],
     desc:'4-sided capped · 30yr warranties · Strong & reliable', specs:['4-sided capped composite','30yr fade warranty','30yr stain warranty','30yr deck warranty','Strong, reliable build'] },
-  // ── TimberTech 3-Sided Composite ───────────────────────────────
-  { id:'tt_terrain_plus',   name:'TT Terrain+',    sn:'Terrain+', t:'comp3', grp:'tt3',  grpColor:'#8B5E00', grpLabel:'3-Sided Composite',
+  { id:'tt_terrain_plus',   name:'TT Terrain+',       sn:'Terrain+',   t:'comp3', grp:'tt3',  grpColor:'#8B5E00', grpLabel:'3-Sided Composite',
     lf:3.69, fa:94.81,  ri:55.10,  badge:'3-Sided Composite',
     colors:['Dark Oak','Natural White Oak','Weathered Oak'],
     desc:'3-sided capped · 25yr warranties · High value', specs:['3-sided capped composite','25yr fade warranty','25yr stain warranty','25yr deck warranty','High value, low maintenance'] },
-  { id:'tt_premier',        name:'TT Premier',     sn:'Premier',  t:'comp3', grp:'tt3',  grpColor:'#8B5E00', grpLabel:'3-Sided Composite',
+  { id:'tt_premier',        name:'TT Premier',        sn:'Premier',    t:'comp3', grp:'tt3',  grpColor:'#8B5E00', grpLabel:'3-Sided Composite',
     lf:3.54, fa:94.81,  ri:55.10,  badge:'3-Sided Composite',
     colors:['Brown Oak','Silver Maple','Dark Teak','Maritime Gray'],
     desc:'3-sided capped · 25yr warranties · High value', specs:['3-sided capped composite','25yr fade warranty','25yr stain warranty','25yr deck warranty','High value, low maintenance'] },
-  { id:'tt_prime_plus',     name:'TT Prime+',      sn:'Prime+',   t:'comp3', grp:'tt3',  grpColor:'#8B5E00', grpLabel:'3-Sided Composite',
+  { id:'tt_prime_plus',     name:'TT Prime+',         sn:'Prime+',     t:'comp3', grp:'tt3',  grpColor:'#8B5E00', grpLabel:'3-Sided Composite',
     lf:2.83, fa:94.81,  ri:55.10,  badge:'3-Sided Composite',
     colors:['Coconut Husk','Dark Cocoa','Sea Salt Gray'],
     desc:'3-sided capped · 25yr warranties · High value', specs:['3-sided capped composite','25yr fade warranty','25yr stain warranty','25yr deck warranty','High value, low maintenance'] },
-  { id:'tt_prime',          name:'TT Prime',       sn:'Prime',    t:'comp3', grp:'tt3',  grpColor:'#8B5E00', grpLabel:'3-Sided Composite',
+  { id:'tt_prime',          name:'TT Prime',          sn:'Prime',      t:'comp3', grp:'tt3',  grpColor:'#8B5E00', grpLabel:'3-Sided Composite',
     lf:2.45, fa:93.39,  ri:53.49,  badge:'3-Sided Composite',
     colors:['Dark Teak','Maritime Gray'],
     desc:'3-sided capped · 25yr warranties · High value', specs:['3-sided capped composite','25yr fade warranty','25yr stain warranty','25yr deck warranty','High value, low maintenance'] },
 ];
 
+
+// ── CONSTANTS ────────────────────────────────────────────────────────────────
+const BOARD_WIDTH_FT = 5.5 / 12;
+const TAX = 0.10;
+const FRAME_MAT = 7.50;
+const RAIL_RATES = { composite:55, aluminum:50 };
+const BOARD_LENGTHS = [12,16,20];
+const LABOR_DEFAULTS = { crew:2, rate:35, installHrs:8, framingHrs:6 };
 const FRATES = {
   concealoc_sqft:{rate:144.60/100,mode:'sqft'}, concealoc500_sqft:{rate:590/500,mode:'sqft'},
-  concealoc1000_sqft:{rate:1145/1000,mode:'sqft'}, cortex_comp_lf:{rate:87.54/100,mode:'lf'}, cortex_pvc_sqft:{rate:109.83/100,mode:'sqft'}
+  concealoc1000_sqft:{rate:1145/1000,mode:'sqft'}, cortex_comp_lf:{rate:87.54/100,mode:'lf'},
+  cortex_pvc_sqft:{rate:109.83/100,mode:'sqft'}
 };
 
-const opts = {fascia:true, fastener:false, railing:false, stairs:false, lattice:false, haul:false};
-let mode='replace', railType='composite', selA='azek_vintage', selCA='azek_vintage', selCB='tt_reserve', tab='single';
-let selectedBoardLen = null; // null = auto (use best)
-let inputMode = 'dimensions'; // 'dimensions' or 'boards'
-
-const fmt = n => '$'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
-const $ = id => document.getElementById(id);
-
-let boardRowId = 0;
-
-function addBoardRow(qty=20, len=20) {
-  const id = ++boardRowId;
-  const container = $('board-rows');
-  const div = document.createElement('div');
-  div.className = 'board-row';
-  div.id = 'brow-'+id;
-  div.innerHTML = `
-    <div>
-      <div style="font-size:10px;color:var(--text-muted);margin-bottom:3px;">Qty</div>
-      <input type="number" id="brow-qty-${id}" value="${qty}" min="1" max="2000" style="width:100%;" oninput="calc()">
-    </div>
-    <div>
-      <div style="font-size:10px;color:var(--text-muted);margin-bottom:3px;">Length</div>
-      <select id="brow-len-${id}" onchange="calc()" style="width:100%;">
-        <option value="12">12 ft</option>
-        <option value="16">16 ft</option>
-        <option value="20" ${len===20?'selected':''}>20 ft</option>
-      </select>
-    </div>
-    <button class="remove-row-btn" onclick="removeBoardRow(${id})" title="Remove">×</button>`;
-  container.appendChild(div);
-  calc();
-}
-
-function removeBoardRow(id) {
-  const el = $('brow-'+id);
-  if (el) el.remove();
-  // Always keep at least one row
-  if ($('board-rows').children.length === 0) addBoardRow();
-  else calc();
-}
-
-function getBoardRows() {
-  const rows = [];
-  $('board-rows').querySelectorAll('.board-row').forEach(row => {
-    const id = row.id.replace('brow-','');
-    const qty = parseInt($('brow-qty-'+id).value)||0;
-    const len = parseInt($('brow-len-'+id).value)||20;
-    if (qty > 0) rows.push({qty, len, lf: qty * len});
-  });
-  return rows;
-}
-
-function getBoardRowTotals() {
-  const rows = getBoardRows();
-  const totalBoards = rows.reduce((s,r)=>s+r.qty, 0);
-  const totalLF     = rows.reduce((s,r)=>s+r.lf,  0);
-  const estArea     = Math.round(totalLF * BOARD_WIDTH_FT);
-  return { rows, totalBoards, totalLF, estArea };
-}
-
-function setInputMode(m) {
-  inputMode = m;
-  $('dim-mode-btn').className    = 'rail-btn'+(m==='dimensions'?' active':'');
-  $('boards-mode-btn').className = 'rail-btn'+(m==='boards'?' active':'');
-  $('dimensions-mode').style.display = m==='dimensions' ? '' : 'none';
-  $('boards-mode').style.display     = m==='boards'     ? '' : 'none';
-  if (m==='boards' && $('board-rows').children.length === 0) addBoardRow(20, 20);
-  else calc();
-}
-
-function syncDim(dim, val) {
-  const v = Math.max(1, parseInt(val)||1);
-  $(`${dim}-slider`).value = v;
-  $(`${dim}-input`).value = v;
-  calc();
-}
-
-function getDim(dim) {
-  return Math.max(1, parseInt($(`${dim}-input`).value)||1);
-}
-
-function buildBoardLenUI(options, bestBl) {
-  const container = $('board-len-options');
-  container.innerHTML = '';
-  options.forEach(o => {
-    const isSelected = selectedBoardLen === o.bl;
-    const isBest = o.bl === bestBl;
-    const div = document.createElement('div');
-    div.className = 'bl-option' + (isSelected ? ' bl-selected' : '') + (isBest ? ' bl-best' : '');
-    div.innerHTML = `
-      <div>
-        <span class="bl-label">${o.bl} ft boards</span>
-        ${isBest ? '<span class="bl-badge">best value</span>' : ''}
-      </div>
-      <div class="bl-stats">
-        ${o.boards} boards · ${o.actLF.toFixed(0)} LF purchased<br>
-        ${o.wastedPct.toFixed(1)}% leftover (${o.wastedLF.toFixed(1)} LF)
-      </div>`;
-    div.onclick = () => {
-      // If clicking the already-selected one, deselect (go back to auto)
-      selectedBoardLen = (selectedBoardLen === o.bl) ? null : o.bl;
-      calc();
-    };
-    container.appendChild(div);
-  });
-}
-
-// Best board length: for each stock length, calculate actual total LF purchased
-// (boards needed = ceil(rawLF / boardLen) × boardLen). Pick the length with lowest total LF purchased.
-// If tie, prefer longer boards (fewer seams). Also compute per-length stats for the switcher UI.
-function calcAllBoardLengths(deckLen, deckWid, waste) {
-  const area = deckLen * deckWid;
-  const rawLF = (area / BOARD_WIDTH_FT) * waste;
-  return BOARD_LENGTHS.map(bl => {
-    const boards = Math.ceil(rawLF / bl);
-    const actLF = boards * bl;
-    const wastedLF = actLF - rawLF;
-    const wastedPct = (wastedLF / actLF * 100);
-    return { bl, boards, actLF, wastedLF, wastedPct, rawLF };
-  });
-}
-
-function bestBoardLength(deckLen, deckWid, waste) {
-  const options = calcAllBoardLengths(deckLen, deckWid, waste);
-  // Sort by total LF purchased (least material cost), break ties by longer boards (fewer seams)
-  const sorted = [...options].sort((a, b) => a.actLF !== b.actLF ? a.actLF - b.actLF : b.bl - a.bl);
-  const best = sorted[0];
-  return { ...best, reason: best.wastedPct.toFixed(1)+'% leftover · '+best.boards+' boards' };
-}
-
-// Auto-calculate fascia: full perimeter ÷ 12 ft pieces, rounded up
-function autoFasciaCount(deckLen, deckWid) {
-  const perimeter = 2 * deckLen + 2 * deckWid;
-  return { count: Math.ceil(perimeter / 12), perimeter };
-}
-
-function setMode(m) {
-  mode=m;
-  $('mode-replace').className='project-btn'+(m==='replace'?' active-replace':'');
-  $('mode-build').className='project-btn'+(m==='build'?' active-build':'');
-  calc();
-}
-
-function setRailing(t) {
-  railType=t;
-  $('rail-composite').className='rail-btn'+(t==='composite'?' active':'');
-  $('rail-aluminum').className='rail-btn'+(t==='aluminum'?' active':'');
-  calc();
-}
-
-function toggleOpt(k) {
-  opts[k]=!opts[k];
-  $('tog-'+k).classList.toggle('on',opts[k]);
-  if(k==='railing') $('railing-config').style.display=opts[k]?'flex':'none';
-  if(k==='stairs')  $('stairs-config').style.display=opts[k]?'block':'none';
-  if(k==='lattice') $('lattice-config').style.display=opts[k]?'flex':'none';
-  if(k==='haul')    $('haul-config').style.display=opts[k]?'flex':'none';
-  calc();
-}
-
-function autoFasciaCalc() {
-  const dl = getDim('len');
-  const dw = getDim('wid');
-  const fasciaInfo = autoFasciaCount(dl, dw);
-  $('fascia-count').value = fasciaInfo.count;
-  $('auto-fascia-detail').textContent = 'Perimeter: '+(2*dl+2*dw)+' ft → '+fasciaInfo.count+' pcs × 12 ft';
-  calc();
-}
-
-function autoRailing() {
-  const lf = l+w+w;
-  $('railing-lf').value=lf;
-  $('rail-hint').textContent=l+' + '+w+' + '+w+' = '+lf+' LF (3 sides)';
-  calc();
-}
-
-function buildPills(cid, aid, ac, onClick) {
-  const c = $(cid);
-  c.innerHTML = '';
-  const groups = [];
-  const seen = {};
-  LINES.forEach(L => {
-    if (!seen[L.grp]) { seen[L.grp] = true; groups.push({ grp:L.grp, color:L.grpColor, label:L.grpLabel, lines:[] }); }
-    groups.find(g=>g.grp===L.grp).lines.push(L);
-  });
-  groups.forEach(g => {
-    const hdr = document.createElement('div');
-    hdr.style.cssText = `display:flex;align-items:center;gap:6px;margin:6px 0 4px;font-size:10px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:${g.color};`;
-    hdr.innerHTML = `<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${g.color};flex-shrink:0;"></span>${g.label}`;
-    c.appendChild(hdr);
-    const row = document.createElement('div');
-    row.style.cssText = `display:flex;flex-wrap:wrap;gap:6px;padding:4px 0 10px 14px;border-left:2px solid ${g.color}33;margin-left:3px;`;
-    g.lines.forEach(L => {
-      const isActive = L.id === aid;
-      const el = document.createElement('div');
-      el.dataset.id = L.id;
-      el.style.cssText = `display:inline-flex;flex-direction:column;gap:2px;padding:7px 10px;border-radius:8px;border:1.5px solid ${isActive ? g.color : 'var(--border)'};background:${isActive ? g.color+'18' : 'var(--surface-2)'};cursor:pointer;transition:all 0.15s;min-width:82px;`;
-      el.innerHTML = `
-        <div style="font-size:12px;font-weight:600;color:${isActive ? g.color : 'var(--text-secondary)'};">${L.sn}</div>
-        <div style="font-size:11px;font-weight:500;color:${isActive ? g.color : 'var(--text-muted)'};">$${L.lf.toFixed(2)}/LF</div>
-        ${isActive ? `<div style="margin-top:5px;display:flex;flex-direction:column;gap:2px;">
-          ${(L.colors||[]).map(col=>`<span style="font-size:10px;color:${g.color};line-height:1.5;">• ${col}</span>`).join('')}
-        </div>` : ''}
-      `;
-      el.onclick = () => onClick(L.id);
-      row.appendChild(el);
-    });
-    c.appendChild(row);
-  });
-}
-function setPills(cid, aid, ac) {
-  const container = $(cid);
-  container.querySelectorAll('[data-id]').forEach(el => {
-    const L = LINES.find(x=>x.id===el.dataset.id);
-    if (!L) return;
-    const isActive = el.dataset.id === aid;
-    el.style.border     = `1.5px solid ${isActive ? L.grpColor : 'var(--border)'}`;
-    el.style.background = isActive ? L.grpColor+'18' : 'var(--surface-2)';
-    el.innerHTML = `
-      <div style="font-size:12px;font-weight:600;color:${isActive ? L.grpColor : 'var(--text-secondary)'};">${L.sn}</div>
-      <div style="font-size:11px;font-weight:500;color:${isActive ? L.grpColor : 'var(--text-muted)'};">$${L.lf.toFixed(2)}/LF</div>
-      ${isActive ? `<div style="margin-top:5px;display:flex;flex-direction:column;gap:2px;">
-        ${(L.colors||[]).map(col=>`<span style="font-size:10px;color:${L.grpColor};line-height:1.5;">• ${col}</span>`).join('')}
-      </div>` : ''}
-    `;
-  });
-}
-
-function calcCosts(lid) {
-  const L = LINES.find(x=>x.id===lid);
-  const wf = parseFloat($('waste').value);
-  const rlf = parseInt($('railing-lf').value)||0;
-  const F = FRATES[$('fastener-type').value];
-  const isBuild = mode==='build';
-
-  let dl, dw, area, adjLF, boards, bl, actLF;
-
-  if (inputMode === 'boards') {
-    const totals = getBoardRowTotals();
-    actLF  = totals.totalLF;
-    boards = totals.totalBoards;
-    adjLF  = actLF;
-    area   = totals.estArea;
-    bl     = 0; // mixed lengths
-    dl     = Math.round(Math.sqrt(area));
-    dw     = dl > 0 ? Math.round(area / dl) : 1;
-  } else {
-    // Dimensions mode
-    dl   = getDim('len');
-    dw   = getDim('wid');
-    area = dl * dw;
-    const allOptions = calcAllBoardLengths(dl, dw, wf);
-    const bestInfo   = bestBoardLength(dl, dw, wf);
-    bl      = selectedBoardLen !== null ? selectedBoardLen : bestInfo.bl;
-    const chosen = allOptions.find(o => o.bl === bl);
-    boards  = chosen.boards;
-    actLF   = chosen.actLF;
-    adjLF   = (area / BOARD_WIDTH_FT) * wf;
-  }
-
-  // Fascia — read directly from editable input
-  const fc = opts.fascia ? (parseInt($('fascia-count').value)||0) : 0;
-  const fasciaInfo = autoFasciaCount(dl, dw); // still used for detail label only
-
-  // Deck material costs
-  const deck = actLF * L.lf;
-  const fascia = opts.fascia ? fc * L.fa : 0;
-
-  // Stairs
-  const stairCount = parseInt($('stair-count').value)||0;
-  const risersPerStair = parseInt($('risers-per-stair').value)||0;
-  const stairWidth = parseFloat($('stair-width').value)||4;
-  const totalRisers = opts.stairs ? stairCount * risersPerStair : 0;
-  // Stair treads: each tread = stairWidth / board width, rounded up boards per step, per stair section
-  // Tread LF = stairWidth × risersPerStair × stairCount (one tread board per step)
-  const stairTreadLF = opts.stairs ? stairWidth * risersPerStair * stairCount : 0;
-  const stairTreadCost = stairTreadLF * L.lf;
-  const stairRiserCost = totalRisers * L.ri;
-
-  let fast=0, fastQ='';
-  if(opts.fastener){
-    if(F.mode==='sqft'){fast=area*F.rate;fastQ=Math.round(area)+' sqft × $'+F.rate.toFixed(4)+'/sqft';}
-    else{fast=actLF*F.rate;fastQ=actLF+' LF × $'+F.rate.toFixed(4)+'/LF';}
-  }
-
-  const frame = isBuild ? area * FRAME_MAT : 0;
-  const rail = opts.railing ? rlf * RAIL_RATES[railType] : 0;
-  const latticeCost = opts.lattice ? (parseFloat($('lattice-lf').value)||0) * (parseFloat($('lattice-rate').value)||0) : 0;
-  const haulCost    = opts.haul    ? (parseFloat($('haul-fee').value)||0) : 0;
-  const matSub = deck + fascia + stairTreadCost + stairRiserCost + fast + frame + rail + latticeCost + haulCost;
-
-  const crew = parseInt($('l-crew').value)||2;
-  const rate = parseFloat($('l-rate').value)||35;
-  const instL = area * laborPerSqft(crew, rate, parseFloat($('l-install-hrs').value)||8);
-  const framingLaborRate = laborPerSqft(crew, rate, parseFloat($('l-framing-hrs').value)||6);
-  const railingLaborRatePerLF = crew * rate * (parseFloat($('l-railing-hrs').value)||0.5);
-  const railingLabor = opts.railing ? rlf * railingLaborRatePerLF : 0;
-  const stairLabor = opts.stairs
-    ? stairCount * risersPerStair * stairWidth
-      * laborPerSqft(crew, rate, parseFloat($('l-install-hrs').value)||8)
-      * (parseFloat($('l-stair-mult').value)||2.0)
-    : 0;
-  const frameL = isBuild ? area * framingLaborRate : 0;
-  const labSub = instL + railingLabor + stairLabor + frameL;
-
-  const marginPct = parseFloat($('profit-margin').value)||0;
-  const pretaxBeforeMargin = matSub + labSub;
-  const profit = pretaxBeforeMargin * (marginPct / 100);
-  const tax = matSub * TAX;  // tax on materials only
-  const grand = matSub + labSub + profit + tax;
-
-  // Derived $/sqft rates for display
-  const installRateSqft = laborPerSqft(crew, rate, parseFloat($('l-install-hrs').value)||8);
-  const framingRateSqft = framingLaborRate;
-
-  return {
-    L, area, adjLF, boards, bl, actLF, fc,
-    deck, fascia, stairTreadLF, stairTreadCost, stairRiserCost,
-    totalRisers, stairCount, risersPerStair, stairWidth,
-    fast, fastQ, frame, rail, rlf, latticeCost, haulCost, matSub,
-    instL, railingLabor, railingLaborRatePerLF, stairLabor, frameL, labSub,
-    profit, marginPct, tax, grand,
-    psf: grand/area, isBuild,
-    installRateSqft, framingRateSqft, crew, rate
-  };
-}
-
-function calc() {
-  if (inputMode === 'dimensions') {
-    const dl = getDim('len');
-    const dw = getDim('wid');
-    const wf = parseFloat($('waste').value);
-    $('area-display').textContent = (dl*dw).toLocaleString()+' sqft';
-
-    // Build board length comparison UI
-    const allOptions = calcAllBoardLengths(dl, dw, wf);
-    const bestInfo   = bestBoardLength(dl, dw, wf);
-    buildBoardLenUI(allOptions, bestInfo.bl);
-
-    // Update fascia detail label only — don't overwrite user's input
-    const fasciaInfo = autoFasciaCount(dl, dw);
-    $('auto-fascia-detail').textContent = 'Perimeter: '+(2*dl+2*dw)+' ft · Auto = '+fasciaInfo.count+' pcs · Edit above to override';
-  } else {
-    // Board count mode
-    const totals = getBoardRowTotals();
-    $('manual-boards-display').textContent = totals.totalBoards+' boards';
-    $('manual-lf-display').textContent     = totals.totalLF.toLocaleString()+' LF';
-    $('manual-area-display').textContent   = totals.estArea.toLocaleString()+' sqft';
-
-    const estSide = Math.max(1, Math.round(Math.sqrt(totals.estArea)));
-    const fasciaInfo = autoFasciaCount(estSide, Math.max(1, Math.round(totals.estArea/estSide)));
-    $('auto-fascia-detail').textContent = 'Est. perimeter: ~'+(4*estSide)+' ft · Auto = '+fasciaInfo.count+' pcs · Edit above to override';
-    $('board-len-options').innerHTML = '<div style="font-size:12px;color:var(--text-muted);padding:6px 0;">Board lengths set by entries above</div>';
-  }
-
-  // Stair display
-  if (opts.stairs) {
-    const sc  = parseInt($('stair-count').value)||0;
-    const rps = parseInt($('risers-per-stair').value)||0;
-    const sw  = parseFloat($('stair-width').value)||4;
-    $('total-risers-display').textContent = sc * rps;
-    $('stair-detail').textContent = sc+' section(s) × '+rps+' risers × '+sw+' ft wide · Treads: '+(sc*rps*sw).toFixed(1)+' LF';
-  }
-
-  if (tab==='single') calcSingle(); else calcCompare();
-}
-
-function calcSingle() {
-  const r = calcCosts(selA), L = r.L;
-  $('badge-a').textContent = L.badge;
-  $('badge-a').className = 'badge '+(L.t==='pvc'?'badge-pvc':'badge-comp');
-  $('desc-a').textContent = L.desc;
-
-  $('m-area').textContent = Math.round(r.area).toLocaleString();
-  $('m-lf').textContent = Math.round(r.adjLF).toLocaleString();
-  $('m-boards').textContent = r.boards;
-  $('m-blen').textContent = r.bl+' ft '+(inputMode==='boards'?'(manual)':(selectedBoardLen===null?'(auto)':'(override)'));
-  $('m-plf').textContent = '$'+L.lf.toFixed(2);
-  $('m-railing').textContent = opts.railing ? fmt(r.rail) : '—';
-  $('m-railing-sub').textContent = opts.railing ? r.rlf+' LF' : 'off';
-  $('m-labor').textContent = fmt(r.labSub);
-  $('m-labor-sub').textContent = '$'+r.installRateSqft.toFixed(2)+'/sqft';
-  $('m-psf').textContent = '$'+r.psf.toFixed(2);
-
-  $('b-lf').textContent = r.actLF.toLocaleString();
-  $('b-deckplf').textContent = '$'+L.lf.toFixed(2);
-  $('b-decking').textContent = fmt(r.deck);
-  $('b-fasc-ct').textContent = r.fc;
-  $('b-fasc-u').textContent = L.fa.toFixed(2);
-  $('b-fast-q').textContent = r.fastQ;
-  $('b-fram-sf').textContent = Math.round(r.area).toLocaleString();
-
-  // Stair rows
-  $('b-stair-trd-lf').textContent = r.stairTreadLF.toFixed(1);
-  $('b-stair-trd-plf').textContent = '$'+L.lf.toFixed(2);
-  $('b-stair-treads').textContent = fmt(r.stairTreadCost);
-  $('b-stair-rsr-ct').textContent = r.totalRisers;
-  $('b-stair-rsr-u').textContent = L.ri.toFixed(2);
-  $('b-stair-risers').textContent = fmt(r.stairRiserCost);
-
-  $('row-fascia').style.display = opts.fascia ? '' : 'none';
-  $('row-stairs-treads').style.display = opts.stairs ? '' : 'none';
-  $('row-stairs-risers').style.display = opts.stairs ? '' : 'none';
-  $('row-fastener').style.display = opts.fastener ? '' : 'none';
-  $('row-framing').style.display       = r.isBuild     ? '' : 'none';
-  $('row-railing-mat').style.display   = opts.railing  ? '' : 'none';
-  $('row-lattice-mat').style.display   = opts.lattice  ? '' : 'none';
-  $('row-haul-mat').style.display      = opts.haul     ? '' : 'none';
-  $('row-fram-labor').style.display    = r.isBuild     ? '' : 'none';
-  $('row-railing-labor').style.display = opts.railing  ? '' : 'none';
-  document.getElementById('row-stair-labor').style.display   = opts.stairs ? '' : 'none';
-  document.getElementById('row-stairs-treads').style.display = opts.stairs ? '' : 'none';
-  document.getElementById('row-stairs-risers').style.display = opts.stairs ? '' : 'none';
-
-  // Lattice & Haul
-  if ($('b-lattice-lf'))   $('b-lattice-lf').textContent   = $('lattice-lf') ? ($('lattice-lf').value||0) : 0;
-  if ($('b-lattice-rate')) $('b-lattice-rate').textContent = $('lattice-rate') ? ($('lattice-rate').value||0) : 0;
-  if ($('b-lattice'))      $('b-lattice').textContent      = fmt(r.latticeCost);
-  if ($('b-haul'))         $('b-haul').textContent         = fmt(r.haulCost);
-  if ($('lattice-subtotal')) $('lattice-subtotal').textContent = fmt(r.latticeCost);
-  if ($('haul-subtotal'))    $('haul-subtotal').textContent    = fmt(r.haulCost);
-
-  $('b-fascia').textContent = fmt(r.fascia);
-  $('b-fastener').textContent = fmt(r.fast);
-  $('b-framing').textContent = fmt(r.frame);
-  $('b-rail-t').textContent = railType;
-  $('b-rail-lf').textContent = r.rlf;
-  $('b-rail-r').textContent = RAIL_RATES[railType];
-  $('b-railing').textContent = fmt(r.rail);
-  $('b-mat-sub').textContent = fmt(r.matSub);
-
-  $('b-inst-sf').textContent = Math.round(r.area).toLocaleString();
-  $('b-inst-rate').textContent = r.installRateSqft.toFixed(2);
-  $('b-inst-labor').textContent = fmt(r.instL);
-
-  $('row-railing-labor').style.display = opts.railing ? '' : 'none';
-  $('b-rail-labor-lf').textContent = r.rlf;
-  $('b-rail-labor-rate').textContent = r.railingLaborRatePerLF.toFixed(2);
-  $('b-rail-labor').textContent = fmt(r.railingLabor);
-
-  $('b-fram-lab-sf').textContent = Math.round(r.area).toLocaleString();
-  $('b-fram-rate').textContent = r.framingRateSqft.toFixed(2);
-  $('b-fram-labor').textContent = fmt(r.frameL);
-  $('b-stair-labor').textContent = fmt(r.stairLabor);
-  document.getElementById('row-stair-labor').style.display = opts.stairs ? '' : 'none';
-  $('b-labor-sub').textContent = fmt(r.labSub);
-  $('b-pretax-before').textContent = fmt(r.matSub);
-  $('b-tax').textContent = fmt(r.tax);
-  $('b-mat-tax-sub').textContent = fmt(r.matSub + r.tax);
-  $('b-labor-sub2').textContent = fmt(r.labSub);
-  $('b-margin-pct').textContent = r.marginPct;
-  $('b-profit').textContent = fmt(r.profit);
-  $('b-grand').textContent = fmt(r.grand);
-  $('b-grand-box').className = 'grand-box '+(r.isBuild?'build':'replace');
-
-  // Effective rate display
-  $('eff-install-rate').textContent = '$'+r.installRateSqft.toFixed(2);
-  $('eff-railing-rate').textContent = '$'+r.railingLaborRatePerLF.toFixed(2);
-  $('eff-framing-rate').textContent = '$'+r.framingRateSqft.toFixed(2);
-  $('eff-crew-cost').textContent = '$'+(r.crew * r.rate).toFixed(0);
-
-  $('specs-panel').innerHTML = L.specs.map(s=>`<div class="spec-item"><span class="spec-check">✦</span>${s}</div>`).join('');
-  const scope = [
-    ...(r.isBuild?['PT framing (12" OC) · $7.50/sqft','Framing labor · $8/sqft']:['Existing framing assumed sound']),
-    'Decking · '+r.bl+' ft boards · $'+L.lf.toFixed(2)+'/LF',
-    ...(opts.fascia?['Fascia · '+r.fc+' pcs auto from perimeter']:[]),
-    ...(opts.stairs?['Stairs · '+r.stairCount+' section(s) · '+r.totalRisers+' risers']:[]),
-    ...(opts.railing?['Railing · '+railType+' · $'+RAIL_RATES[railType]+'/LF']:[]),
-    'Installation labor · $13/sqft','10% tax applied'
-  ];
-  $('scope-panel').innerHTML = scope.map(s=>`<div class="spec-item"><span class="spec-check">✦</span>${s}</div>`).join('');
-}
-
-function calcCompare() {
-  const rA=calcCosts(selCA), rB=calcCosts(selCB);
-  const fill=(sfx,r,other)=>{
-    $(sfx==='a'?'cmp-name-a':'cmp-name-b').textContent=r.L.name;
-    $('cmp-plf-'+sfx).textContent='$'+r.L.lf.toFixed(2);
-    $('cmp-mat-'+sfx).textContent=fmt(r.matSub);
-    $('cmp-framing-'+sfx).textContent=r.isBuild?fmt(r.frame):'—';
-    $('cmp-railing-'+sfx).textContent=opts.railing?fmt(r.rail):'—';
-    $('cmp-labor-'+sfx).textContent=fmt(r.labSub);
-    $('cmp-tax-'+sfx).textContent=fmt(r.tax);
-    const el=$('cmp-total-'+sfx);
-    el.textContent=fmt(r.grand);
-    el.className='cmp-val cmp-total'+(r.grand<other.grand?' better':r.grand>other.grand?' worse':'');
-    $('cmp-badge-'+sfx).textContent=r.L.badge+' · '+r.L.desc;
-  };
-  fill('a',rA,rB); fill('b',rB,rA);
-  ['a','b'].forEach(s=>{
-    $('cmp-row-framing-'+s).style.display=rA.isBuild?'':'none';
-    $('cmp-row-railing-'+s).style.display=opts.railing?'':'none';
-  });
-  const banner=$('savings-bar'), diff=Math.abs(rA.grand-rB.grand);
-  if(diff>0.01){
-    const cheaper=rA.grand<rB.grand?rA.L.name:rB.L.name;
-    banner.className='savings-bar '+(rA.grand<rB.grand?'a':'b');
-    banner.textContent='💰 '+cheaper+' saves '+fmt(diff)+' on this project incl. labor & tax ('+Math.round(diff/Math.max(rA.grand,rB.grand)*100)+'%)';
-    banner.style.display='block';
-  } else { banner.style.display='none'; }
-}
-
-function switchTab(t, btn) {
-  tab=t;
-  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  $('tab-single').style.display   = t==='single'   ? '' : 'none';
-  $('tab-compare').style.display  = t==='compare'  ? '' : 'none';
-  $('tab-proposal').style.display = t==='proposal' ? '' : 'none';
-  if (t==='proposal') renderProposal();
-  else calc();
-}
-
-// ── PROPOSAL ─────────────────────────────────────────────────────────
+// ── STATE ─────────────────────────────────────────────────────────────────────
+let areas = [];        // array of area objects
+let activeAreaId = null;
+let currentTab = 'single';
+let savedQuotes = JSON.parse(localStorage.getItem('fbco_quotes') || '[]');
 const pOpts = { scope:true, terms:true, signature:true, notes:false };
-// Store for manual overrides: { 'row-id': { label, detail, amount } }
 const pOverrides = {};
 
-function ptoggle(k) {
-  pOpts[k] = !pOpts[k];
-  $('ptog-'+k).classList.toggle('on', pOpts[k]);
-  if (k==='notes') $('p-notes-area').style.display = pOpts[k] ? '' : 'none';
-  renderProposal();
+// ── UTILS ─────────────────────────────────────────────────────────────────────
+const $ = id => document.getElementById(id);
+const fmt = n => '$'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+function laborPerSqft(crew,rate,hrs){ return crew*rate*hrs/100; }
+function calcAllBoardLengths(dl,dw,waste){
+  const area=dl*dw, rawLF=(area/BOARD_WIDTH_FT)*waste;
+  return BOARD_LENGTHS.map(bl=>{ const boards=Math.ceil(rawLF/bl),actLF=boards*bl,wLF=actLF-rawLF; return {bl,boards,actLF,wastedLF:wLF,wastedPct:wLF/actLF*100,rawLF}; });
+}
+function bestBoardLength(dl,dw,waste){
+  const opts=calcAllBoardLengths(dl,dw,waste);
+  const sorted=[...opts].sort((a,b)=>a.actLF!==b.actLF?a.actLF-b.actLF:b.bl-a.bl);
+  const best=sorted[0]; return {...best,reason:best.wastedPct.toFixed(1)+'% leftover'};
+}
+function autoFasciaCount(dl,dw){ const p=2*dl+2*dw; return {count:Math.ceil(p/12),perimeter:p}; }
+
+// ── AREA MANAGEMENT ───────────────────────────────────────────────────────────
+let areaIdCounter = 0;
+function defaultArea(name='Back Porch'){
+  return {
+    id: ++areaIdCounter,
+    name,
+    lineId: 'azek_vintage',
+    mode: 'replace',
+    len: 14, wid: 16,
+    selectedBoardLen: null,
+    waste: 1.10,
+    fasciaCount: 6,
+    fasciaOn: true,
+    fastenerOn: false,
+    fastenerType: 'concealoc_sqft',
+    railingOn: false, railType:'composite', railLF:0,
+    stairsOn: false, stairCount:1, risersPerStair:3, stairWidth:4,
+    latticeOn: false, latticeLF:0, latticeRate:12,
+    haulOn: false, haulFee:500,
+    collapsed: false,
+  };
 }
 
-function fmtD(n) {
-  if (n==null||isNaN(n)) return '—';
-  return '$'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+function addArea(){
+  const a = defaultArea('Area '+(areas.length+1));
+  areas.push(a);
+  activeAreaId = a.id;
+  renderAreas();
+  renderSummary();
 }
 
-// Make a contenteditable cell that saves overrides
-function editCell(id, value, cls='') {
-  const saved = pOverrides[id] !== undefined ? pOverrides[id] : value;
-  return `<span contenteditable="true" 
-    data-pid="${id}" 
-    data-orig="${value.replace(/"/g,'&quot;')}"
-    class="p-editable${cls?' '+cls:''}"
-    onblur="saveOverride(this)"
-    onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}"
-    style="outline:none;border-bottom:1px dashed #C8D0D8;cursor:text;min-width:20px;display:inline-block;"
-    >${saved}</span>`;
+function removeArea(id){
+  areas = areas.filter(a=>a.id!==id);
+  if(activeAreaId===id) activeAreaId = areas.length>0?areas[0].id:null;
+  renderAreas();
+  renderSummary();
 }
 
-function saveOverride(el) {
-  const id = el.dataset.pid;
-  const val = el.innerText.trim();
-  if (val === el.dataset.orig) {
-    delete pOverrides[id];
-  } else {
-    pOverrides[id] = val;
+function toggleCollapse(id){
+  const a=areas.find(x=>x.id===id);
+  if(a){ a.collapsed=!a.collapsed; renderAreas(); }
+}
+
+function setActive(id){ activeAreaId=id; renderAreas(); }
+
+// Read area state from DOM inputs
+function readArea(id){
+  const a=areas.find(x=>x.id===id); if(!a) return;
+  const p = s => $('a'+id+'-'+s);
+  if(p('len')) a.len = parseFloat(p('len').value)||1;
+  if(p('wid')) a.wid = parseFloat(p('wid').value)||1;
+  if(p('waste')) a.waste = parseFloat(p('waste').value)||1.10;
+  if(p('fascia-count')) a.fasciaCount = parseInt(p('fascia-count').value)||0;
+  if(p('railing-lf')) a.railLF = parseInt(p('railing-lf').value)||0;
+  if(p('stair-count')) a.stairCount = parseInt(p('stair-count').value)||1;
+  if(p('risers-per-stair')) a.risersPerStair = parseInt(p('risers-per-stair').value)||1;
+  if(p('stair-width')) a.stairWidth = parseFloat(p('stair-width').value)||4;
+  if(p('lattice-lf')) a.latticeLF = parseFloat(p('lattice-lf').value)||0;
+  if(p('lattice-rate')) a.latticeRate = parseFloat(p('lattice-rate').value)||12;
+  if(p('haul-fee')) a.haulFee = parseFloat(p('haul-fee').value)||0;
+}
+
+function calcAreaCosts(a){
+  const L = LINES.find(x=>x.id===a.lineId);
+  if(!L) return null;
+  const crew=parseInt($('l-crew').value)||2, rate=parseFloat($('l-rate').value)||35;
+  const isBuild = a.mode==='build';
+  const blInfo = bestBoardLength(a.len, a.wid, a.waste);
+  const bl = a.selectedBoardLen||blInfo.bl;
+  const opts = calcAllBoardLengths(a.len,a.wid,a.waste);
+  const chosen = opts.find(o=>o.bl===bl)||opts[0];
+  const area=a.len*a.wid, adjLF=(area/BOARD_WIDTH_FT)*a.waste;
+  const boards=chosen.boards, actLF=chosen.actLF;
+  const deck=actLF*L.lf;
+  const fascia=a.fasciaOn?(a.fasciaCount*L.fa):0;
+  const F=FRATES[a.fastenerType];
+  let fast=0,fastQ='';
+  if(a.fastenerOn){
+    if(F.mode==='sqft'){fast=area*F.rate;fastQ=Math.round(area)+' sqft';}
+    else{fast=actLF*F.rate;fastQ=actLF+' LF';}
   }
-  // Recalculate totals in proposal
-  recalcProposalTotals();
+  const frame=isBuild?area*FRAME_MAT:0;
+  const rail=a.railingOn?a.railLF*RAIL_RATES[a.railType]:0;
+  const stairTreadLF=a.stairsOn?a.stairWidth*a.risersPerStair*a.stairCount:0;
+  const stairTreadCost=stairTreadLF*L.lf;
+  const stairRiserCost=a.stairsOn?a.stairCount*a.risersPerStair*L.ri:0;
+  const latticeCost=a.latticeOn?a.latticeLF*a.latticeRate:0;
+  const haulCost=a.haulOn?a.haulFee:0;
+  const matSub=deck+fascia+fast+frame+rail+stairTreadCost+stairRiserCost+latticeCost+haulCost;
+  const instL=area*laborPerSqft(crew,rate,parseFloat($('l-install-hrs').value)||8);
+  const railLabor=a.railingOn?a.railLF*crew*rate*(parseFloat($('l-railing-hrs').value)||0.5):0;
+  const frameL=isBuild?area*laborPerSqft(crew,rate,parseFloat($('l-framing-hrs').value)||6):0;
+  const stairLabor=a.stairsOn?stairTreadLF*laborPerSqft(crew,rate,parseFloat($('l-install-hrs').value)||8)*(parseFloat($('l-stair-mult').value)||2):0;
+  const labSub=instL+railLabor+frameL+stairLabor;
+  const marginPct=parseFloat($('profit-margin').value)||0;
+  const profit=(matSub+labSub)*(marginPct/100);
+  const tax=matSub*TAX;
+  const grand=matSub+tax+labSub+profit;
+  return {L,area,adjLF,boards,bl,actLF,deck,fascia,fast,fastQ,frame,rail,stairTreadLF,stairTreadCost,stairRiserCost,latticeCost,haulCost,matSub,instL,railLabor,frameL,stairLabor,labSub,profit,marginPct,tax,grand,psf:grand/area,isBuild,installRateSqft:laborPerSqft(crew,rate,parseFloat($('l-install-hrs').value)||8)};
 }
 
-function recalcProposalTotals() {
-  // Re-render to pick up overrides — lightweight since we're just updating
+// ── RENDER AREAS ──────────────────────────────────────────────────────────────
+function renderAreas(){
+  const container = $('areas-container');
+  container.innerHTML = '';
+  areas.forEach((a,idx) => {
+    const r = calcAreaCosts(a);
+    const L = r ? r.L : null;
+    const isActive = a.id === activeAreaId;
+    const card = document.createElement('div');
+    card.style.cssText = 'border:1.5px solid '+(isActive?'var(--orange)':'var(--border)')+';border-radius:10px;background:var(--card-bg);margin-bottom:12px;overflow:hidden;';
+    // Header
+    const hdr = document.createElement('div');
+    hdr.style.cssText = 'display:flex;align-items:center;gap:10px;padding:12px 16px;cursor:pointer;background:'+(isActive?'var(--orange-pale)':'var(--surface-2)')+';';
+    hdr.innerHTML = `
+      <span style="font-size:18px;">${a.mode==='build'?'🏗':'🔄'}</span>
+      <input type="text" value="${a.name}" onclick="event.stopPropagation()" onchange="areas.find(x=>x.id===${a.id}).name=this.value;renderSummary();" style="font-weight:600;font-size:14px;color:var(--navy);border:none;background:transparent;outline:none;flex:1;cursor:text;">
+      ${r?`<span style="font-family:'DM Mono',monospace;font-size:13px;color:var(--orange);font-weight:500;">${fmt(r.grand)}</span>`:''}
+      ${r?`<span style="font-size:11px;color:var(--text-muted);">${Math.round(r.area)} sqft</span>`:''}
+      <button onclick="event.stopPropagation();toggleCollapse(${a.id})" style="font-size:18px;border:none;background:none;cursor:pointer;color:var(--text-muted);">${a.collapsed?'▶':'▼'}</button>
+      ${areas.length>1?`<button onclick="event.stopPropagation();removeArea(${a.id})" style="font-size:13px;padding:3px 8px;border:1px solid var(--border);border-radius:5px;background:var(--surface);color:var(--text-muted);cursor:pointer;">✕</button>`:''}
+    `;
+    hdr.onclick = () => { setActive(a.id); };
+    card.appendChild(hdr);
+
+    if(!a.collapsed){
+      const body = document.createElement('div');
+      body.style.padding = '16px';
+      body.innerHTML = buildAreaBody(a, r);
+      card.appendChild(body);
+    }
+    container.appendChild(card);
+  });
+}
+
+function buildAreaBody(a, r){
+  const id = a.id;
+  const L = r ? r.L : LINES[0];
+  const blInfo = bestBoardLength(a.len, a.wid, a.waste);
+  const allBL = calcAllBoardLengths(a.len, a.wid, a.waste);
+
+  // Build group pills
+  const groups=[];const seen={};
+  LINES.forEach(ln=>{ if(!seen[ln.grp]){seen[ln.grp]=true;groups.push({grp:ln.grp,color:ln.grpColor,label:ln.grpLabel,lines:[]});}groups.find(g=>g.grp===ln.grp).lines.push(ln); });
+  let pillsHtml = '';
+  groups.forEach(g => {
+    pillsHtml += `<div style="display:flex;align-items:center;gap:6px;margin:6px 0 4px;font-size:10px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:${g.color};"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${g.color};"></span>${g.label}</div>`;
+    pillsHtml += `<div style="display:flex;flex-wrap:wrap;gap:5px;padding:4px 0 8px 14px;border-left:2px solid ${g.color}33;margin-left:3px;">`;
+    g.lines.forEach(ln => {
+      const isActive = ln.id===a.lineId;
+      pillsHtml += `<div onclick="areas.find(x=>x.id===${id}).lineId='${ln.id}';readArea(${id});renderAreas();renderSummary();" style="display:inline-flex;flex-direction:column;gap:2px;padding:6px 10px;border-radius:7px;border:1.5px solid ${isActive?ln.grpColor:'var(--border)'};background:${isActive?ln.grpColor+'18':'var(--surface-2)'};cursor:pointer;min-width:76px;">
+        <div style="font-size:12px;font-weight:600;color:${isActive?ln.grpColor:'var(--text-secondary)'};">${ln.sn}</div>
+        <div style="font-size:11px;color:${isActive?ln.grpColor:'var(--text-muted)'};">$${ln.lf.toFixed(2)}/LF</div>
+        ${isActive?`<div style="margin-top:4px;">${ln.colors.map(c=>`<div style="font-size:9px;color:${ln.grpColor};line-height:1.6;">• ${c}</div>`).join('')}</div>`:''}
+      </div>`;
+    });
+    pillsHtml += '</div>';
+  });
+
+  // Board length options
+  let blHtml = allBL.map(o => {
+    const isBest=o.bl===blInfo.bl, isSel=a.selectedBoardLen===o.bl||(a.selectedBoardLen===null&&o.bl===blInfo.bl);
+    return `<div onclick="areas.find(x=>x.id===${id}).selectedBoardLen=${isSel&&a.selectedBoardLen!==null?'null':o.bl};readArea(${id});renderAreas();renderSummary();" style="display:flex;align-items:center;justify-content:space-between;padding:7px 10px;border-radius:6px;border:1.5px solid ${isSel?(isBest?'var(--orange)':'var(--navy)'):'var(--border)'};background:${isSel?(isBest?'var(--orange-pale)':'var(--navy-pale)'):'var(--surface-2)'};cursor:pointer;margin-bottom:5px;">
+      <div><span style="font-family:'DM Mono',monospace;font-size:13px;font-weight:600;color:${isSel?(isBest?'var(--orange)':'var(--navy)'):'var(--text-secondary)'};">${o.bl} ft</span>${isBest?'<span style="font-size:9px;font-weight:600;padding:1px 6px;border-radius:10px;background:var(--orange);color:#fff;margin-left:6px;">best</span>':''}</div>
+      <div style="font-size:11px;color:var(--text-muted);text-align:right;">${o.boards} boards · ${o.wastedPct.toFixed(1)}% waste</div>
+    </div>`;
+  }).join('');
+
+  return `
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+    <!-- Mode -->
+    <div>
+      <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);margin-bottom:8px;">Project Type</div>
+      <div style="display:flex;gap:0;border:1px solid var(--border);border-radius:6px;overflow:hidden;">
+        <button onclick="areas.find(x=>x.id===${id}).mode='replace';renderAreas();renderSummary();" style="flex:1;padding:8px;font-size:12px;font-weight:500;border:none;font-family:'DM Sans',sans-serif;cursor:pointer;background:${a.mode==='replace'?'var(--orange-pale)':'var(--surface-2)'};color:${a.mode==='replace'?'var(--orange)':'var(--text-muted)'};">🔄 Replacement</button>
+        <button onclick="areas.find(x=>x.id===${id}).mode='build';renderAreas();renderSummary();" style="flex:1;padding:8px;font-size:12px;font-weight:500;border:none;font-family:'DM Sans',sans-serif;cursor:pointer;background:${a.mode==='build'?'var(--green-pale)':'var(--surface-2)'};color:${a.mode==='build'?'var(--green)':'var(--text-muted)'};">🏗 Full Build</button>
+      </div>
+      <!-- Dimensions -->
+      <div style="margin-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <div><label style="font-size:11px;color:var(--text-muted);display:block;margin-bottom:3px;">Length (ft)</label><input type="number" id="a${id}-len" value="${a.len}" min="1" max="300" style="width:100%;padding:7px 10px;border:1px solid var(--border);border-radius:6px;font-family:'DM Mono',monospace;font-size:14px;color:var(--orange);" oninput="readArea(${id});renderAreas();renderSummary();"></div>
+        <div><label style="font-size:11px;color:var(--text-muted);display:block;margin-bottom:3px;">Width (ft)</label><input type="number" id="a${id}-wid" value="${a.wid}" min="1" max="100" style="width:100%;padding:7px 10px;border:1px solid var(--border);border-radius:6px;font-family:'DM Mono',monospace;font-size:14px;color:var(--orange);" oninput="readArea(${id});renderAreas();renderSummary();"></div>
+      </div>
+      <div style="padding:7px 10px;background:var(--orange-pale);border-radius:6px;margin-top:8px;display:flex;justify-content:space-between;font-size:12px;">
+        <span style="color:var(--text-muted);">Area</span><span style="font-family:'DM Mono',monospace;color:var(--orange);font-weight:500;">${Math.round(a.len*a.wid).toLocaleString()} sqft</span>
+      </div>
+      <!-- Waste -->
+      <div style="margin-top:10px;"><label style="font-size:11px;color:var(--text-muted);display:block;margin-bottom:3px;">Waste</label>
+        <select id="a${id}-waste" onchange="readArea(${id});renderAreas();renderSummary();" style="width:100%;padding:7px 10px;border:1px solid var(--border);border-radius:6px;font-size:12px;">
+          <option value="1.05" ${a.waste==1.05?'selected':''}>5% — minimal</option>
+          <option value="1.10" ${a.waste==1.10?'selected':''}>10% — standard</option>
+          <option value="1.15" ${a.waste==1.15?'selected':''}>15% — diagonal</option>
+          <option value="1.20" ${a.waste==1.20?'selected':''}>20% — complex</option>
+        </select>
+      </div>
+    </div>
+    <!-- Board Length -->
+    <div>
+      <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);margin-bottom:8px;">Board Length</div>
+      ${blHtml}
+    </div>
+  </div>
+
+  <!-- Product Line -->
+  <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);margin-bottom:6px;">Product Line</div>
+  ${pillsHtml}
+
+  <!-- Accessories row -->
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border);">
+    <!-- Fascia -->
+    <div style="padding:10px;background:var(--surface-2);border-radius:8px;border:1px solid var(--border);">
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
+        <div onclick="areas.find(x=>x.id===${id}).fasciaOn=!areas.find(x=>x.id===${id}).fasciaOn;renderAreas();renderSummary();" style="width:32px;height:18px;border-radius:9px;background:${a.fasciaOn?'var(--orange)':'#C8D0D8'};position:relative;cursor:pointer;flex-shrink:0;"><div style="width:13px;height:13px;border-radius:50%;background:#fff;position:absolute;top:2px;left:${a.fasciaOn?'16px':'2px'};transition:left 0.15s;box-shadow:0 1px 2px rgba(0,0,0,0.2);"></div></div>
+        <span style="font-size:12px;font-weight:500;color:var(--text-secondary);">Fascia</span>
+      </div>
+      <input type="number" id="a${id}-fascia-count" value="${a.fasciaCount}" min="0" max="500" style="width:100%;padding:5px 8px;border:1px solid var(--border);border-radius:5px;font-size:12px;" oninput="readArea(${id});renderSummary();">
+      <button onclick="const fi=autoFasciaCount(areas.find(x=>x.id===${id}).len,areas.find(x=>x.id===${id}).wid);areas.find(x=>x.id===${id}).fasciaCount=fi.count;renderAreas();renderSummary();" style="width:100%;margin-top:4px;padding:4px;font-size:10px;border:1px solid var(--border);border-radius:4px;background:var(--surface);cursor:pointer;color:var(--text-muted);">↺ Auto</button>
+    </div>
+    <!-- Railing -->
+    <div style="padding:10px;background:var(--surface-2);border-radius:8px;border:1px solid var(--border);">
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
+        <div onclick="areas.find(x=>x.id===${id}).railingOn=!areas.find(x=>x.id===${id}).railingOn;renderAreas();renderSummary();" style="width:32px;height:18px;border-radius:9px;background:${a.railingOn?'var(--orange)':'#C8D0D8'};position:relative;cursor:pointer;flex-shrink:0;"><div style="width:13px;height:13px;border-radius:50%;background:#fff;position:absolute;top:2px;left:${a.railingOn?'16px':'2px'};box-shadow:0 1px 2px rgba(0,0,0,0.2);"></div></div>
+        <span style="font-size:12px;font-weight:500;color:var(--text-secondary);">Railing</span>
+      </div>
+      <div style="display:flex;gap:3px;margin-bottom:4px;">
+        <button onclick="areas.find(x=>x.id===${id}).railType='composite';renderAreas();renderSummary();" style="flex:1;padding:3px;font-size:10px;border:1px solid var(--border);border-radius:4px;cursor:pointer;background:${a.railType==='composite'?'var(--orange-pale)':'var(--surface)'};color:${a.railType==='composite'?'var(--orange)':'var(--text-muted)'};">Comp $55</button>
+        <button onclick="areas.find(x=>x.id===${id}).railType='aluminum';renderAreas();renderSummary();" style="flex:1;padding:3px;font-size:10px;border:1px solid var(--border);border-radius:4px;cursor:pointer;background:${a.railType==='aluminum'?'var(--orange-pale)':'var(--surface)'};color:${a.railType==='aluminum'?'var(--orange)':'var(--text-muted)'};">Alum $50</button>
+      </div>
+      <input type="number" id="a${id}-railing-lf" value="${a.railLF}" min="0" max="2000" placeholder="LF" style="width:100%;padding:5px 8px;border:1px solid var(--border);border-radius:5px;font-size:12px;" oninput="readArea(${id});renderSummary();">
+      <button onclick="const aa=areas.find(x=>x.id===${id});const lf=aa.len+aa.wid+aa.wid;aa.railLF=lf;renderAreas();renderSummary();" style="width:100%;margin-top:4px;padding:4px;font-size:10px;border:1px solid var(--border);border-radius:4px;background:var(--surface);cursor:pointer;color:var(--text-muted);">↺ 3 sides</button>
+    </div>
+    <!-- Lattice -->
+    <div style="padding:10px;background:var(--surface-2);border-radius:8px;border:1px solid var(--border);">
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
+        <div onclick="areas.find(x=>x.id===${id}).latticeOn=!areas.find(x=>x.id===${id}).latticeOn;renderAreas();renderSummary();" style="width:32px;height:18px;border-radius:9px;background:${a.latticeOn?'var(--orange)':'#C8D0D8'};position:relative;cursor:pointer;flex-shrink:0;"><div style="width:13px;height:13px;border-radius:50%;background:#fff;position:absolute;top:2px;left:${a.latticeOn?'16px':'2px'};box-shadow:0 1px 2px rgba(0,0,0,0.2);"></div></div>
+        <span style="font-size:12px;font-weight:500;color:var(--text-secondary);">Lattice</span>
+      </div>
+      <input type="number" id="a${id}-lattice-lf" value="${a.latticeLF}" min="0" placeholder="LF" style="width:100%;padding:5px 8px;border:1px solid var(--border);border-radius:5px;font-size:12px;margin-bottom:4px;" oninput="readArea(${id});renderSummary();">
+      <div style="display:flex;align-items:center;gap:3px;"><span style="font-size:11px;color:var(--text-muted);">$</span><input type="number" id="a${id}-lattice-rate" value="${a.latticeRate}" min="0" step="0.5" style="width:100%;padding:5px 8px;border:1px solid var(--border);border-radius:5px;font-size:12px;" oninput="readArea(${id});renderSummary();"></div>
+    </div>
+    <!-- Haul / Stairs -->
+    <div style="padding:10px;background:var(--surface-2);border-radius:8px;border:1px solid var(--border);">
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
+        <div onclick="areas.find(x=>x.id===${id}).haulOn=!areas.find(x=>x.id===${id}).haulOn;renderAreas();renderSummary();" style="width:32px;height:18px;border-radius:9px;background:${a.haulOn?'var(--orange)':'#C8D0D8'};position:relative;cursor:pointer;flex-shrink:0;"><div style="width:13px;height:13px;border-radius:50%;background:#fff;position:absolute;top:2px;left:${a.haulOn?'16px':'2px'};box-shadow:0 1px 2px rgba(0,0,0,0.2);"></div></div>
+        <span style="font-size:12px;font-weight:500;color:var(--text-secondary);">Haul Away</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:3px;"><span style="font-size:11px;color:var(--text-muted);">$</span><input type="number" id="a${id}-haul-fee" value="${a.haulFee}" min="0" step="50" style="width:100%;padding:5px 8px;border:1px solid var(--border);border-radius:5px;font-size:12px;" oninput="readArea(${id});renderSummary();"></div>
+      <div style="margin-top:6px;">
+        <div style="display:flex;align-items:center;gap:6px;">
+          <div onclick="areas.find(x=>x.id===${id}).stairsOn=!areas.find(x=>x.id===${id}).stairsOn;renderAreas();renderSummary();" style="width:32px;height:18px;border-radius:9px;background:${a.stairsOn?'var(--orange)':'#C8D0D8'};position:relative;cursor:pointer;flex-shrink:0;"><div style="width:13px;height:13px;border-radius:50%;background:#fff;position:absolute;top:2px;left:${a.stairsOn?'16px':'2px'};box-shadow:0 1px 2px rgba(0,0,0,0.2);"></div></div>
+          <span style="font-size:12px;font-weight:500;color:var(--text-secondary);">Stairs</span>
+        </div>
+        ${a.stairsOn?`<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:3px;margin-top:5px;">
+          <div><div style="font-size:9px;color:var(--text-muted);">Sections</div><input type="number" id="a${id}-stair-count" value="${a.stairCount}" min="1" max="10" style="width:100%;padding:4px;border:1px solid var(--border);border-radius:4px;font-size:11px;" oninput="readArea(${id});renderSummary();"></div>
+          <div><div style="font-size:9px;color:var(--text-muted);">Risers</div><input type="number" id="a${id}-risers-per-stair" value="${a.risersPerStair}" min="1" max="20" style="width:100%;padding:4px;border:1px solid var(--border);border-radius:4px;font-size:11px;" oninput="readArea(${id});renderSummary();"></div>
+          <div><div style="font-size:9px;color:var(--text-muted);">Width ft</div><input type="number" id="a${id}-stair-width" value="${a.stairWidth}" min="1" max="20" step="0.5" style="width:100%;padding:4px;border:1px solid var(--border);border-radius:4px;font-size:11px;" oninput="readArea(${id});renderSummary();"></div>
+        </div>`:''}
+      </div>
+    </div>
+  </div>
+
+  <!-- Area cost summary -->
+  ${r?`<div style="margin-top:12px;padding:10px 14px;background:var(--orange-pale);border-radius:8px;border:1px solid rgba(232,117,26,0.2);display:flex;justify-content:space-between;align-items:center;">
+    <div style="font-size:12px;color:var(--text-muted);">${Math.round(r.area)} sqft · ${r.boards} boards · ${r.bl>0?r.bl+' ft boards':'mixed'} · ${r.L.name}</div>
+    <div style="font-family:'DM Mono',monospace;font-size:18px;font-weight:600;color:var(--orange);">${fmt(r.grand)}</div>
+  </div>`:''}
+  `;
+}
+
+// ── RENDER SUMMARY ────────────────────────────────────────────────────────────
+function renderSummary(){
+  const results = areas.map(a => ({ a, r:calcAreaCosts(a) })).filter(x=>x.r);
+  const totalGrand = results.reduce((s,x)=>s+(x.r.grand||0),0);
+  const totalArea  = results.reduce((s,x)=>s+(x.r.area||0),0);
+
+  // Summary table
+  let rows = results.map(({a,r}) => `
+    <tr>
+      <td style="padding:8px 12px;font-weight:500;color:var(--text-primary);">${a.name}</td>
+      <td style="padding:8px 12px;color:var(--text-muted);font-size:12px;">${Math.round(r.area)} sqft · ${r.L.name}</td>
+      <td style="padding:8px 12px;font-family:'DM Mono',monospace;color:var(--text-secondary);">${fmt(r.matSub)}</td>
+      <td style="padding:8px 12px;font-family:'DM Mono',monospace;color:var(--text-secondary);">${fmt(r.labSub)}</td>
+      <td style="padding:8px 12px;font-family:'DM Mono',monospace;color:var(--text-secondary);">${fmt(r.tax)}</td>
+      <td style="padding:8px 12px;font-family:'DM Mono',monospace;font-weight:600;color:var(--orange);">${fmt(r.grand)}</td>
+    </tr>`).join('');
+
+  $('summary-table').innerHTML = `
+    <table style="width:100%;border-collapse:collapse;font-size:13px;">
+      <thead><tr style="background:var(--surface-2);">
+        <th style="padding:8px 12px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);">Area</th>
+        <th style="padding:8px 12px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);">Details</th>
+        <th style="padding:8px 12px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);">Materials</th>
+        <th style="padding:8px 12px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);">Labor</th>
+        <th style="padding:8px 12px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);">Tax</th>
+        <th style="padding:8px 12px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);">Total</th>
+      </tr></thead>
+      <tbody>${rows}</tbody>
+      <tfoot><tr style="border-top:2px solid var(--orange);">
+        <td style="padding:10px 12px;font-weight:700;color:var(--navy);" colspan="2">${results.length} area${results.length!==1?'s':''} · ${Math.round(totalArea).toLocaleString()} sqft total</td>
+        <td colspan="3" style="padding:10px 12px;font-size:12px;color:var(--text-muted);">All costs included</td>
+        <td style="padding:10px 12px;font-family:'DM Mono',monospace;font-size:20px;font-weight:700;color:var(--orange);">${fmt(totalGrand)}</td>
+      </tr></tfoot>
+    </table>`;
+
+  $('total-grand').textContent = fmt(totalGrand);
+  $('total-area').textContent = Math.round(totalArea).toLocaleString()+' sqft';
+}
+
+// ── QUOTE SAVE/LOAD ───────────────────────────────────────────────────────────
+function getQuoteState(){
+  return {
+    ts: Date.now(),
+    client: ($('p-client-name')&&$('p-client-name').value)||'',
+    desc: ($('p-description')&&$('p-description').value)||'',
+    areas: JSON.parse(JSON.stringify(areas)),
+    labor: { crew:$('l-crew').value, rate:$('l-rate').value, installHrs:$('l-install-hrs').value, framingHrs:$('l-framing-hrs').value, railingHrs:$('l-railing-hrs').value, stairMult:$('l-stair-mult').value, margin:$('profit-margin').value }
+  };
+}
+
+function loadQuoteState(q){
+  areas = q.areas || [];
+  areaIdCounter = Math.max(...areas.map(a=>a.id||0), 0);
+  if(q.labor){
+    ['l-crew','l-rate','l-install-hrs','l-framing-hrs','l-railing-hrs','l-stair-mult','profit-margin'].forEach((id,i)=>{
+      const keys=['crew','rate','installHrs','framingHrs','railingHrs','stairMult','margin'];
+      if($(id)) $(id).value = q.labor[keys[i]]||$(id).value;
+    });
+  }
+  if(q.client && $('p-client-name')) $('p-client-name').value = q.client;
+  if(q.desc && $('p-description')) $('p-description').value = q.desc;
+  renderAreas();
+  renderSummary();
+  renderSavedQuotes();
+}
+
+function saveQuote(){
+  const name = prompt('Quote name (client + job):');
+  if(!name) return;
+  const q = getQuoteState();
+  q.name = name;
+  savedQuotes.unshift(q);
+  if(savedQuotes.length>50) savedQuotes=savedQuotes.slice(0,50);
+  localStorage.setItem('fbco_quotes', JSON.stringify(savedQuotes));
+  renderSavedQuotes();
+  alert('Quote saved: '+name);
+}
+
+function exportQuote(){
+  const q = getQuoteState();
+  q.name = ($('p-client-name')&&$('p-client-name').value)||'quote';
+  const blob = new Blob([JSON.stringify(q,null,2)],{type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = q.name.replace(/[^a-z0-9]/gi,'_')+'_quote.json';
+  a.click();
+}
+
+function importQuote(){
+  const input = document.createElement('input');
+  input.type='file'; input.accept='.json';
+  input.onchange = e => {
+    const file=e.target.files[0]; if(!file) return;
+    const reader=new FileReader();
+    reader.onload=ev=>{ try{ loadQuoteState(JSON.parse(ev.target.result)); }catch(err){ alert('Invalid quote file'); }};
+    reader.readAsText(file);
+  };
+  input.click();
+}
+
+function renderSavedQuotes(){
+  const container=$('saved-quotes-list'); if(!container) return;
+  if(!savedQuotes.length){ container.innerHTML='<div style="font-size:12px;color:var(--text-muted);padding:8px 0;">No saved quotes yet.</div>'; return; }
+  container.innerHTML = savedQuotes.map((q,i)=>`
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;border:1px solid var(--border);border-radius:7px;margin-bottom:6px;background:var(--surface-2);">
+      <div>
+        <div style="font-size:13px;font-weight:500;color:var(--text-primary);">${q.name||'Unnamed'}</div>
+        <div style="font-size:11px;color:var(--text-muted);">${new Date(q.ts).toLocaleDateString()} · ${q.areas?q.areas.length+' area(s)':''}</div>
+      </div>
+      <div style="display:flex;gap:6px;">
+        <button onclick="loadQuoteState(savedQuotes[${i}])" style="padding:5px 10px;font-size:12px;border:1px solid var(--orange);border-radius:5px;background:var(--orange-pale);color:var(--orange);cursor:pointer;font-family:'DM Sans',sans-serif;">Load</button>
+        <button onclick="savedQuotes.splice(${i},1);localStorage.setItem('fbco_quotes',JSON.stringify(savedQuotes));renderSavedQuotes();" style="padding:5px 10px;font-size:12px;border:1px solid var(--border);border-radius:5px;background:var(--surface);color:var(--text-muted);cursor:pointer;font-family:'DM Sans',sans-serif;">✕</button>
+      </div>
+    </div>`).join('');
+}
+
+// ── PROPOSAL ──────────────────────────────────────────────────────────────────
+function ptoggle(k){
+  pOpts[k]=!pOpts[k];
+  $('ptog-'+k).classList.toggle('on',pOpts[k]);
+  if(k==='notes') $('p-notes-area').style.display=pOpts[k]?'':'none';
   renderProposal();
 }
 
-function parseAmt(id, fallback) {
-  const val = pOverrides[id] !== undefined ? pOverrides[id] : fmtD(fallback);
-  const num = parseFloat(val.replace(/[$,]/g,''));
-  return isNaN(num) ? fallback : num;
+function editCell(id,value){
+  const saved=pOverrides[id]!==undefined?pOverrides[id]:value;
+  return '<span contenteditable="true" data-pid="'+id+'" onblur="pOverrides[this.dataset.pid]=this.innerText.trim()" onkeydown="if(event.key===\'Enter\'){event.preventDefault();this.blur();}" style="outline:none;border-bottom:1px dashed #C8D0D8;cursor:text;min-width:20px;display:inline-block;" title="Click to edit">'+saved+'</span>';
 }
 
-function renderProposal() {
+function renderProposal(){
   try {
-    const r = calcCosts(selA);
-    const L = r.L;
-    const client   = ($('p-client-name')    && $('p-client-name').value)    || 'Client Name';
-    const addr     = ($('p-client-address') && $('p-client-address').value) || '';
-    const projAddr = ($('p-project-address')&& $('p-project-address').value)|| addr;
-    const desc     = ($('p-description')    && $('p-description').value)    || (L.name + ' Deck — ' + (mode==='build' ? 'Full Build' : 'Board Replacement'));
-    const dateVal  = $('p-date') && $('p-date').value;
-    const validVal = $('p-valid-until') && $('p-valid-until').value;
-    const dateStr  = dateVal  ? new Date(dateVal  + 'T00:00:00').toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}) : new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
-    const validStr = validVal ? new Date(validVal + 'T00:00:00').toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}) : '';
-    const notes    = ($('p-notes')      && $('p-notes').value)      || '';
-    const terms    = ($('p-terms-text') && $('p-terms-text').value) || '';
-    const logoSrc  = document.querySelector('.logo-area img') ? document.querySelector('.logo-area img').src : '';
-    const grandFmt = '$' + r.grand.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
-
-    const scopeItems = [
-      ...(r.isBuild ? ['Supply and install pressure-treated framing structure (joists, beams, posts, hardware)'] : ['Remove existing deck boards and prepare surface for installation']),
-      'Supply and install ' + L.name + ' ' + L.badge + ' decking boards',
-      ...(opts.fascia   ? ['Supply and install matching fascia boards'] : []),
-      ...(opts.railing  ? ['Supply and install ' + railType + ' railing system'] : []),
-      ...(opts.stairs   ? ['Supply and install deck stairs (' + r.stairCount + ' section' + (r.stairCount > 1 ? 's' : '') + ')'] : []),
-      ...(opts.fastener ? ['Hidden fastener system for clean board finish'] : []),
-      ...(opts.lattice  ? ['Supply and install lattice'] : []),
-      ...(opts.haul     ? ['Debris removal and haul away of all job materials'] : []),
-      'Site cleanup upon project completion',
-    ];
-
-    // Header
-    let logoHtml = logoSrc
-      ? '<img src="' + logoSrc + '" style="height:52px;display:block;">'
-      : '<div style="font-size:26px;font-weight:700;color:#2D3F52;">FB Construction</div>';
+    const results = areas.map(a=>({a,r:calcAreaCosts(a)})).filter(x=>x.r);
+    if(!results.length){ $('proposal-content').innerHTML='<p style="padding:20px;color:var(--text-muted);">Add at least one area to generate a proposal.</p>'; return; }
+    const totalGrand = results.reduce((s,x)=>s+(x.r.grand||0),0);
+    const client   = ($('p-client-name')&&$('p-client-name').value)||'Client Name';
+    const addr     = ($('p-client-address')&&$('p-client-address').value)||'';
+    const projAddr = ($('p-project-address')&&$('p-project-address').value)||addr;
+    const desc     = ($('p-description')&&$('p-description').value)||(results.length===1?results[0].r.L.name+' Deck':'Multi-Area Deck Project');
+    const dateVal  = $('p-date')&&$('p-date').value;
+    const validVal = $('p-valid-until')&&$('p-valid-until').value;
+    const dateStr  = dateVal?new Date(dateVal+'T00:00:00').toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}):new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+    const validStr = validVal?new Date(validVal+'T00:00:00').toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}):'';
+    const notes    = ($('p-notes')&&$('p-notes').value)||'';
+    const terms    = ($('p-terms-text')&&$('p-terms-text').value)||'';
+    const logoSrc  = document.querySelector('.logo-area img')?document.querySelector('.logo-area img').src:'';
+    const grandFmt = '$'+totalGrand.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
 
     let html = '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;padding-bottom:18px;border-bottom:3px solid #E8751A;">'
-      + '<div>' + logoHtml
-      + '<div style="font-size:11px;color:#7A92A8;margin-top:6px;line-height:1.8;">3026 Commercial Ave, Northbrook, IL 60062<br>'
-      + '<a href="https://www.fbcoinc.com" style="color:#E8751A;text-decoration:none;">fbcoinc.com</a></div>'
-      + '</div>'
-      + '<div style="text-align:right;">'
-      + '<div style="font-size:22px;font-weight:700;color:#2D3F52;letter-spacing:0.03em;">PROPOSAL</div>'
-      + '<div style="font-size:11px;color:#7A92A8;margin-top:4px;">Date: ' + dateStr + '</div>'
-      + (validStr ? '<div style="font-size:11px;color:#7A92A8;">Valid until: ' + validStr + '</div>' : '')
-      + '</div></div>';
+      +'<div>'+(logoSrc?'<img src="'+logoSrc+'" style="height:52px;display:block;">':'<div style="font-size:26px;font-weight:700;color:#2D3F52;">FB Construction</div>')
+      +'<div style="font-size:11px;color:#7A92A8;margin-top:6px;line-height:1.8;">3026 Commercial Ave, Northbrook, IL 60062<br><a href="https://www.fbcoinc.com" style="color:#E8751A;text-decoration:none;">fbcoinc.com</a></div></div>'
+      +'<div style="text-align:right;"><div style="font-size:22px;font-weight:700;color:#2D3F52;letter-spacing:0.03em;">PROPOSAL</div>'
+      +'<div style="font-size:11px;color:#7A92A8;margin-top:4px;">Date: '+dateStr+'</div>'
+      +(validStr?'<div style="font-size:11px;color:#7A92A8;">Valid until: '+validStr+'</div>':'')+'</div></div>';
 
-    // Client + Project info
     html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-bottom:22px;">'
-      + '<div><div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:#7A92A8;margin-bottom:6px;">Prepared for</div>'
-      + '<div style="font-size:15px;font-weight:600;color:#1C2B3A;">' + editCell('p-client-inline', client) + '</div>'
-      + (addr ? '<div style="font-size:12px;color:#445A6F;margin-top:3px;">' + editCell('p-addr-inline', addr) + '</div>' : '')
-      + (projAddr && projAddr !== addr ? '<div style="font-size:11px;color:#7A92A8;margin-top:2px;">Project: ' + editCell('p-proj-inline', projAddr) + '</div>' : '')
-      + '</div>'
-      + '<div><div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:#7A92A8;margin-bottom:6px;">Project Description</div>'
-      + '<div style="font-size:13px;font-weight:500;color:#1C2B3A;">' + editCell('p-desc-inline', desc) + '</div>'
-      + '<div style="font-size:11px;color:#7A92A8;margin-top:4px;">' + Math.round(r.area).toLocaleString() + ' sq ft &nbsp;·&nbsp; ' + L.badge + '</div>'
-      + '</div></div>';
+      +'<div><div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:#7A92A8;margin-bottom:6px;">Prepared for</div>'
+      +'<div style="font-size:15px;font-weight:600;color:#1C2B3A;">'+editCell('p-client-inline',client)+'</div>'
+      +(addr?'<div style="font-size:12px;color:#445A6F;margin-top:3px;">'+editCell('p-addr-inline',addr)+'</div>':'')
+      +(projAddr&&projAddr!==addr?'<div style="font-size:11px;color:#7A92A8;margin-top:2px;">Project: '+editCell('p-proj-inline',projAddr)+'</div>':'')+'</div>'
+      +'<div><div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:#7A92A8;margin-bottom:6px;">Project Description</div>'
+      +'<div style="font-size:13px;font-weight:500;color:#1C2B3A;">'+editCell('p-desc-inline',desc)+'</div>'
+      +'<div style="font-size:11px;color:#7A92A8;margin-top:4px;">'+results.length+' area(s) · '+Math.round(results.reduce((s,x)=>s+x.r.area,0)).toLocaleString()+' sq ft total</div>'
+      +'</div></div>';
 
-    // Scope of work
-    if (pOpts.scope) {
-      let scopeRows = scopeItems.map(function(item, i) {
-        return '<tr>'
-          + '<td style="width:22px;padding:5px 8px 5px 0;vertical-align:top;color:#E8751A;font-size:14px;font-weight:700;">✓</td>'
-          + '<td style="padding:5px 0;font-size:13px;color:#1C2B3A;line-height:1.5;">' + editCell('scope-' + i, item) + '</td>'
-          + '</tr>';
-      }).join('');
-      html += '<div style="margin-bottom:20px;">'
-        + '<div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:#E8751A;border-bottom:2px solid #E8751A;padding-bottom:5px;margin-bottom:12px;">Scope of Work</div>'
-        + '<table style="width:100%;border-collapse:collapse;">' + scopeRows + '</table>'
-        + '</div>';
+    if(pOpts.scope){
+      let scopeRows='';
+      results.forEach(({a,r},i)=>{
+        const items=[
+          ...(r.isBuild?['Supply and install pressure-treated framing structure']:['Remove existing deck boards and prepare surface']),
+          'Supply and install '+r.L.name+' '+r.L.badge+' decking boards',
+          ...(a.fasciaOn?['Supply and install matching fascia boards']:[]),
+          ...(a.railingOn?['Supply and install '+a.railType+' railing system']:[]),
+          ...(a.stairsOn?['Supply and install deck stairs']:[]),
+          ...(a.latticeOn?['Supply and install lattice']:[]),
+          ...(a.haulOn?['Debris removal and haul away']:[]),
+        ];
+        scopeRows+=`<tr><td style="padding:6px 8px;vertical-align:top;font-weight:600;color:#2D3F52;font-size:13px;white-space:nowrap;">${editCell('scope-area-'+i,a.name)}</td>`
+          +`<td style="padding:6px 8px;font-size:12px;color:#445A6F;">${Math.round(r.area)} sqft · ${r.L.name}</td>`
+          +`<td style="padding:6px 8px;font-size:12px;color:#1C2B3A;">${items.map(item=>'✓ '+item).join('<br>')}</td></tr>`;
+      });
+      html+='<div style="margin-bottom:20px;"><div class="p-section-title">Scope of Work</div>'
+        +'<table style="width:100%;border-collapse:collapse;"><tbody>'+scopeRows+'</tbody></table></div>';
     }
 
-    // Notes
-    if (pOpts.notes && notes) {
-      html += '<div style="margin-bottom:18px;">'
-        + '<div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:#E8751A;border-bottom:2px solid #E8751A;padding-bottom:5px;margin-bottom:10px;">Notes</div>'
-        + '<p style="font-size:12px;color:#1C2B3A;line-height:1.7;">' + notes.replace(/\n/g,'<br>') + '</p>'
-        + '</div>';
+    if(pOpts.notes&&notes){
+      html+='<div style="margin-bottom:18px;"><div class="p-section-title">Notes</div><p style="font-size:12px;color:#1C2B3A;line-height:1.7;">'+notes.split('\n').join('<br>')+'</p></div>';
     }
 
-    // Terms
-    if (pOpts.terms) {
-      html += '<div style="margin-bottom:18px;">'
-        + '<div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:#E8751A;border-bottom:2px solid #E8751A;padding-bottom:5px;margin-bottom:8px;">Terms &amp; Conditions</div>'
-        + '<p style="font-size:10px;color:#7A92A8;line-height:1.6;">' + terms.replace(/\n/g,'<br>') + '</p>'
-        + '</div>';
+    if(pOpts.terms){
+      html+='<div style="margin-bottom:18px;"><div class="p-section-title">Terms &amp; Conditions</div><p style="font-size:10px;color:#7A92A8;line-height:1.6;">'+terms.split('\n').join('<br>')+'</p></div>';
     }
 
-    // Total — single price
-    html += '<div style="background:#FEF3EA;border:2px solid #E8751A;border-radius:10px;padding:16px 24px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center;">'
-      + '<div>'
-      + '<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#8B5E00;margin-bottom:3px;">Total Project Investment</div>'
-      + '<div style="font-size:11px;color:#8B5E00;">Includes all materials, labor &amp; applicable taxes</div>'
-      + '</div>'
-      + '<div style="font-size:28px;font-weight:700;color:#E8751A;font-family:\'DM Mono\',monospace;">' + editCell('p-grand-total', grandFmt) + '</div>'
-      + '</div>';
+    html+='<div style="background:#FEF3EA;border:2px solid #E8751A;border-radius:10px;padding:16px 24px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center;">'
+      +'<div><div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#8B5E00;margin-bottom:3px;">Total Project Investment</div>'
+      +'<div style="font-size:11px;color:#8B5E00;">Includes all materials, labor &amp; applicable taxes</div></div>'
+      +'<div style="font-size:28px;font-weight:700;color:#E8751A;font-family:DM Mono,monospace;">'+editCell('p-grand-total',grandFmt)+'</div></div>';
 
-    // Signature
-    if (pOpts.signature) {
-      html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:4px;">'
-        + '<div><div style="border-top:1px solid #C8D0D8;padding-top:6px;margin-top:32px;">'
-        + '<div style="font-size:10px;color:#7A92A8;">Client Signature &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Date ___________</div>'
-        + '</div></div>'
-        + '<div><div style="border-top:1px solid #C8D0D8;padding-top:6px;margin-top:32px;">'
-        + '<div style="font-size:10px;color:#7A92A8;">FB Construction Authorized &nbsp;&nbsp; Date ___________</div>'
-        + '</div></div>'
-        + '</div>';
+    if(pOpts.signature){
+      html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:4px;">'
+        +'<div><div style="border-top:1px solid #C8D0D8;padding-top:6px;margin-top:32px;"><div style="font-size:10px;color:#7A92A8;">Client Signature &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Date ___________</div></div></div>'
+        +'<div><div style="border-top:1px solid #C8D0D8;padding-top:6px;margin-top:32px;"><div style="font-size:10px;color:#7A92A8;">FB Construction Authorized &nbsp;&nbsp; Date ___________</div></div></div>'
+        +'</div>';
     }
 
-    $('proposal-content').innerHTML = html;
-    document.querySelectorAll('.p-editable').forEach(function(el) { el.title = 'Click to edit'; });
-
-  } catch(e) {
-    console.error('Proposal render error:', e);
-    if ($('proposal-content')) $('proposal-content').innerHTML = '<div style="padding:20px;color:#C0392B;">Error rendering proposal: ' + e.message + '</div>';
+    $('proposal-content').innerHTML=html;
+  } catch(e){
+    console.error('Proposal error:',e);
+    if($('proposal-content')) $('proposal-content').innerHTML='<div style="padding:20px;color:#C0392B;">Error: '+e.message+'</div>';
   }
 }
-function printProposal() {
-  const allTabs = ['tab-single','tab-compare','tab-proposal'];
-  const prevState = {};
-  allTabs.forEach(id => { prevState[id] = $(id).style.display; $(id).style.display = id==='tab-proposal' ? '' : 'none'; });
+
+function printProposal(){
+  const allTabs=['tab-single','tab-compare','tab-quotes','tab-proposal'];
+  const prev={};
+  allTabs.forEach(id=>{ prev[id]=$(id)&&$(id).style.display; if($(id)) $(id).style.display=id==='tab-proposal'?'':'none'; });
   window.print();
-  allTabs.forEach(id => { $(id).style.display = prevState[id]; });
+  allTabs.forEach(id=>{ if($(id)) $(id).style.display=prev[id]; });
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  const today = new Date().toISOString().split('T')[0];
-  if ($('p-date')) $('p-date').value = today;
-  const valid = new Date(); valid.setDate(valid.getDate()+30);
-  if ($('p-valid-until')) $('p-valid-until').value = valid.toISOString().split('T')[0];
-});
+function switchTab(t,btn){
+  currentTab=t;
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  ['tab-single','tab-compare','tab-quotes','tab-proposal'].forEach(id=>{ if($(id)) $(id).style.display='none'; });
+  if($(t==='single'?'tab-single':t==='compare'?'tab-compare':t==='quotes'?'tab-quotes':'tab-proposal')) $(t==='single'?'tab-single':t==='compare'?'tab-compare':t==='quotes'?'tab-quotes':'tab-proposal').style.display='';
+  if(t==='proposal') renderProposal();
+  if(t==='quotes') renderSavedQuotes();
+}
 
-buildPills('line-pills-a',selA,'active-a',id=>{selA=id;setPills('line-pills-a',id,'active-a');calc();});
-buildPills('line-pills-cmp-a',selCA,'active-a',id=>{selCA=id;setPills('line-pills-cmp-a',id,'active-a');calc();});
-buildPills('line-pills-cmp-b',selCB,'active-b',id=>{selCB=id;setPills('line-pills-cmp-b',id,'active-b');calc();});
+// ── INIT ──────────────────────────────────────────────────────────────────────
+const today=new Date().toISOString().split('T')[0];
+if($('p-date')) $('p-date').value=today;
+const validD=new Date(); validD.setDate(validD.getDate()+30);
+if($('p-valid-until')) $('p-valid-until').value=validD.toISOString().split('T')[0];
 
-$('railing-config').style.display='none';
-$('stairs-config').style.display='none';
-autoFasciaCalc();
-calc();
+// Start with two areas for demo
+addArea();
+areas[0].name='Back Porch';
+const a2=defaultArea('Side Porch'); a2.len=10; a2.wid=20; areas.push(a2); activeAreaId=areas[0].id;
+renderAreas();
+renderSummary();
+renderSavedQuotes();
 
 </script>
 </body>
