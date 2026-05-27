@@ -500,8 +500,20 @@ function buildAreaBody(a, r){
     </div>
     <!-- Board Length -->
     <div>
-      <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);margin-bottom:8px;">Board Length</div>
-      ${blHtml}
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+        <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);">Board Length</div>
+        <div style="display:flex;gap:0;border:1px solid var(--border);border-radius:5px;overflow:hidden;">
+          <button onclick="areas.find(x=>x.id===${id}).boardInputMode='auto';renderAreas();renderSummary();"
+            style="padding:3px 10px;font-size:11px;border:none;font-family:'DM Sans',sans-serif;cursor:pointer;
+            background:${a.boardInputMode!=='manual'?'var(--orange)':'var(--surface-2)'};
+            color:${a.boardInputMode!=='manual'?'#fff':'var(--text-muted)'};">Auto</button>
+          <button onclick="areas.find(x=>x.id===${id}).boardInputMode='manual';if(!areas.find(x=>x.id===${id}).boardRows||!areas.find(x=>x.id===${id}).boardRows.length)areas.find(x=>x.id===${id}).boardRows=[{qty:20,len:20}];renderAreas();renderSummary();"
+            style="padding:3px 10px;font-size:11px;border:none;font-family:'DM Sans',sans-serif;cursor:pointer;
+            background:${a.boardInputMode==='manual'?'var(--orange)':'var(--surface-2)'};
+            color:${a.boardInputMode==='manual'?'#fff':'var(--text-muted)'};">By Count</button>
+        </div>
+      </div>
+      ${a.boardInputMode === 'manual' ? buildManualBoardRows(a) : blHtml}
     </div>
   </div>
 
