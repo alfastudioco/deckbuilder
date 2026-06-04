@@ -559,7 +559,7 @@ function buildAreaBody(a, r){
   ${pillsHtml}
 
   <!-- Accessories row -->
-  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border);">
+  <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border);">
     <!-- Fascia -->
     <div style="padding:10px;background:var(--surface-2);border-radius:8px;border:1px solid var(--border);">
       <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
@@ -591,6 +591,22 @@ function buildAreaBody(a, r){
       <input type="number" id="a${id}-lattice-lf" value="${a.latticeLF}" min="0" placeholder="LF" style="width:100%;padding:5px 8px;border:1px solid var(--border);border-radius:5px;font-size:12px;margin-bottom:4px;" oninput="readArea(${id});renderSummary();">
       <div style="display:flex;align-items:center;gap:3px;"><span style="font-size:11px;color:var(--text-muted);">$</span><input type="number" id="a${id}-lattice-rate" value="${a.latticeRate}" min="0" step="0.5" style="width:100%;padding:5px 8px;border:1px solid var(--border);border-radius:5px;font-size:12px;" oninput="readArea(${id});renderSummary();"></div>
     </div>
+    <!-- Fasteners -->
+    <div style="padding:10px;background:var(--surface-2);border-radius:8px;border:1px solid var(--border);">
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
+        <div onclick="areas.find(x=>x.id===${id}).fastenerOn=!areas.find(x=>x.id===${id}).fastenerOn;renderAreas();renderSummary();" style="width:32px;height:18px;border-radius:9px;background:${a.fastenerOn?'var(--orange)':'#C8D0D8'};position:relative;cursor:pointer;flex-shrink:0;"><div style="width:13px;height:13px;border-radius:50%;background:#fff;position:absolute;top:2px;left:${a.fastenerOn?'16px':'2px'};box-shadow:0 1px 2px rgba(0,0,0,0.2);"></div></div>
+        <span style="font-size:12px;font-weight:500;color:var(--text-secondary);">Fasteners</span>
+      </div>
+      <select style="width:100%;padding:5px 8px;border:1px solid var(--border);border-radius:5px;font-size:11px;"
+        onchange="areas.find(x=>x.id===${id}).fastenerType=this.value;renderAreas();renderSummary();">
+        <option value="concealoc_sqft" ${a.fastenerType==='concealoc_sqft'?'selected':''}>Concealoc $1.45/sqft</option>
+        <option value="concealoc500_sqft" ${a.fastenerType==='concealoc500_sqft'?'selected':''}>Concealoc pail $1.18/sqft</option>
+        <option value="concealoc1000_sqft" ${a.fastenerType==='concealoc1000_sqft'?'selected':''}>Concealoc 1000 $1.15/sqft</option>
+        <option value="cortex_comp_lf" ${a.fastenerType==='cortex_comp_lf'?'selected':''}>Cortex comp $0.88/LF</option>
+        <option value="cortex_pvc_sqft" ${a.fastenerType==='cortex_pvc_sqft'?'selected':''}>Cortex PVC $1.10/sqft</option>
+      </select>
+    </div>
+
     <!-- Haul / Stairs -->
     <div style="padding:10px;background:var(--surface-2);border-radius:8px;border:1px solid var(--border);">
       <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
@@ -809,6 +825,7 @@ function renderProposal(){
           ...(a.fasciaOn?['Supply and install matching fascia boards']:[]),
           ...(a.railingOn?['Supply and install '+a.railType+' railing system']:[]),
           ...(a.stairsOn?['Supply and install deck stairs']:[]),
+          ...(a.fastenerOn?['Hidden fastener system ('+a.fastenerType.replace('_sqft','').replace('_lf','').replace('_',' ')+')']:[]),
           ...(a.latticeOn?['Supply and install lattice']:[]),
           ...(a.haulOn?['Debris removal and haul away']:[]),
         ];
