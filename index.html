@@ -120,6 +120,7 @@ select:focus,input:focus,textarea:focus{border-color:var(--orange);}
   <!-- TABS -->
   <div class="tab-row">
     <button class="tab-btn active" onclick="switchTab('single',this)">Saved Quotes</button>
+    <button class="tab-btn" onclick="switchTab('compare',this)">📊 Compare Pricing</button>
     <button class="tab-btn" onclick="switchTab('proposal',this)">📄 Proposal</button>
   </div>
 
@@ -127,6 +128,38 @@ select:focus,input:focus,textarea:focus{border-color:var(--orange);}
   <div id="tab-single">
     <div class="section-header">Saved Quotes</div>
     <div id="saved-quotes-list"></div>
+  </div>
+
+  <!-- COMPARE PRICING TAB -->
+  <div id="tab-compare" style="display:none;">
+    <div class="card gap-mb">
+      <div class="section-header" style="margin-top:0;">Compare Product Lines</div>
+      <p style="font-size:13px;color:var(--text-muted);margin-bottom:14px;">Select up to 3 product lines to compare pricing for the current job. Use "Add to Proposal" to include the comparison in the client proposal.</p>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:14px;">
+        <div style="flex:1;min-width:160px;">
+          <label class="form-label">Option 1</label>
+          <select id="cmp-line-1" onchange="renderCompare()" style="border-color:var(--orange);">
+            <option value="">— Select line —</option>
+          </select>
+        </div>
+        <div style="flex:1;min-width:160px;">
+          <label class="form-label">Option 2</label>
+          <select id="cmp-line-2" onchange="renderCompare()">
+            <option value="">— Select line —</option>
+          </select>
+        </div>
+        <div style="flex:1;min-width:160px;">
+          <label class="form-label">Option 3 (optional)</label>
+          <select id="cmp-line-3" onchange="renderCompare()">
+            <option value="">— None —</option>
+          </select>
+        </div>
+        <div style="display:flex;align-items:flex-end;">
+          <button onclick="addCompareToProposal()" style="padding:9px 16px;background:var(--navy);color:#fff;border:none;border-radius:7px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;white-space:nowrap;">+ Add to Proposal</button>
+        </div>
+      </div>
+      <div id="compare-grid"></div>
+    </div>
   </div>
 
   <!-- PROPOSAL TAB -->
@@ -626,8 +659,14 @@ function renderSummary(){
 function getQuoteState(){
   return {
     ts: Date.now(),
-    client: ($('p-client-name')&&$('p-client-name').value)||'',
-    desc: ($('p-description')&&$('p-description').value)||'',
+    client:      ($('p-client-name')    &&$('p-client-name').value)||'',
+    address:     ($('p-client-address') &&$('p-client-address').value)||'',
+    projAddress: ($('p-project-address')&&$('p-project-address').value)||'',
+    desc:        ($('p-description')    &&$('p-description').value)||'',
+    date:        ($('p-date')           &&$('p-date').value)||'',
+    validUntil:  ($('p-valid-until')    &&$('p-valid-until').value)||'',
+    notes:       ($('p-notes')          &&$('p-notes').value)||'',
+    terms:       ($('p-terms-text')     &&$('p-terms-text').value)||'',
     areas: JSON.parse(JSON.stringify(areas)),
     labor: { crew:$('l-crew').value, rate:$('l-rate').value, installHrs:$('l-install-hrs').value, framingHrs:$('l-framing-hrs').value, railingHrs:$('l-railing-hrs').value, stairMult:$('l-stair-mult').value, margin:$('profit-margin').value }
   };
@@ -642,8 +681,15 @@ function loadQuoteState(q){
       if($(id)) $(id).value = q.labor[keys[i]]||$(id).value;
     });
   }
-  if(q.client && $('p-client-name')) $('p-client-name').value = q.client;
-  if(q.desc && $('p-description')) $('p-description').value = q.desc;
+  const setField = (id, val) => { if(val && $(id)) $(id).value = val; };
+  setField('p-client-name',    q.client);
+  setField('p-client-address', q.address);
+  setField('p-project-address',q.projAddress);
+  setField('p-description',    q.desc);
+  setField('p-date',           q.date);
+  setField('p-valid-until',    q.validUntil);
+  setField('p-notes',          q.notes);
+  setField('p-terms-text',     q.terms);
   renderAreas();
   renderSummary();
   renderSavedQuotes();
@@ -700,6 +746,9 @@ function renderSavedQuotes(){
 }
 
 // ── PROPOSAL ──────────────────────────────────────────────────────────────────
+function saveGrandTotal(el){ pOverrides['p-grand-total'] = el.innerText.trim(); }
+function deleteGrandTotalOverride(){ delete pOverrides['p-grand-total']; renderProposal(); }
+
 function ptoggle(k){
   pOpts[k]=!pOpts[k];
   $('ptog-'+k).classList.toggle('on',pOpts[k]);
@@ -775,10 +824,47 @@ function renderProposal(){
       html+='<div style="margin-bottom:18px;"><div class="p-section-title">Terms &amp; Conditions</div><p style="font-size:10px;color:#7A92A8;line-height:1.6;">'+terms.split('\n').join('<br>')+'</p></div>';
     }
 
-    html+='<div style="background:#FEF3EA;border:2px solid #E8751A;border-radius:10px;padding:16px 24px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center;">'
+    // Compare pricing section (if compare data added)
+    if(window._proposalCompareData && window._proposalCompareData.length>=2){
+      const cdata = window._proposalCompareData;
+      const best = cdata.reduce((b,d)=>d.costs.total<b.costs.total?d:b, cdata[0]);
+      let cRows = cdata.map(({L,costs}) => {
+        const isBest = L.id===best.L.id;
+        return '<tr style="background:'+(isBest?'#FEF3EA':'#FFFFFF')+';"><td style="padding:10px 14px;font-weight:'+(isBest?'700':'500')+';color:#1C2B3A;">'+L.name+(isBest?' ⭐':'')+'</td>'
+          +'<td style="padding:10px 14px;font-size:12px;color:#7A92A8;">'+L.badge+'</td>'
+          +'<td style="padding:10px 14px;font-size:12px;color:#7A92A8;">'+L.colors.join(', ')+'</td>'
+          +'<td style="padding:10px 14px;font-family:DM Mono,monospace;text-align:right;font-weight:'+(isBest?'700':'500')+';color:'+(isBest?'#E8751A':'#1C2B3A')+';">$'+costs.total.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})+'</td>'
+          +'</tr>';
+      }).join('');
+      html += '<div style="margin-bottom:20px;"><div class="p-section-title">Pricing Options</div>'
+        +'<table style="width:100%;border-collapse:collapse;font-size:13px;">'
+        +'<thead><tr style="background:#F2F4F7;"><th style="padding:8px 14px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:#7A92A8;">Product Line</th>'
+        +'<th style="padding:8px 14px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:#7A92A8;">Type</th>'
+        +'<th style="padding:8px 14px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:#7A92A8;">Colors Available</th>'
+        +'<th style="padding:8px 14px;text-align:right;font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:#7A92A8;">Total Investment</th></tr></thead>'
+        +'<tbody>'+cRows+'</tbody></table>'
+        +'<p style="font-size:10px;color:#7A92A8;margin-top:6px;">All options include identical scope of work. Client selects preferred product line at time of approval.</p>'
+        +'</div>';
+    }
+
+    // Only show grand total if NOT showing compare pricing options
+    if(!window._proposalCompareData || !window._proposalCompareData.length) {
+      const displayTotal = pOverrides['p-grand-total'] !== undefined ? pOverrides['p-grand-total'] : grandFmt;
+    html+='<div style="background:#FEF3EA;border:2px solid #E8751A;border-radius:10px;padding:16px 24px;margin-bottom:20px;">'
+      +'<div style="display:flex;justify-content:space-between;align-items:center;">'
       +'<div><div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#8B5E00;margin-bottom:3px;">Total Project Investment</div>'
       +'<div style="font-size:11px;color:#8B5E00;">Includes all materials, labor &amp; applicable taxes</div></div>'
-      +'<div style="font-size:28px;font-weight:700;color:#E8751A;font-family:DM Mono,monospace;">'+editCell('p-grand-total',grandFmt)+'</div></div>';
+      +'<div contenteditable="true" id="proposal-grand-total-input" data-pid="p-grand-total"'
+      +' onblur="saveGrandTotal(this);"'
+      +' onkeydown="if(event.key===\'Enter\'){event.preventDefault();this.blur();}"'
+      +' title="Click to edit total"'
+      +' style="font-size:28px;font-weight:700;color:#E8751A;font-family:DM Mono,monospace;outline:none;border-bottom:2px dashed rgba(232,117,26,0.4);cursor:text;min-width:60px;text-align:right;padding:2px 4px;border-radius:4px;">'
+      +displayTotal+'</div></div>'
+      +'<div style="margin-top:8px;display:flex;gap:8px;align-items:center;">'
+      +'<button onclick="deleteGrandTotalOverride();" style="font-size:11px;padding:3px 10px;border:1px solid rgba(232,117,26,0.4);border-radius:4px;background:transparent;color:#8B5E00;cursor:pointer;font-family:DM Sans,sans-serif;">↺ Reset to calculated</button>'
+      +'<span style="font-size:10px;color:#B8860B;">Calculated: '+grandFmt+' · Click amount above to override</span>'
+      +'</div></div>';
+    } // end if no compare data
 
     if(pOpts.signature){
       html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:4px;">'
@@ -802,14 +888,108 @@ function printProposal(){
   allTabs.forEach(id=>{ if($(id)) $(id).style.display=prev[id]; });
 }
 
+// ── COMPARE PRICING ──────────────────────────────────────────────────────────
+let proposalCompare = null; // stored compare data for proposal
+
+function initCompareSelects(){
+  ['cmp-line-1','cmp-line-2','cmp-line-3'].forEach((sid,i) => {
+    const sel = $(sid); if(!sel) return;
+    const curr = sel.value;
+    sel.innerHTML = i===2 ? '<option value="">— None —</option>' : '<option value="">— Select line —</option>';
+    const groups = [];const seen = {};
+    LINES.forEach(L => { if(!seen[L.grp]){seen[L.grp]=true;groups.push({grp:L.grp,label:L.grpLabel,lines:[]});}groups.find(g=>g.grp===L.grp).lines.push(L); });
+    groups.forEach(g => {
+      const og = document.createElement('optgroup'); og.label = g.label;
+      g.lines.forEach(L => { const o=document.createElement('option'); o.value=L.id; o.textContent=L.sn+' · $'+L.lf.toFixed(2)+'/LF'; if(L.id===curr) o.selected=true; og.appendChild(o); });
+      sel.appendChild(og);
+    });
+  });
+}
+
+function calcForLine(lineId){
+  // Calculate total cost for current areas but override line for all areas
+  const savedLines = areas.map(a=>a.lineId);
+  areas.forEach(a=>a.lineId=lineId);
+  const results = areas.map(a=>({a,r:calcAreaCosts(a)})).filter(x=>x.r);
+  const total = results.reduce((s,x)=>s+x.r.grand,0);
+  const mat   = results.reduce((s,x)=>s+x.r.matSub,0);
+  const lab   = results.reduce((s,x)=>s+x.r.labSub,0);
+  const tax   = results.reduce((s,x)=>s+x.r.tax,0);
+  const profit= results.reduce((s,x)=>s+x.r.profit,0);
+  areas.forEach((a,i)=>a.lineId=savedLines[i]);
+  return {total,mat,lab,tax,profit};
+}
+
+function renderCompare(){
+  const sel1=$('cmp-line-1')&&$('cmp-line-1').value;
+  const sel2=$('cmp-line-2')&&$('cmp-line-2').value;
+  const sel3=$('cmp-line-3')&&$('cmp-line-3').value;
+  const grid=$('compare-grid'); if(!grid) return;
+  const selected = [sel1,sel2,sel3].filter(Boolean);
+  if(selected.length<2){ grid.innerHTML='<p style="font-size:12px;color:var(--text-muted);padding:8px 0;">Select at least 2 product lines to compare.</p>'; return; }
+
+  const data = selected.map(id=>{ const L=LINES.find(x=>x.id===id); const costs=calcForLine(id); return {L,costs}; });
+  const best = data.reduce((b,d)=>d.costs.total<b.costs.total?d:b, data[0]);
+
+  let cols = data.map(({L,costs},i) => {
+    const isBest = L.id===best.L.id;
+    const totalArea = areas.reduce((s,a)=>s+a.len*a.wid,0);
+    return `<div style="flex:1;border-radius:10px;padding:1.25rem;border:${isBest?'2px solid var(--orange)':'1px solid var(--border)'};background:${isBest?'var(--orange-pale)':'var(--card-bg)'};">
+      ${isBest?'<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--orange);margin-bottom:6px;">⭐ Best Value</div>':''}
+      <div style="font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:${L.grpColor};margin-bottom:4px;">${L.grpLabel}</div>
+      <div style="font-size:17px;font-weight:700;color:var(--navy);margin-bottom:2px;">${L.name}</div>
+      <div style="font-size:12px;color:var(--text-muted);margin-bottom:12px;">$${L.lf.toFixed(2)}/LF · ${L.badge}</div>
+      <div style="display:flex;flex-direction:column;gap:5px;font-size:13px;">
+        <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border-light);"><span style="color:var(--text-muted);">Materials</span><span style="font-family:'DM Mono',monospace;">${fmt(costs.mat)}</span></div>
+        <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border-light);"><span style="color:var(--text-muted);">Tax (10%)</span><span style="font-family:'DM Mono',monospace;">${fmt(costs.tax)}</span></div>
+        <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border-light);"><span style="color:var(--text-muted);">Labor</span><span style="font-family:'DM Mono',monospace;">${fmt(costs.lab)}</span></div>
+        <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border-light);"><span style="color:var(--text-muted);">Profit</span><span style="font-family:'DM Mono',monospace;">${fmt(costs.profit)}</span></div>
+        <div style="display:flex;justify-content:space-between;padding:8px 0;margin-top:4px;border-top:2px solid ${isBest?'var(--orange)':'var(--border)'};">
+          <span style="font-weight:600;color:var(--navy);">Total</span>
+          <span style="font-family:'DM Mono',monospace;font-size:18px;font-weight:700;color:${isBest?'var(--orange)':'var(--navy)'};">${fmt(costs.total)}</span>
+        </div>
+        <div style="font-size:11px;color:var(--text-muted);">${fmt(costs.total/totalArea)}/sqft</div>
+      </div>
+      <div style="margin-top:10px;display:flex;gap:4px;flex-wrap:wrap;">
+        ${L.colors.map(c=>'<span style="font-size:10px;padding:2px 6px;border-radius:4px;background:'+L.grpColor+'15;color:'+L.grpColor+';border:0.5px solid '+L.grpColor+'40;">'+c+'</span>').join('')}
+      </div>
+    </div>`;
+  }).join('');
+
+  proposalCompare = data;
+  grid.innerHTML = '<div style="display:flex;gap:14px;">' + cols + '</div>'
+    + (data.length>=2 ? '<div style="margin-top:10px;font-size:12px;color:var(--text-muted);">Savings vs most expensive: <strong style="color:var(--orange);">'
+      + fmt(Math.max(...data.map(d=>d.costs.total)) - Math.min(...data.map(d=>d.costs.total)))
+      + '</strong></div>' : '');
+}
+
+function addCompareToProposal(){
+  if(!proposalCompare||proposalCompare.length<2){ alert('Select and compare at least 2 lines first.'); return; }
+  // Switch to proposal tab and trigger re-render with compare data
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  const propBtn = Array.from(document.querySelectorAll('.tab-btn')).find(b=>b.textContent.includes('Proposal'));
+  if(propBtn) propBtn.classList.add('active');
+  ['tab-single','tab-compare','tab-proposal'].forEach(id=>{ if($(id)) $(id).style.display='none'; });
+  if($('tab-proposal')) $('tab-proposal').style.display='';
+  renderProposalWithCompare(proposalCompare);
+}
+
+function renderProposalWithCompare(compareData){
+  // Add compare section to the proposal
+  window._proposalCompareData = compareData;
+  renderProposal();
+}
+
 function switchTab(t,btn){
   currentTab=t;
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
-  ['tab-single','tab-compare','tab-quotes','tab-proposal'].forEach(id=>{ if($(id)) $(id).style.display='none'; });
-  if($(t==='single'?'tab-single':t==='compare'?'tab-compare':t==='quotes'?'tab-quotes':'tab-proposal')) $(t==='single'?'tab-single':t==='compare'?'tab-compare':t==='quotes'?'tab-quotes':'tab-proposal').style.display='';
+  ['tab-single','tab-compare','tab-proposal'].forEach(id=>{ if($(id)) $(id).style.display='none'; });
+  const tabMap = {single:'tab-single', compare:'tab-compare', proposal:'tab-proposal'};
+  if($(tabMap[t])) $(tabMap[t]).style.display='';
   if(t==='proposal') renderProposal();
-  if(t==='quotes') renderSavedQuotes();
+  if(t==='compare'){ initCompareSelects(); renderCompare(); }
+  if(t==='single') renderSavedQuotes();
 }
 
 // ── INIT ──────────────────────────────────────────────────────────────────────
