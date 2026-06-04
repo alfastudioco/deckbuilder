@@ -874,6 +874,19 @@ function renderProposal(){
     }
 
     $('proposal-content').innerHTML=html;
+
+    // Wire up grand total input AFTER DOM is set
+    const gtInput = $('proposal-grand-total-input');
+    if(gtInput){
+      const displayVal = pOverrides['p-grand-total'] !== undefined ? pOverrides['p-grand-total'] : grandFmt;
+      gtInput.value = displayVal;
+      const noteEl = $('proposal-grand-calc-note');
+      if(noteEl) noteEl.textContent = pOverrides['p-grand-total'] ? 'Calculated: '+grandFmt+' (overridden)' : 'Click to edit';
+      // Update override on change
+      gtInput.oninput = function(){ pOverrides['p-grand-total'] = this.value; if(noteEl) noteEl.textContent = 'Calculated: '+grandFmt+' (overridden)'; };
+      // Remove GRAND_TOTAL_PLACEHOLDER — already replaced by .value above
+    }
+
   } catch(e){
     console.error('Proposal error:',e);
     if($('proposal-content')) $('proposal-content').innerHTML='<div style="padding:20px;color:#C0392B;">Error: '+e.message+'</div>';
