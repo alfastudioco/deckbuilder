@@ -60,6 +60,10 @@ select:focus,input:focus,textarea:focus{border-color:var(--orange);}
   body{background:white!important;}
   body::before{display:none!important;}
   .p-editable{border-bottom:none!important;}
+  input[type=text]{border:none!important;background:transparent!important;padding:0!important;}
+  button{display:none!important;}
+  [id^="cmp-note-"]{display:none!important;}
+  #proposal-grand-calc-note{display:none!important;}
   @page{margin:0.4in;size:letter;}
 }
 </style>
@@ -919,11 +923,34 @@ function renderProposal(){
 }
 
 function printProposal(){
-  const allTabs=['tab-single','tab-compare','tab-quotes','tab-proposal'];
-  const prev={};
-  allTabs.forEach(id=>{ prev[id]=$(id)&&$(id).style.display; if($(id)) $(id).style.display=id==='tab-proposal'?'':'none'; });
+  // Snapshot all editable inputs in the proposal to their current typed values
+  // by replacing them with styled spans so print CSS can't revert them
+  const proposalContent = $('proposal-content');
+  if(!proposalContent) { window.print(); return; }
+
+  // Save current input values and replace with print-safe spans
+  const inputs = proposalContent.querySelectorAll('input[type=text]');
+  const replacements = [];
+  inputs.forEach(inp => {
+    const span = document.createElement('span');
+    span.textContent = inp.value;
+    span.style.cssText = inp.style.cssText;
+    span.style.display = 'inline-block';
+    inp.parentNode.insertBefore(span, inp);
+    inp.style.display = 'none';
+    replacements.push({ inp, span });
+  });
+
+  // Show proposal tab, hide others
+  const allTabs = ['tab-single','tab-compare','tab-proposal'];
+  const prev = {};
+  allTabs.forEach(id => { prev[id] = $(id) && $(id).style.display; if($(id)) $(id).style.display = id==='tab-proposal' ? '' : 'none'; });
+
   window.print();
-  allTabs.forEach(id=>{ if($(id)) $(id).style.display=prev[id]; });
+
+  // Restore everything
+  allTabs.forEach(id => { if($(id)) $(id).style.display = prev[id]; });
+  replacements.forEach(({inp, span}) => { inp.style.display = ''; span.remove(); });
 }
 
 // ── COMPARE PRICING ──────────────────────────────────────────────────────────
