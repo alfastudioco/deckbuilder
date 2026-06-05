@@ -569,6 +569,7 @@ function buildAreaBody(a, r){
       </div>
       <input type="number" id="a${id}-fascia-count" value="${a.fasciaCount}" min="0" max="500" style="width:100%;padding:5px 8px;border:1px solid var(--border);border-radius:5px;font-size:12px;" oninput="readArea(${id});renderSummary();">
       <button onclick="const fi=autoFasciaCount(areas.find(x=>x.id===${id}).len,areas.find(x=>x.id===${id}).wid);areas.find(x=>x.id===${id}).fasciaCount=fi.count;renderAreas();renderSummary();" style="width:100%;margin-top:4px;padding:4px;font-size:10px;border:1px solid var(--border);border-radius:4px;background:var(--surface);cursor:pointer;color:var(--text-muted);">↺ Auto</button>
+      ${a.fasciaOn && r ? '<div style="margin-top:5px;padding:4px 6px;background:var(--orange-pale);border-radius:4px;display:flex;justify-content:space-between;font-size:10px;"><span style="color:var(--text-muted);">Cost</span><span style="font-family:DM Mono,monospace;color:var(--orange);font-weight:600;">'+fmt(a.fasciaCount*(LINES.find(x=>x.id===a.lineId)||LINES[0]).fa)+'</span></div>' : ''}
     </div>
     <!-- Railing -->
     <div style="padding:10px;background:var(--surface-2);border-radius:8px;border:1px solid var(--border);">
@@ -582,6 +583,7 @@ function buildAreaBody(a, r){
       </div>
       <input type="number" id="a${id}-railing-lf" value="${a.railLF}" min="0" max="2000" placeholder="LF" style="width:100%;padding:5px 8px;border:1px solid var(--border);border-radius:5px;font-size:12px;" oninput="readArea(${id});renderSummary();">
       <button onclick="const aa=areas.find(x=>x.id===${id});const lf=aa.len+aa.wid+aa.wid;aa.railLF=lf;renderAreas();renderSummary();" style="width:100%;margin-top:4px;padding:4px;font-size:10px;border:1px solid var(--border);border-radius:4px;background:var(--surface);cursor:pointer;color:var(--text-muted);">↺ 3 sides</button>
+      ${a.railingOn && a.railLF > 0 ? '<div style="margin-top:5px;padding:4px 6px;background:var(--orange-pale);border-radius:4px;display:flex;justify-content:space-between;font-size:10px;"><span style="color:var(--text-muted);">${a.railLF} LF</span><span style="font-family:DM Mono,monospace;color:var(--orange);font-weight:600;">'+fmt(a.railLF*RAIL_RATES[a.railType])+'</span></div>' : ''}
     </div>
     <!-- Lattice -->
     <div style="padding:10px;background:var(--surface-2);border-radius:8px;border:1px solid var(--border);">
@@ -591,6 +593,7 @@ function buildAreaBody(a, r){
       </div>
       <input type="number" id="a${id}-lattice-lf" value="${a.latticeLF}" min="0" placeholder="LF" style="width:100%;padding:5px 8px;border:1px solid var(--border);border-radius:5px;font-size:12px;margin-bottom:4px;" oninput="readArea(${id});renderSummary();">
       <div style="display:flex;align-items:center;gap:3px;"><span style="font-size:11px;color:var(--text-muted);">$</span><input type="number" id="a${id}-lattice-rate" value="${a.latticeRate}" min="0" step="0.5" style="width:100%;padding:5px 8px;border:1px solid var(--border);border-radius:5px;font-size:12px;" oninput="readArea(${id});renderSummary();"></div>
+      ${a.latticeOn && a.latticeLF > 0 ? '<div style="margin-top:5px;padding:4px 6px;background:var(--orange-pale);border-radius:4px;display:flex;justify-content:space-between;font-size:10px;"><span style="color:var(--text-muted);">${a.latticeLF} LF</span><span style="font-family:DM Mono,monospace;color:var(--orange);font-weight:600;">'+fmt(a.latticeLF*a.latticeRate)+'</span></div>' : ''}
     </div>
     <!-- Fasteners -->
     <div style="padding:10px;background:var(--surface-2);border-radius:8px;border:1px solid var(--border);">
@@ -606,6 +609,7 @@ function buildAreaBody(a, r){
         <option value="cortex_comp_lf" ${a.fastenerType==='cortex_comp_lf'?'selected':''}>Cortex comp $0.88/LF</option>
         <option value="cortex_pvc_sqft" ${a.fastenerType==='cortex_pvc_sqft'?'selected':''}>Cortex PVC $1.10/sqft</option>
       </select>
+      ${a.fastenerOn && r ? (()=>{ const F=FRATES[a.fastenerType]; const cost=F.mode==='sqft'?(r.area*F.rate):(r.actLF*F.rate); return '<div style="margin-top:5px;padding:4px 6px;background:var(--orange-pale);border-radius:4px;display:flex;justify-content:space-between;font-size:10px;"><span style="color:var(--text-muted);">'+Math.round(F.mode==='sqft'?r.area:r.actLF)+(F.mode==='sqft'?' sqft':' LF')+'</span><span style="font-family:DM Mono,monospace;color:var(--orange);font-weight:600;">'+fmt(cost)+'</span></div>'; })() : ''}
     </div>
 
     <!-- Haul / Stairs -->
@@ -615,6 +619,7 @@ function buildAreaBody(a, r){
         <span style="font-size:12px;font-weight:500;color:var(--text-secondary);">Haul Away</span>
       </div>
       <div style="display:flex;align-items:center;gap:3px;"><span style="font-size:11px;color:var(--text-muted);">$</span><input type="number" id="a${id}-haul-fee" value="${a.haulFee}" min="0" step="50" style="width:100%;padding:5px 8px;border:1px solid var(--border);border-radius:5px;font-size:12px;" oninput="readArea(${id});renderSummary();"></div>
+      ${a.haulOn && a.haulFee > 0 ? '<div style="margin-top:5px;padding:4px 6px;background:var(--orange-pale);border-radius:4px;display:flex;justify-content:space-between;font-size:10px;"><span style="color:var(--text-muted);">Flat fee</span><span style="font-family:DM Mono,monospace;color:var(--orange);font-weight:600;">'+fmt(a.haulFee)+'</span></div>' : ''}
       <div style="margin-top:6px;">
         <div style="display:flex;align-items:center;gap:6px;">
           <div onclick="areas.find(x=>x.id===${id}).stairsOn=!areas.find(x=>x.id===${id}).stairsOn;renderAreas();renderSummary();" style="width:32px;height:18px;border-radius:9px;background:${a.stairsOn?'var(--orange)':'#C8D0D8'};position:relative;cursor:pointer;flex-shrink:0;"><div style="width:13px;height:13px;border-radius:50%;background:#fff;position:absolute;top:2px;left:${a.stairsOn?'16px':'2px'};box-shadow:0 1px 2px rgba(0,0,0,0.2);"></div></div>
