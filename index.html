@@ -188,6 +188,7 @@ select:focus,input:focus,textarea:focus{border-color:var(--orange);}
         <div class="toggle-row"><div class="toggle on" id="ptog-terms" onclick="ptoggle('terms')"><div class="toggle-knob"></div></div><span class="toggle-label">Terms &amp; conditions</span></div>
         <div class="toggle-row"><div class="toggle on" id="ptog-signature" onclick="ptoggle('signature')"><div class="toggle-knob"></div></div><span class="toggle-label">Signature line</span></div>
         <div class="toggle-row"><div class="toggle" id="ptog-notes" onclick="ptoggle('notes')"><div class="toggle-knob"></div></div><span class="toggle-label">Custom notes</span></div>
+        <div class="toggle-row"><div class="toggle" id="ptog-approxdim" onclick="ptoggle('approxdim')"><div class="toggle-knob"></div></div><span class="toggle-label">Show approx. dimensions only</span></div>
       </div>
       <div id="p-notes-area" style="display:none;margin-top:10px;"><label class="form-label">Custom notes</label><textarea id="p-notes" rows="3" style="resize:vertical;" oninput="renderProposal()"></textarea></div>
       <div style="margin-top:10px;"><label class="form-label">Terms &amp; Conditions</label><textarea id="p-terms-text" rows="4" style="font-size:12px;resize:vertical;" oninput="renderProposal()">50% deposit required to schedule work. Remaining balance due upon completion. All materials remain property of FB Construction until paid in full. FB Construction is not responsible for damage to underground utilities, irrigation, or landscaping unless marked prior to work. Proposal valid for 30 days from date of issue. Prices subject to change due to material availability and tariffs.</textarea></div>
@@ -270,7 +271,7 @@ let areas = [];        // array of area objects
 let activeAreaId = null;
 let currentTab = 'single';
 let savedQuotes = JSON.parse(localStorage.getItem('fbco_quotes') || '[]');
-const pOpts = { scope:true, terms:true, signature:true, notes:false };
+const pOpts = { scope:true, terms:true, signature:true, notes:false, approxdim:false };
 const pOverrides = {};
 
 // ── UTILS ─────────────────────────────────────────────────────────────────────
@@ -781,6 +782,13 @@ function editCell(id,value){
   return '<span contenteditable="true" data-pid="'+id+'" onblur="pOverrides[this.dataset.pid]=this.innerText.trim()" onkeydown="if(event.key===\'Enter\'){event.preventDefault();this.blur();}" style="outline:none;border-bottom:1px dashed #C8D0D8;cursor:text;min-width:20px;display:inline-block;" title="Click to edit">'+saved+'</span>';
 }
 
+function areaSize(a, r){
+  if(pOpts.approxdim){
+    return 'approx. '+a.len+' ft × '+a.wid+' ft';
+  }
+  return Math.round(r.area)+' sqft';
+}
+
 function renderProposal(){
   try {
     const results = areas.map(a=>({a,r:calcAreaCosts(a)})).filter(x=>x.r);
@@ -813,7 +821,7 @@ function renderProposal(){
       +(projAddr&&projAddr!==addr?'<div style="font-size:11px;color:#7A92A8;margin-top:2px;">Project: '+editCell('p-proj-inline',projAddr)+'</div>':'')+'</div>'
       +'<div><div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:#7A92A8;margin-bottom:6px;">Project Description</div>'
       +'<div style="font-size:13px;font-weight:500;color:#1C2B3A;">'+editCell('p-desc-inline',desc)+'</div>'
-      +'<div style="font-size:11px;color:#7A92A8;margin-top:4px;">'+results.length+' area(s) · '+Math.round(results.reduce((s,x)=>s+x.r.area,0)).toLocaleString()+' sq ft total</div>'
+      +'<div style="font-size:11px;color:#7A92A8;margin-top:4px;">'+results.length+' area(s)'+(pOpts.approxdim?'':' · '+Math.round(results.reduce((s,x)=>s+x.r.area,0)).toLocaleString()+' sq ft total')+'</div>'
       +'</div></div>';
 
     if(pOpts.scope){
@@ -830,7 +838,7 @@ function renderProposal(){
           ...(a.haulOn?['Debris removal and haul away']:[]),
         ];
         scopeRows+=`<tr><td style="padding:6px 8px;vertical-align:top;font-weight:600;color:#2D3F52;font-size:13px;white-space:nowrap;">${editCell('scope-area-'+i,a.name)}</td>`
-          +`<td style="padding:6px 8px;font-size:12px;color:#445A6F;">${Math.round(r.area)} sqft · ${r.L.name}</td>`
+          +`<td style="padding:6px 8px;font-size:12px;color:#445A6F;">${areaSize(a,r)} · ${r.L.name}</td>`
           +`<td style="padding:6px 8px;font-size:12px;color:#1C2B3A;">${items.map(item=>'✓ '+item).join('<br>')}</td></tr>`;
       });
       html+='<div style="margin-bottom:20px;"><div class="p-section-title">Scope of Work</div>'
