@@ -694,7 +694,8 @@ function getQuoteState(){
     notes:       ($('p-notes')          &&$('p-notes').value)||'',
     terms:       ($('p-terms-text')     &&$('p-terms-text').value)||'',
     areas: JSON.parse(JSON.stringify(areas)),
-    labor: { crew:$('l-crew').value, rate:$('l-rate').value, installHrs:$('l-install-hrs').value, framingHrs:$('l-framing-hrs').value, railingHrs:$('l-railing-hrs').value, stairMult:$('l-stair-mult').value, margin:$('profit-margin').value }
+    labor: { crew:$('l-crew').value, rate:$('l-rate').value, installHrs:$('l-install-hrs').value, framingHrs:$('l-framing-hrs').value, railingHrs:$('l-railing-hrs').value, stairMult:$('l-stair-mult').value, margin:$('profit-margin').value },
+    overrides: JSON.parse(JSON.stringify(pOverrides))
   };
 }
 
@@ -716,9 +717,12 @@ function loadQuoteState(q){
   setField('p-valid-until',    q.validUntil);
   setField('p-notes',          q.notes);
   setField('p-terms-text',     q.terms);
+  Object.keys(pOverrides).forEach(k=>delete pOverrides[k]);
+  Object.assign(pOverrides, q.overrides||{});
   renderAreas();
   renderSummary();
   renderSavedQuotes();
+  renderProposal();
 }
 
 function saveQuote(){
@@ -942,7 +946,7 @@ function renderProposal(){
       const noteEl = $('proposal-grand-calc-note');
       if(noteEl) noteEl.textContent = pOverrides['p-grand-total'] ? 'Calculated: '+grandFmt+' (overridden)' : 'Click to edit';
       // Update override on change
-      gtInput.oninput = function(){ pOverrides['p-grand-total'] = this.value; if(noteEl) noteEl.textContent = 'Calculated: '+grandFmt+' (overridden)'; };
+      gtInput.oninput = function(){ pOverrides['p-grand-total'] = this.innerText.trim(); if(noteEl) noteEl.textContent = 'Calculated: '+grandFmt+' (overridden)'; };
       // Remove GRAND_TOTAL_PLACEHOLDER — already replaced by .value above
     }
 
